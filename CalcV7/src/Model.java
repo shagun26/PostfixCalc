@@ -713,6 +713,7 @@ public class Model
 				if(operand == DIV && precedence.pop() == MULT)
 					return true;
 				
+				precedence.pop();
 				System.out.println("Mult First");
 				//Otherwise, they are not
 				return false;
@@ -722,6 +723,7 @@ public class Model
 			
 			//Low precedence followed by High.
 			//Thus brackets needed.
+			precedence.pop();
 			System.out.println("Brackets");
 			
 			return true;
