@@ -19,6 +19,8 @@ public class Model
 	private static final String MINUS = "-";
 	private static final String MULT = "x";
 	private static final String DIV = "/";
+	private static final String SIN = "SIN(";
+	private static final String COS = "COS(";
 	
 	private ArrayList<String> high_precedence = new ArrayList<String>();
 	private ArrayList<String> lowest_precedence = new ArrayList<String>();
@@ -41,6 +43,7 @@ public class Model
 		
 		lowest_precedence.add(PLUS);
 		lowest_precedence.add(MINUS);
+		
 		
 		highest_precedence.add(FACT);
 		
@@ -258,7 +261,7 @@ public class Model
 			//Update precedence list
 			precedence.push(operand);
 			
-			//System.out.println(precedence.toString());
+			System.out.println(precedence.toString());
 			
 			updateHistDirect();
 			prev_history.push(operand);
@@ -299,6 +302,7 @@ public class Model
 		//Update precedence list
 		precedence.push(operand);
 		
+		System.out.println(precedence.toString());
 		updateHistMem();
 		
 		prev_history.push(operand);
@@ -327,10 +331,10 @@ public class Model
 			sb_completed_operations.delete(0, sb_completed_operations.length());
 			
 			
-			if(!(running_history.isEmpty()))
+			/*if(!(running_history.isEmpty()))
 			{
 				running_history.remove(running_history.size()- 1);
-			}
+			}*/
 		
 			//replace them with updated computation
 			running_history.add(button_history.peek());
@@ -412,6 +416,7 @@ public class Model
 	
 	public String trigHistory(String funct)
 	{
+		
 		if(!from_memory)
 		{
 			//set the string
@@ -425,7 +430,7 @@ public class Model
 			
 			// Reset completed operations string_builder for next entry
 			sb_completed_operations.delete(0, sb_completed_operations.length());
-			
+			precedence.push(funct);
 			
 			if(!(running_history.isEmpty()))
 			{
@@ -435,6 +440,7 @@ public class Model
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 			prev_history.push(funct);
+			
 			
 			
 			System.out.println(precedence.toString());
@@ -448,7 +454,12 @@ public class Model
 			
 			
 			sb_completed_operations.append(funct + first + ") ");
-		
+			
+			
+			if(isOp(first))
+				precedence.pop();
+			
+			precedence.push(funct);
 			
 			System.out.println(precedence.toString());
 			
@@ -687,6 +698,19 @@ public class Model
 
 	}
 	
+	private boolean isOp(String input)
+	{
+		try
+		{
+			Double.parseDouble(input);
+		}
+		catch (NumberFormatException e)
+		{
+			return true;
+		}
+		
+		return false;
+	}
 	//Changes made here
 	private boolean checkBrackets(String last_entry, String operand)
 	{
@@ -696,35 +720,47 @@ public class Model
 			return false;
 		}
 		
+		//If last op was trig
+		//No brackets needed
+		if(precedence.peek().equals(COS) || precedence.peek().equals(SIN))
+		{
+			precedence.pop();
+			return false;
+		}
 		
 		//Check if last_entry was an operation
 		//or a number.
-		try
+		if(!isOp(last_entry))
+			return false;
+		else
 		{
-			Double.parseDouble(last_entry);
-		}
-		catch (NumberFormatException e)
-		{
-			//If the two last operands are the same,
-			//no need for brackets
-			if(precedence.peek().equals(operand))
-			{
-				precedence.pop();
-				return false;
-			}
-			
-			//If Fact, SIN, COS
+			//If Fact
 			//Brackets needed
 			if(highest_precedence.contains(operand))
 			{
 				precedence.pop();
 				return true;
 			}
+			
+			//If the two last operands are the same,
+			//no need for brackets UNLESS it is DIV
+			if(precedence.peek().equals(operand))
+			{
+				if(operand.equals(DIV))
+				{
+					precedence.pop();
+					return true;
+				}
+					
+				precedence.pop();
+				return false;
+			}
+			
 			//If the last operand is low precedence,
 			//no brackets needed
 			if(lowest_precedence.contains(operand))
 			{
-				
+				precedence.pop();
 				return false;
 			}
 			
@@ -735,8 +771,12 @@ public class Model
 			{
 				//If multiplication was first,
 				//brackets needed
-				if(operand == DIV && precedence.pop() == MULT)
+				if(operand == DIV && precedence.peek() == MULT)
+				{
+					precedence.pop();
 					return true;
+				}
+					
 				
 				//Otherwise, they are not
 				precedence.pop();
@@ -753,10 +793,9 @@ public class Model
 			System.out.println("Brackets");
 			
 			return true;
-		}
 		
-		//Last action involved numbers
-		return false;
+		
+		}
 		
 	}
 	
