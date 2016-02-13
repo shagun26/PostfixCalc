@@ -31,7 +31,7 @@ public class View extends JFrame
 	private static final String MINUS = "-";
 	private static final String FACT = "!";
 	//private static final String UNDO = "Undo";
-	private static final String PLUSMINUS = "Â±";
+	private static final String PLUSMINUS = "±";
 	private static final String COS = "COS(";
 	private static final String SIN = "SIN(";
 	
@@ -166,14 +166,7 @@ public class View extends JFrame
 				controller.addToEntry(NINE);
 			}
 		});
-		/*keypad.add(two);
-		keypad.add(three);
-		keypad.add(four);
-		keypad.add(five);
-		keypad.add(six);
-		keypad.add(seven);
-		keypad.add(eight);
-		keypad.add(nine);*/
+		
 		
 		keypad.add(new ButtonAdapter(CLEAR)
 		{
@@ -182,9 +175,7 @@ public class View extends JFrame
 				controller.clear();
 			}
 		});
-		//keypad.add(clear);
 		
-		//keypad.add(zero);
 		
 		keypad.add(new ButtonAdapter(ZERO)
 		{
@@ -202,10 +193,7 @@ public class View extends JFrame
 			}
 		});
 		
-		//keypad.add(enter);
 		
-		
-		//operators.add(plus);
 		operators.add(new ButtonAdapter(PLUS)
 		{
 			public void pressed()
@@ -217,7 +205,7 @@ public class View extends JFrame
 		});
 		
 		
-		//operators.add(minus);
+		
 		operators.add(new ButtonAdapter(MINUS)
 		{
 			public void pressed()
@@ -228,7 +216,7 @@ public class View extends JFrame
 			
 		});
 		
-		//operators.add(multiply);
+		
 		
 		operators.add(new ButtonAdapter(MULT)
 		{
@@ -240,7 +228,7 @@ public class View extends JFrame
 			
 		});
 		
-		//operators.add(divide);
+		
 		
 		operators.add(new ButtonAdapter(DIV)
 		{
@@ -257,12 +245,12 @@ public class View extends JFrame
 			public void pressed()
 			{
 				controller.factorial();
-				controller.singleHistoryOperation(FACT);
+				controller.factHistoryOperation(FACT);
 			}
 					
 		});
 		
-		operators.add(new ButtonAdapter(PLUSMINUS)
+		/*operators.add(new ButtonAdapter(PLUSMINUS)
 		{
 			public void pressed()
 			{
@@ -270,14 +258,14 @@ public class View extends JFrame
 				controller.singleHistoryOperation(PLUSMINUS);
 			}
 			
-		});
+		});*/
 		
 		operators.add(new ButtonAdapter("COS")
 		{
 			public void pressed()
 			{
 				controller.cos();
-				controller.singleHistoryOperation(COS);
+				controller.trigHistoryOperation(COS);
 			}
 			
 		});
@@ -287,12 +275,12 @@ public class View extends JFrame
 			public void pressed()
 			{
 				controller.sin();
-				controller.singleHistoryOperation(SIN);
+				controller.trigHistoryOperation(SIN);
 			}
 			
 		});
 		
-		//operators.add(decimal_point);
+		
 		operators.add(new ButtonAdapter(DECIMAL_POINT)
 		{
 			public void pressed()

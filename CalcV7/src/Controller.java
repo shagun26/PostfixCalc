@@ -33,11 +33,6 @@ public class Controller
 		window.updateHistory(model.enterHistory());
 	}
 	
-	public void undo()
-	{
-		window.updateHistory(model.undoHistory());
-	}
-	
 	public void sum()
 	{
 		window.updateValue(model.sum());
@@ -84,19 +79,17 @@ public class Controller
 		window.updateHistory(model.operandHistory(operand));
 	}
 	
-	public void singleHistoryOperation(String operand)
+	public void factHistoryOperation(String operand)
 	{
-		window.updateHistory(model.singleOperandHistory(operand));
+		window.updateHistory(model.factHistory(operand));
 	}
 	
-	/*@Override
-	public void actionPerformed(ActionEvent e)
+	public void trigHistoryOperation(String funct)
 	{
-		String key = e.getActionCommand();
-		window.updateValue(model.getNewValue(key));
-		window.updateHistory(model.getHistory(key));
-		
-	}*/
+		window.updateHistory(model.trigHistory(funct));
+	}
+	
+	
 	
 
 }
