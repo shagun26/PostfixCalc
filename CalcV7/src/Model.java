@@ -369,14 +369,13 @@ public class Model
 			sb_completed_operations.delete(0, sb_completed_operations.length());
 		
 			//remove last two elements in running_history
-			for(int i = 0; i < 1; i++)
-			{
-				if(!(running_history.isEmpty()))
-				{
-					running_history.remove(running_history.size() - 1);
-				}
 			
+			if(!(running_history.isEmpty()))
+			{
+					running_history.remove(running_history.size() - 1);
 			}
+			
+			
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 		
@@ -432,11 +431,7 @@ public class Model
 			sb_completed_operations.delete(0, sb_completed_operations.length());
 			precedence.push(funct);
 			
-			if(!(running_history.isEmpty()))
-			{
-				running_history.remove(running_history.size()- 1);
-			}
-		
+			
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 			prev_history.push(funct);
@@ -471,15 +466,13 @@ public class Model
 			// This prevents duplication of previous entries
 			sb_completed_operations.delete(0, sb_completed_operations.length());
 		
-			//remove last two elements in running_history
-			for(int i = 0; i < 1; i++)
-			{
-				if(!(running_history.isEmpty()))
-				{
-					running_history.remove(running_history.size() - 1);
-				}
+			//remove last element in running_history
 			
+			if(!(running_history.isEmpty()))
+			{
+				running_history.remove(running_history.size() - 1);
 			}
+			
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 		
@@ -734,16 +727,6 @@ public class Model
 			return false;
 		else
 		{
-			//If Fact
-			//Brackets needed
-			if(highest_precedence.contains(operand))
-			{
-				precedence.pop();
-				return true;
-			}
-			
-			//If the two last operands are the same,
-			//no need for brackets UNLESS it is DIV
 			if(precedence.peek().equals(operand))
 			{
 				if(operand.equals(DIV))
@@ -755,6 +738,17 @@ public class Model
 				precedence.pop();
 				return false;
 			}
+			//If Fact
+			//Brackets needed
+			if(highest_precedence.contains(operand))
+			{
+				precedence.pop();
+				return true;
+			}
+			
+			//If the two last operands are the same,
+			//no need for brackets UNLESS it is DIV
+			
 			
 			//If the last operand is low precedence,
 			//no brackets needed
