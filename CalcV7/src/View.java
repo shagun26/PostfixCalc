@@ -250,15 +250,14 @@ public class View extends JFrame
 					
 		});
 		
-		/*operators.add(new ButtonAdapter(PLUSMINUS)
+		operators.add(new ButtonAdapter(PLUSMINUS)
 		{
 			public void pressed()
 			{
 				controller.negate();
-				controller.singleHistoryOperation(PLUSMINUS);
 			}
 			
-		});*/
+		});
 		
 		operators.add(new ButtonAdapter("COS")
 		{

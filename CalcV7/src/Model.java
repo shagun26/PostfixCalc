@@ -22,6 +22,7 @@ public class Model
 	private static final String SIN = "SIN(";
 	private static final String COS = "COS(";
 	
+	
 	private ArrayList<String> high_precedence = new ArrayList<String>();
 	private ArrayList<String> lowest_precedence = new ArrayList<String>();
 	private ArrayList<String> highest_precedence = new ArrayList<String>();
@@ -146,7 +147,7 @@ public class Model
 		{
 			from_memory = true;
 			double value = divStoredValues();
-			sb.delete(0, sb.length());
+			//sb.delete(0, sb.length());
 			return "" + value;
 		}
 		else
@@ -169,10 +170,11 @@ public class Model
 		}
 		else
 		{
+			//If negation during number entry,
+			//the value shown to the user must be updated
 			from_memory = false;
-			double value = negateStoredWithHistory();
-			sb.delete(0, sb.length());
-			return "" + value;
+			negateStoredWithHistory();
+			return sb.toString();
 		}
 
 	}
@@ -406,12 +408,14 @@ public class Model
 			
 			//System.out.println(prev_history.toString());
 			
-			button_history.push(sb_input_history.toString());
-			running_history.add(sb_input_history.toString());
+			button_history.push(sb.toString());
+			running_history.add(sb.toString());
 			sb_input_history.delete(0, sb_input_history.length());
+			sb.delete(0, sb.length());
 			return printHistory(running_history, running_history.size());
 		
 	}
+	
 	
 	public String trigHistory(String funct)
 	{
@@ -490,7 +494,7 @@ public class Model
 	{
 		String placeholder = sb.toString();
 		stored_values.push(Double.parseDouble(sb.toString()));
-		sb.delete(0, sb.length());
+		//sb.delete(0, sb.length());
 		return placeholder;
 	}
 	
@@ -672,22 +676,32 @@ public class Model
 		//System.out.println("wee");
 		double first_number = stored_values.pop();
 		//System.out.println(second_number);
-
 		double result = first_number * (-1);
-
+		
 		stored_values.push(result);
 
 		return result;
 	}
 
-	private double negateStoredWithHistory()
+	private void negateStoredWithHistory()
 	{
 		double history = Double.parseDouble(sb.toString());
 		double result = history * (-1);
+		
+		//Reset sb for update
+		sb.delete(0, sb.length());
+		
+		
+		//If result is int, append the casted value 
+		if(result - (int) result == 0)
+			sb.append("" + (int) result);
+		//Otherwise append the double value
+		else
+			sb.append("" + result);
 
-		stored_values.push(result);
+		//stored_values.push(result);
 
-		return result;
+		
 
 	}
 	
