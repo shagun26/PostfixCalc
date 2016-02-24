@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 
 
 
+
 //import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,7 +32,8 @@ public class View extends JFrame
 	private static final String MINUS = "-";
 	private static final String FACT = "!";
 	//private static final String UNDO = "Undo";
-	private static final String PLUSMINUS = "±";
+	private static final String PI = "Ï€";
+	private static final String PLUSMINUS = "+/-";
 	private static final String COS = "COS(";
 	private static final String SIN = "SIN(";
 	
@@ -95,27 +97,27 @@ public class View extends JFrame
 		display.add(value_display);
 		
 		
-		keypad.add(new ButtonAdapter(ONE)
+		keypad.add(new ButtonAdapter(SEVEN)
 		{
 			public void pressed()
 			{
-				controller.addToEntry(ONE);
+				controller.addToEntry(SEVEN);
 			}
 		});
 		
-		keypad.add(new ButtonAdapter(TWO)
+		keypad.add(new ButtonAdapter(EIGHT)
 		{
 			public void pressed()
 			{
-				controller.addToEntry(TWO);
+				controller.addToEntry(EIGHT);
 			}
 		});
 		
-		keypad.add(new ButtonAdapter(THREE)
+		keypad.add(new ButtonAdapter(NINE)
 		{
 			public void pressed()
 			{
-				controller.addToEntry(THREE);
+				controller.addToEntry(NINE);
 			}
 		});
 		
@@ -143,30 +145,31 @@ public class View extends JFrame
 			}
 		});
 		
-		keypad.add(new ButtonAdapter(SEVEN)
+		
+		
+		keypad.add(new ButtonAdapter(ONE)
 		{
 			public void pressed()
 			{
-				controller.addToEntry(SEVEN);
+				controller.addToEntry(ONE);
 			}
 		});
 		
-		keypad.add(new ButtonAdapter(EIGHT)
+		keypad.add(new ButtonAdapter(TWO)
 		{
 			public void pressed()
 			{
-				controller.addToEntry(EIGHT);
+				controller.addToEntry(TWO);
 			}
 		});
 		
-		keypad.add(new ButtonAdapter(NINE)
+		keypad.add(new ButtonAdapter(THREE)
 		{
 			public void pressed()
 			{
-				controller.addToEntry(NINE);
+				controller.addToEntry(THREE);
 			}
 		});
-		
 		
 		keypad.add(new ButtonAdapter(CLEAR)
 		{
@@ -259,7 +262,7 @@ public class View extends JFrame
 			
 		});
 		
-		operators.add(new ButtonAdapter("COS")
+		operators.add(new ButtonAdapter("cos")
 		{
 			public void pressed()
 			{
@@ -269,7 +272,7 @@ public class View extends JFrame
 			
 		});
 		
-		operators.add(new ButtonAdapter("SIN")
+		operators.add(new ButtonAdapter("sin")
 		{
 			public void pressed()
 			{
@@ -288,13 +291,26 @@ public class View extends JFrame
 			}
 		});
 		
-		/*operators.add(new ButtonAdapter(UNDO)
+		/*
+		operators.add(new ButtonAdapter(UNDO)
 		{
 			public void pressed()
 			{
 				controller.undo();
 			}
-		});*/
+		});
+		*/
+		
+		
+		operators.add(new ButtonAdapter(PI)
+		{
+			public void pressed()
+			{
+				
+				controller.addToEntry("" + Math.PI);
+				controller.enter();
+			}
+		});
 		
 		value_display.setText("0");
 		history_display.setText("Start new Calculation");

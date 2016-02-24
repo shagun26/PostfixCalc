@@ -64,6 +64,10 @@ public class Model
 	
 	public void addToEntry(String button)
 	{
+		if(button == ("" + Math.PI))
+		{
+			sb.delete(0, sb.length());
+		}
 		sb.append(button);
 		sb_input_history.append(button);
 	}
@@ -492,6 +496,11 @@ public class Model
 	
 	public String enterValue()
 	{
+		if(sb.toString().equals(""))
+		{
+			sb.append(0);
+			sb_input_history.append(0);
+		}
 		String placeholder = sb.toString();
 		stored_values.push(Double.parseDouble(sb.toString()));
 		//sb.delete(0, sb.length());
@@ -500,6 +509,7 @@ public class Model
 	
 	private double addStoredValues()
 	{
+		zeroCheck();
 		double first_number = stored_values.pop();
 		double second_number = stored_values.pop();
 		double result = first_number + second_number;
@@ -523,6 +533,7 @@ public class Model
 	
 	private double subStoredValues()
 	{
+		zeroCheck();
 		double first_number = stored_values.pop();
 		double second_number = stored_values.pop();
 		double result = second_number - first_number;
@@ -546,6 +557,7 @@ public class Model
 	
 	private double multStoredValues()
 	{
+		zeroCheck();
 		double first_number = stored_values.pop();
 		double second_number = stored_values.pop();
 		double result = second_number * first_number;
@@ -569,6 +581,7 @@ public class Model
 	
 	private double divStoredValues()
 	{
+		zeroCheck();
 		double first_number = stored_values.pop();
 		double second_number = stored_values.pop();
 		double result = second_number / first_number;
@@ -629,7 +642,15 @@ public class Model
 		//System.out.println(second_number);
 
 		double result = Math.sin(first_number);
-
+		if(Math.abs(result) < (Math.pow(10, -15)))
+		{
+			result = 0;
+		}
+		else if ( (Math.abs(result - 0.5)) < (Math.pow(10, -15)))
+		{
+			if(result > 0) result = 0.5;
+			if(result < 0) result = -0.5;
+		}
 		stored_values.push(result);
 
 		return result;
@@ -641,6 +662,15 @@ public class Model
 
 		double result = Math.sin(history);
 
+		if(Math.abs(result) < (Math.pow(10, -15)))
+		{
+			result = 0;
+		}
+		else if ( (Math.abs(result - 0.5)) < (Math.pow(10, -15)))
+		{
+			if(result > 0) result = 0.5;
+			if(result < 0) result = -0.5;
+		}
 		stored_values.push(result);
 
 		return result;
@@ -654,6 +684,15 @@ public class Model
 		//System.out.println(second_number);
 
 		double result = Math.cos(first_number);
+		if(Math.abs(result) < (Math.pow(10, -15)))
+		{
+			result = 0;
+		}
+		else if ( (Math.abs(result - 0.5)) < (Math.pow(10, -15)))
+		{
+			if(result > 0) result = 0.5;
+			if(result < 0) result = -0.5;
+		}
 
 		stored_values.push(result);
 
@@ -664,6 +703,15 @@ public class Model
 	{
 		double history = Double.parseDouble(sb.toString());
 		double result = Math.cos(history);
+		if(Math.abs(result) < (Math.pow(10, -15)))
+		{
+			result = 0;
+		}
+		else if ( (Math.abs(result - 0.5)) < (Math.pow(10, -15)))
+		{
+			if(result > 0) result = 0.5;
+			if(result < 0) result = -0.5;
+		}
 
 		stored_values.push(result);
 
@@ -700,9 +748,24 @@ public class Model
 			sb.append("" + result);
 
 		//stored_values.push(result);
-
-		
-
+	}
+	
+	private void zeroCheck()
+	{
+		if(stored_values.empty())
+		{
+			stored_values.push((double) 0);
+			stored_values.push((double) 0);
+			button_history.push("" + 0);
+			button_history.push("" + 0);
+			
+		}
+		if(stored_values.size() == 1)
+		{
+			stored_values.push((double) 0);
+			button_history.push("" + 0);
+			
+		}
 	}
 	
 	private boolean isOp(String input)
