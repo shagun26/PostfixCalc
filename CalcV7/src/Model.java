@@ -509,7 +509,7 @@ public class Model
 	
 	private double addStoredValues()
 	{
-		zeroCheck();
+		zeroCheckBinStored();
 		double first_number = stored_values.pop();
 		double second_number = stored_values.pop();
 		double result = first_number + second_number;
@@ -521,6 +521,7 @@ public class Model
 	
 	private double addStoredWithHistory()
 	{
+		zeroCheckOther();
 		double stored = stored_values.pop();
 		double history = Double.parseDouble(sb.toString());
 		double result = stored + history;
@@ -533,7 +534,7 @@ public class Model
 	
 	private double subStoredValues()
 	{
-		zeroCheck();
+		zeroCheckBinStored();
 		double first_number = stored_values.pop();
 		double second_number = stored_values.pop();
 		double result = second_number - first_number;
@@ -545,6 +546,7 @@ public class Model
 	
 	private double subStoredWithHistory()
 	{
+		zeroCheckOther();
 		double stored = stored_values.pop();
 		double history = Double.parseDouble(sb.toString());
 		double result = stored - history;
@@ -557,7 +559,7 @@ public class Model
 	
 	private double multStoredValues()
 	{
-		zeroCheck();
+		zeroCheckBinStored();
 		double first_number = stored_values.pop();
 		double second_number = stored_values.pop();
 		double result = second_number * first_number;
@@ -569,6 +571,7 @@ public class Model
 	
 	private double multStoredWithHistory()
 	{
+		zeroCheckOther();
 		double stored = stored_values.pop();
 		double history = Double.parseDouble(sb.toString());
 		double result = stored * history;
@@ -581,7 +584,7 @@ public class Model
 	
 	private double divStoredValues()
 	{
-		zeroCheck();
+		zeroCheckBinStored();
 		double first_number = stored_values.pop();
 		double second_number = stored_values.pop();
 		double result = second_number / first_number;
@@ -593,6 +596,7 @@ public class Model
 	
 	private double divStoredWithHistory()
 	{
+		zeroCheckOther();
 		double stored = stored_values.pop();
 		double history = Double.parseDouble(sb.toString());
 		double result = stored / history;
@@ -605,6 +609,7 @@ public class Model
 	
 	private double factStoredValues()
 	{
+		zeroCheckOther();
 		double first_number = stored_values.pop();
 		double result = 1;
 		
@@ -621,6 +626,7 @@ public class Model
 	
 	private double factStoredWithHistory()
 	{
+		
 		double history = Double.parseDouble(sb.toString());
 		double result = 1;
 		
@@ -637,6 +643,7 @@ public class Model
 	
 	private double sinStoredValues()
 	{
+		zeroCheckOther();
 		//System.out.println("wee");
 		double first_number = stored_values.pop();
 		//System.out.println(second_number);
@@ -679,6 +686,7 @@ public class Model
 
 	private double cosStoredValues()
 	{
+		zeroCheckOther();
 		//System.out.println("wee");
 		double first_number = stored_values.pop();
 		//System.out.println(second_number);
@@ -750,23 +758,34 @@ public class Model
 		//stored_values.push(result);
 	}
 	
-	private void zeroCheck()
+	private void zeroCheckBinStored()
 	{
 		if(stored_values.empty())
 		{
 			stored_values.push((double) 0);
 			stored_values.push((double) 0);
-			button_history.push("" + 0);
-			button_history.push("" + 0);
+			button_history.push("" +  0);
+			button_history.push("" +  0);
 			
 		}
 		if(stored_values.size() == 1)
 		{
 			stored_values.push((double) 0);
-			button_history.push("" + 0);
+			button_history.push("" +  0);
 			
 		}
 	}
+	
+	private void zeroCheckOther()
+	{
+		if(stored_values.empty())
+		{
+			stored_values.push((double) 0);
+			button_history.push("" +  0);
+			//running_history.add("" + 0);
+		}
+	}
+	
 	
 	private boolean isOp(String input)
 	{
@@ -882,8 +901,12 @@ public class Model
 		// Reset completed operations string_builder for next entry
 		sb_completed_operations.delete(0, sb_completed_operations.length());
 		
+		if(!running_history.isEmpty())
+		{
+			running_history.remove(running_history.size() - 1);
+		}
+			
 		
-		running_history.remove(running_history.size() - 1);
 		running_history.add(button_history.peek());
 		
 	}
