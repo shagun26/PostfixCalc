@@ -32,7 +32,7 @@ public class View extends JFrame
 	private static final String MINUS = "-";
 	private static final String FACT = "!";
 	//private static final String UNDO = "Undo";
-	private static final String PI = "π";
+	private static final String PI = "\u03C0";
 	private static final String PLUSMINUS = "+/-";
 	private static final String COS = "COS(";
 	private static final String SIN = "SIN(";
@@ -307,7 +307,7 @@ public class View extends JFrame
 			public void pressed()
 			{
 				
-				controller.addToEntry("" + Math.PI);
+				controller.addToEntry("" + PI);
 				controller.enter();
 			}
 		});

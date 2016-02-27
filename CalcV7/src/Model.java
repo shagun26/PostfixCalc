@@ -21,6 +21,7 @@ public class Model
 	private static final String DIV = "/";
 	private static final String SIN = "SIN(";
 	private static final String COS = "COS(";
+	private static final String PI = "\u03C0";
 	
 	
 	private ArrayList<String> high_precedence = new ArrayList<String>();
@@ -33,6 +34,7 @@ public class Model
 	private StringBuilder sb_completed_operations = new StringBuilder();
 	
 	private boolean from_memory = false;
+	private boolean pi = false;
 	//private boolean bin_op = false;
 	
 	public Model()
@@ -54,19 +56,46 @@ public class Model
 	
 	private String printHistory(ArrayList<String> arraylist, int size)
 	{
-		if(size == 1)
+		/*if(size == 1)
 		{
 			return arraylist.get(0);
 		}
-		return printHistory(arraylist, size - 1) + ", " + arraylist.get(size - 1);
+		return printHistory(arraylist, size - 1) + ", " + arraylist.get(size - 1);*/
+		
+		//Loop through n-1 elements of running_history,
+		//constructing the output
+		for(int i = 0; i < arraylist.size() - 1; i++)
+		{
+			sb_input_history.append(arraylist.get(i));
+			sb_input_history.append(", ");
+		}
+		
+		//Add last element to output
+		//and reset for next input
+		
+		sb_input_history.append(arraylist.get(arraylist.size() - 1));
+		String result = sb_input_history.toString();
+		sb_input_history.delete(0, sb_input_history.length());
+		
+		return result;
+		
 	}
 	
 	
 	public void addToEntry(String button)
 	{
-		if(button == ("" + Math.PI))
+		if(button.equals("" + PI))
 		{
 			sb.delete(0, sb.length());
+			
+			//Set pi true for other functions
+			pi = true;
+			
+		}
+		else
+		{
+			//Set pi false for other functions
+			pi = false;
 		}
 		sb.append(button);
 		sb_input_history.append(button);
@@ -501,8 +530,20 @@ public class Model
 			sb.append(0);
 			sb_input_history.append(0);
 		}
-		String placeholder = sb.toString();
-		stored_values.push(Double.parseDouble(sb.toString()));
+		String placeholder;
+		if(pi)
+		{
+			//If pi was pressed, push pi onto stack and return
+			// its value
+			stored_values.push(Math.PI);
+			placeholder = "" + Math.PI;
+		}
+		else
+		{
+			//Otherwise parse the number
+			stored_values.push(Double.parseDouble(sb.toString()));
+			placeholder = sb.toString();
+		}
 		//sb.delete(0, sb.length());
 		return placeholder;
 	}
@@ -789,6 +830,11 @@ public class Model
 	
 	private boolean isOp(String input)
 	{
+		//If input was pi
+		//not an operation
+		if(input.equals(PI))
+			return false;
+		
 		try
 		{
 			Double.parseDouble(input);
