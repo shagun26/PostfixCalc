@@ -323,7 +323,23 @@ public class Model
 			from_memory = true;
 			double value = negateStoredValues();
 			sb.delete(0, sb.length());
-			return "" + value;
+			sb_input_history.delete(0, sb_input_history.length());
+			
+			int alt = (int) value;
+			
+			if(Math.abs(value) - Math.abs(alt) < 0.00000000001)
+			{
+				sb.append("" + (int) value);
+				sb_input_history.append("" + (int) value);
+			}
+			else
+			{
+				sb.append("" + value);
+				sb_input_history.append("" + (int) value);
+			}
+				
+			
+			return sb.toString();
 		}
 		else
 		{
@@ -714,16 +730,16 @@ public class Model
 			else
 			{
 				double push = stored_values.peek();
-				/*if((push - (int) push) < 0.00000000001)
+				if((Math.abs(push) - Math.abs((int) push)) < 0.00000000001)
 				{
 					sb.append((int) push);
 					sb_input_history.append((int) push);
 				}
 				else
-				{*/
+				{
 					sb.append(push);
 					sb_input_history.append(push);
-				//}
+				}
 					
 			}
 			
@@ -1016,12 +1032,12 @@ public class Model
 	private double negateStoredValues()
 	{
 		//System.out.println("wee");
-		double first_number = stored_values.pop();
+		double first_number = stored_values.peek();
 		//System.out.println(second_number);
 		double result = first_number * (-1);
 		
 		
-		stored_values.push(result);
+		//stored_values.push(result);
 
 		
 		return result;
@@ -1034,14 +1050,21 @@ public class Model
 		
 		//Reset sb for update
 		sb.delete(0, sb.length());
-		
+		sb_input_history.delete(0, sb_input_history.length());
 		
 		//If result is int, append the casted value 
 		if(result - (int) result == 0)
+		{
 			sb.append("" + (int) result);
+			sb_input_history.append("" + (int) result);
+		}
 		//Otherwise append the double value
 		else
+		{
 			sb.append("" + result);
+			sb_input_history.append("" +  result);
+		}
+			
 
 		//stored_values.push(result);
 	}
