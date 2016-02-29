@@ -74,14 +74,14 @@ public class Controller
 		window.updateValue(model.negate());
 	}
 	
-	public void historyOperation(String operand)
+	public void historyOperation(String operator)
 	{
-		window.updateHistory(model.operandHistory(operand));
+		window.updateHistory(model.operandHistory(operator));
 	}
 	
-	public void factHistoryOperation(String operand)
+	public void factHistoryOperation(String operator)
 	{
-		window.updateHistory(model.factHistory(operand));
+		window.updateHistory(model.factHistory(operator));
 	}
 	
 	public void trigHistoryOperation(String funct)

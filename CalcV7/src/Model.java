@@ -269,7 +269,7 @@ public class Model
 
 	}
 	
-	public String operandHistory(String operand)
+	public String operandHistory(String operator)
 	{
 		String first;
 		String second;
@@ -284,22 +284,22 @@ public class Model
 		{
 			//If the stack is empty or operation is completed using a button press, 
 			//use the button press to update to the stack
-			if(!checkBrackets(second, operand))
+			if(!checkBrackets(second, operator))
 			{
-				sb_completed_operations.append(second + " " + operand + " " + sb_input_history.toString() + " ");
+				sb_completed_operations.append(second + " " + operator + " " + sb_input_history.toString() + " ");
 			}
 			else
 			{
-				sb_completed_operations.append("(" + second + ")" + " " + operand + " " +  sb_input_history.toString()  + " ");
+				sb_completed_operations.append("(" + second + ")" + " " + operator + " " +  sb_input_history.toString()  + " ");
 			}
 			
 			//Update precedence list
-			precedence.push(operand);
+			precedence.push(operator);
 			
 			System.out.println(precedence.toString());
 			
 			updateHistDirect();
-			prev_history.push(operand);
+			prev_history.push(operator);
 			
 			return printHistory(running_history, running_history.size()) + EQUALS;
 		}
@@ -309,44 +309,44 @@ public class Model
 		first = button_history.pop();
 		
 		//If the last element needs brackets
-		if(checkBrackets(second, operand))	
+		if(checkBrackets(second, operator))	
 		{
 			System.out.println("second is true");
 			//And so does the one before
 			//Put them
-			if(checkBrackets(first, operand))
-				sb_completed_operations.append("(" + first +  ") " + operand + " " + "(" + second + ")" + " ");
+			if(checkBrackets(first, operator))
+				sb_completed_operations.append("(" + first +  ") " + operator + " " + "(" + second + ")" + " ");
 			//Otherwise just on the last element
 			else
 			{
-				sb_completed_operations.append(first +  " " + operand + " " + "(" + second + ")" + " ");
+				sb_completed_operations.append(first +  " " + operator + " " + "(" + second + ")" + " ");
 			}
 				
 		}
 		//If only the one before needs brackets
-		else if(checkBrackets(first, operand))
+		else if(checkBrackets(first, operator))
 		{
-			sb_completed_operations.append("(" + first +  ") " + operand + " " + second + " ");
+			sb_completed_operations.append("(" + first +  ") " + operator + " " + second + " ");
 		}
 		//No brackets at all
 		else
 		{
-			sb_completed_operations.append(first + " " + operand + " " /*+ sb_input_history.toString() + " "*/ + second + " ");
+			sb_completed_operations.append(first + " " + operator + " " /*+ sb_input_history.toString() + " "*/ + second + " ");
 		}
 		
 		//Update precedence list
-		precedence.push(operand);
+		precedence.push(operator);
 		
 		System.out.println(precedence.toString());
 		updateHistMem();
 		
-		prev_history.push(operand);
+		prev_history.push(operator);
 		
 		//print updated history
 		return printHistory(running_history, running_history.size()) + EQUALS;
 	}
 	
-	public String factHistory(String operand)
+	public String factHistory(String operator)
 	{
 		//Add last action
 		//prev_history.push(button_history.peek());
@@ -354,7 +354,7 @@ public class Model
 		if(!from_memory)
 		{
 			//set the string
-			sb_completed_operations.append(sb_input_history.toString() + operand + " ");
+			sb_completed_operations.append(sb_input_history.toString() + operator + " ");
 			
 			//Reset button-press string for next use
 			sb_input_history.delete(0, sb_input_history.length());
@@ -373,10 +373,10 @@ public class Model
 		
 			//replace them with updated computation
 			running_history.add(button_history.peek());
-			prev_history.push(operand);
+			prev_history.push(operator);
 			
 			//Update precedence list
-			precedence.push(operand);
+			precedence.push(operator);
 			System.out.println(precedence.toString());
 			
 			return printHistory(running_history, running_history.size()) + EQUALS;
@@ -386,13 +386,13 @@ public class Model
 		{
 			String first = button_history.pop();
 			
-			if(!checkBrackets(first, operand))
-				sb_completed_operations.append(first + operand + " ");
+			if(!checkBrackets(first, operator))
+				sb_completed_operations.append(first + operator + " ");
 			else
-				sb_completed_operations.append("(" + first + ")" + operand + " ");
+				sb_completed_operations.append("(" + first + ")" + operator + " ");
 			
 			//Update precedence list
-			precedence.push(operand);
+			precedence.push(operator);
 			System.out.println(precedence.toString());
 			
 			sb_input_history.delete(0, sb_input_history.length());
@@ -414,7 +414,7 @@ public class Model
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 		
-			prev_history.push(operand);
+			prev_history.push(operator);
 			
 			//print updated history
 			return printHistory(running_history, running_history.size()) + EQUALS;
@@ -847,7 +847,7 @@ public class Model
 		return false;
 	}
 	//Changes made here
-	private boolean checkBrackets(String last_entry, String operand)
+	private boolean checkBrackets(String last_entry, String operator)
 	{
 		
 		if(precedence.empty())
@@ -869,9 +869,9 @@ public class Model
 			return false;
 		else
 		{
-			if(precedence.peek().equals(operand))
+			if(precedence.peek().equals(operator))
 			{
-				if(operand.equals(DIV))
+				if(operator.equals(DIV))
 				{
 					precedence.pop();
 					return true;
@@ -882,7 +882,7 @@ public class Model
 			}
 			//If Fact
 			//Brackets needed
-			if(highest_precedence.contains(operand))
+			if(highest_precedence.contains(operator))
 			{
 				precedence.pop();
 				return true;
@@ -894,7 +894,7 @@ public class Model
 			
 			//If the last operand is low precedence,
 			//no brackets needed
-			if(lowest_precedence.contains(operand))
+			if(lowest_precedence.contains(operator))
 			{
 				precedence.pop();
 				return false;
@@ -907,7 +907,7 @@ public class Model
 			{
 				//If multiplication was first,
 				//brackets needed
-				if(operand == DIV && precedence.peek() == MULT)
+				if(operator == DIV && precedence.peek() == MULT)
 				{
 					precedence.pop();
 					return true;
