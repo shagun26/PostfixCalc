@@ -307,8 +307,7 @@ public class View extends JFrame
 			public void pressed()
 			{
 				
-				controller.addToEntry("" + PI);
-				controller.enter();
+				controller.pi();
 			}
 		});
 		

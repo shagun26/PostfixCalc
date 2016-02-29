@@ -17,14 +17,24 @@ public class Controller
 	public void addToEntry(String button)
 	{
 		model.addToEntry(button);
+		
 		window.updateValue(model.updateValue());
-		window.updateHistory("");
+		
+		if(model.isHistoryEmpty())
+			window.updateHistory("");
+		
 	}
 	
 	public void clear()
 	{
 		model.reset();
 		window.clearDisplay();
+	}
+	
+	public void pi()
+	{
+		window.updateValue(model.valuePi());
+		window.updateHistory(model.historyPi());
 	}
 	
 	public void enter()
