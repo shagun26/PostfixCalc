@@ -90,8 +90,8 @@ public class Model
 	 * (Section 3.3 in Design Document)
 	 */
 	private boolean from_memory = false;
-	//private boolean pi = false;
-	//private boolean bin_op = false;
+	private boolean pi = false;
+	
 	
 	/**
 	 * Instantstiate a Model object in its default state
@@ -142,6 +142,7 @@ public class Model
 	 */
 	public String valuePi()
 	{
+		pi = true;
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
 		stored_values.push(Math.PI);
@@ -181,7 +182,7 @@ public class Model
 		}*/
 		sb.append(button);
 		sb_input_history.append(button);
-			
+		pi = false;
 	}
 	
 	/**
@@ -327,7 +328,7 @@ public class Model
 			
 			int alt = (int) value;
 			
-			if(Math.abs(value) - Math.abs(alt) < 0.00000000001)
+			if(isInt(Math.abs(value), Math.abs(alt)))
 			{
 				sb.append("" + (int) value);
 				sb_input_history.append("" + (int) value);
@@ -335,7 +336,8 @@ public class Model
 			else
 			{
 				sb.append("" + value);
-				sb_input_history.append("" + (int) value);
+				sb_input_history.append("" + value);
+				
 			}
 				
 			
@@ -616,11 +618,11 @@ public class Model
 				prev_history.push(ENTER);
 			}
 			
-			//System.out.println(prev_history.toString());
-			if(Double.parseDouble(sb.toString()) == 0)
+			
+			if(pi)
 			{
-				button_history.push("" + 0);
-				running_history.add("" + 0);
+				button_history.push(sb_input_history.toString());
+				running_history.add(sb_input_history.toString());
 			}
 			else
 			{
@@ -734,9 +736,15 @@ public class Model
 				{
 					sb.append((int) push);
 					sb_input_history.append((int) push);
+					pi = false;
 				}
 				else
-				{
+				{	
+					if(push == Math.PI)
+						pi = true;
+					else
+						pi = false;
+					
 					sb.append(push);
 					sb_input_history.append(push);
 				}
@@ -744,7 +752,6 @@ public class Model
 			}
 			
 		}
-		String placeholder;
 		/*if(pi)
 		{
 			//If pi was pressed, push pi onto stack and return
@@ -756,10 +763,17 @@ public class Model
 		//{
 			//Otherwise parse the number
 		stored_values.push(Double.parseDouble(sb.toString()));
-		placeholder = sb.toString();
-		//}
+		sb.delete(0, sb.length());
+		double result = stored_values.peek();
+		if(isInt(Math.abs(result), Math.abs((int) result)))
+		{
+			sb.append("" + (int) result);
+			return "" + (int) result;
+		}
+			//}
+		sb.append("" + result);
 		//sb.delete(0, sb.length());
-		return placeholder;
+		return "" + result;
 	}
 	
 	/**
@@ -1037,6 +1051,10 @@ public class Model
 		double result = first_number * (-1);
 		
 		
+		if(Math.abs(result) == Math.PI)
+			pi = true;
+		else
+			pi = false;
 		//stored_values.push(result);
 
 		
@@ -1107,7 +1125,7 @@ public class Model
 	{
 		//If input was pi
 		//not an operation
-		if(input.equals(PI))
+		if(pi)
 			return false;
 		
 		try
@@ -1271,6 +1289,12 @@ public class Model
 		running_history.add(button_history.peek());
 	}
 	
+	private boolean isInt(double double_val, int int_val)
+	{
+		if(double_val - int_val < Double.MIN_VALUE)
+			return true;
+		return false;
+	}
 	
 	
 }
