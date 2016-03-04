@@ -27,7 +27,7 @@ public class View extends JFrame
 	private static final String CLEAR = "Clear";
 	private static final String ENTER = "Enter";
 	private static final String PLUS = "+";
-	private static final String MULT = "x";
+	private static final String MULT = "*";
 	private static final String DIV = "/";
 	private static final String MINUS = "-";
 	private static final String FACT = "!";
@@ -50,7 +50,7 @@ public class View extends JFrame
 	
 	private static final String DECIMAL_POINT = ".";
 	
-	
+	private static final String EXPRESSION = 'x' + "";
 	
 	private GridLayout window_layout_manager = new GridLayout(3, 1);
 	private GridLayout display_layout_manager = new GridLayout(2, 1);
@@ -309,6 +309,17 @@ public class View extends JFrame
 				
 				controller.pi();
 			}
+		});
+		
+		operators.add(new ButtonAdapter(EXPRESSION)
+		{
+			public void pressed()
+			{
+				controller.expression();
+			}
+			
+			
+			
 		});
 		
 		value_display.setText("0");

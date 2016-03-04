@@ -37,6 +37,12 @@ public class Controller
 		window.updateHistory(model.historyPi());
 	}
 	
+	public void expression()
+	{
+		window.updateValue(model.expressionVal());
+		window.updateHistory(model.expressionHist());
+	}
+	
 	public void enter()
 	{
 		window.updateValue(model.enterValue());
