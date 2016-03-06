@@ -35,7 +35,7 @@ public class Model
 	private static final String FACT = "!";
 	private static final String PLUS = "+";
 	private static final String MINUS = "-";
-	private static final String MULT = "x";
+	private static final String MULT = "*";
 	private static final String DIV = "/";
 	private static final String SIN = "SIN(";
 	private static final String COS = "COS(";
@@ -99,6 +99,7 @@ public class Model
 	private boolean from_memory = false;
 	private boolean pi = false;
 	private boolean opExpression = false;
+	private boolean exprUpdated = false;
 	
 	
 	/**
@@ -281,7 +282,8 @@ public class Model
 			else
 			{
 				zeroCheckOther();
-				return running_history.get(running_history.size() - 2) + " + " + button_history.peek() ;
+				operandHistory(PLUS);
+				return button_history.peek() ;
 			}
 			
 		}
@@ -297,7 +299,8 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				return expressions.get(expressions.size() - 1) + " + " + sb_input_history.toString();
+				operandHistory(PLUS);
+				return button_history.peek() ;
 			}
 			
 		}
@@ -328,7 +331,8 @@ public class Model
 			else
 			{
 				zeroCheckOther();
-				return running_history.get(running_history.size() - 2) + " - " + button_history.peek() ;
+				operandHistory(MINUS);
+				return button_history.peek();
 			}
 			
 		}
@@ -344,7 +348,8 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				return expressions.get(expressions.size() - 1) + " - " + sb_input_history.toString();
+				operandHistory(MINUS);
+				return button_history.peek();
 			}
 			
 		}
@@ -374,7 +379,8 @@ public class Model
 			else
 			{
 				zeroCheckOther();
-				return running_history.get(running_history.size() - 2) + " * " + button_history.peek() ;
+				operandHistory(MULT);
+				return button_history.peek();
 			}
 			
 		}
@@ -390,7 +396,8 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				return expressions.get(expressions.size() - 1) + " * " + sb_input_history.toString();
+				operandHistory(MULT);
+				return button_history.peek();
 			}
 			
 		}
@@ -404,19 +411,43 @@ public class Model
 	 */
 	public String divide()
 	{
+		opExpression = isExpression();
+		
 		if(sb.toString().equals(""))
-		{
+		{	
 			from_memory = true;
-			double value = divStoredValues();
-			//sb.delete(0, sb.length());
-			return "" + value;
+			
+			if(!opExpression)
+			{
+				
+				double value = divStoredValues();
+				sb.delete(0, sb.length());
+				return "" + value;	
+			}
+			else
+			{
+				zeroCheckOther();
+				operandHistory(DIV);
+				return button_history.peek();
+			}
+			
 		}
 		else
 		{
 			from_memory = false;
-			double value = divStoredWithHistory();
-			sb.delete(0, sb.length());
-			return "" + value;
+			if(!opExpression)
+			{
+				double value = divStoredWithHistory();
+				sb.delete(0, sb.length());
+				return "" + value;	
+			}
+			else
+			{
+				sb.delete(0, sb.length());
+				operandHistory(DIV);
+				return button_history.peek();
+			}
+			
 		}
 	}
 	
@@ -490,12 +521,26 @@ public class Model
 	 */
 	public String sin()
 	{
+		opExpression = isExpression();
 		if(sb.toString().equals(""))
 		{
 			from_memory = true;
-			double value = sinStoredValues();
-			sb.delete(0, sb.length());
-			return "" + value;
+			
+			if(!opExpression)
+			{
+				double value = sinStoredValues();
+				sb.delete(0, sb.length());
+				return "" + value;
+				
+			}
+			else
+			{
+				sb.delete(0, sb.length());
+				trigHistory(SIN);
+				return button_history.peek();
+			}
+			
+			
 		}
 		else
 		{
@@ -515,12 +560,24 @@ public class Model
 	 */
 	public String cos()
 	{
+		opExpression = isExpression();
+		
 		if(sb.toString().equals(""))
 		{
 			from_memory = true;
-			double value = cosStoredValues();
-			sb.delete(0, sb.length());
-			return "" + value;
+			if(!opExpression)
+			{
+				double value = cosStoredValues();
+				sb.delete(0, sb.length());
+				return "" + value;
+			}
+			else
+			{
+				sb.delete(0, sb.length());
+				trigHistory(COS);
+				return button_history.peek();
+			}
+			
 		}
 		else
 		{
@@ -543,6 +600,25 @@ public class Model
 	{
 		String first;
 		String second;
+		
+		//If call made with an expression
+		//that was already updated, set both boolean
+		//variables to false and return without any changes made
+		if(opExpression && exprUpdated)
+		{
+			opExpression = false;
+			exprUpdated = false;
+			return printHistory() + EQUALS;
+		}
+		//Else if expression has not been updated,
+		//set boolean variable true to indicate that it will be
+		//after this call
+		else if(opExpression && !exprUpdated)
+		{
+			exprUpdated = true;
+		}
+		
+		//If not expression, continue as normal
 		
 		//Add last action
 		prev_history.push(button_history.peek());
@@ -749,6 +825,23 @@ public class Model
 	public String trigHistory(String funct)
 	{
 		
+		//If call made with an expression
+		//that was already updated, set both boolean
+		//variables to false and return without any changes made
+		if(opExpression && exprUpdated)
+		{
+			opExpression = false;
+			exprUpdated = false;
+			return printHistory() + EQUALS;
+		}
+		//Else if expression has not been updated,
+		//set boolean variable true to indicate that it will be
+		//after this call
+		else if(opExpression && !exprUpdated)
+		{
+			exprUpdated = true;
+		}
+		
 		if(!from_memory)
 		{
 			//set the string
@@ -806,8 +899,16 @@ public class Model
 				running_history.remove(running_history.size() - 1);
 			}
 			
+			if(!(expressions.isEmpty()))
+			{
+				expressions.remove(expressions.size() - 1);
+			}
+			
+			
 			//replace them with updated computation
 			running_history.add(button_history.peek());
+			
+			expressions.add(button_history.peek());
 		
 			prev_history.push(funct);
 			
@@ -849,12 +950,19 @@ public class Model
 				else
 				{	
 					if(push == Math.PI)
+					{
+						sb_input_history.append(PI);
 						pi = true;
+					}
 					else
+					{
 						pi = false;
+						sb_input_history.append(push);
+					}
+						
 					
 					sb.append(push);
-					sb_input_history.append(push);
+					
 				}
 					
 			}
@@ -1221,6 +1329,10 @@ public class Model
 		//stored_values.push(result);
 	}
 	
+	/**
+	 * Replaces missing operand(s) with zero in binary operation
+	 * with stored values (Case 1 Section ...)
+	 */
 	private void zeroCheckBinStored()
 	{
 		if(stored_values.empty())
@@ -1239,6 +1351,10 @@ public class Model
 		}
 	}
 	
+	/**
+	 * Replaces missing operand with 0 for direct operations
+	 * (Case 2 in section ...)
+	 */
 	private void zeroCheckOther()
 	{
 		//If no values in system
@@ -1470,6 +1586,13 @@ public class Model
 		running_history.add(button_history.peek());
 	}
 	
+	/**
+	 * Checks if there is a discrepancy between an integer value and 
+	 * double value
+	 * @param double_val - the double-precision floating point representaion of the value
+	 * @param int_val - the integer representation  of the value
+	 * @return - true if there is no discrepancy. False otherwise
+	 */
 	private boolean isInt(double double_val, int int_val)
 	{
 		if(double_val - int_val < Double.MIN_VALUE)
@@ -1477,6 +1600,12 @@ public class Model
 		return false;
 	}
 	
+	
+	/**
+	 * Checks if either of the last two elements in history are
+	 * expressions are not
+	 * @return - true if at least one of the elements is an expression. False otherwise.
+	 */
 	private boolean isExpression()
 	{
 		if(button_history.empty() || expressions.isEmpty())
