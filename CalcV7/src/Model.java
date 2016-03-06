@@ -98,7 +98,16 @@ public class Model
 	 */
 	private boolean from_memory = false;
 	private boolean pi = false;
+	
+	/**
+	 * Indicates whether an operation uses an expression
+	 */
 	private boolean opExpression = false;
+	
+	/**
+	 * Indicates whether the expression list has already been
+	 * updated
+	 */
 	private boolean exprUpdated = false;
 	
 	
@@ -249,6 +258,7 @@ public class Model
 		expressions.clear();
 		
 		opExpression = false;
+		exprUpdated = false;
 		pi = false;
 		
 		sb_input_history.delete(0, sb_input_history.length());
@@ -265,13 +275,14 @@ public class Model
 	 */
 	public String sum()
 	{
-		
+		//Determine whether an expression is involved
 		opExpression = isExpression();
 		
 		if(sb.toString().equals(""))
 		{	
 			from_memory = true;
 			
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				
@@ -279,6 +290,8 @@ public class Model
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				zeroCheckOther();
@@ -290,12 +303,15 @@ public class Model
 		else
 		{
 			from_memory = false;
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				double value = addStoredWithHistory();
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				sb.delete(0, sb.length());
@@ -315,12 +331,13 @@ public class Model
 	 */
 	public String subtract()
 	{
+		//Determine whether an expression is involved
 		opExpression = isExpression();
 		
 		if(sb.toString().equals(""))
 		{	
 			from_memory = true;
-			
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				
@@ -328,6 +345,8 @@ public class Model
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				zeroCheckOther();
@@ -339,12 +358,15 @@ public class Model
 		else
 		{
 			from_memory = false;
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				double value = subStoredWithHistory();
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				sb.delete(0, sb.length());
@@ -363,12 +385,13 @@ public class Model
 	 */
 	public String multiply()
 	{
+		//Determine whether an expression is involved
 		opExpression = isExpression();
 		
 		if(sb.toString().equals(""))
 		{	
 			from_memory = true;
-			
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				
@@ -376,6 +399,8 @@ public class Model
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				zeroCheckOther();
@@ -387,12 +412,15 @@ public class Model
 		else
 		{
 			from_memory = false;
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				double value = multStoredWithHistory();
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				sb.delete(0, sb.length());
@@ -411,12 +439,13 @@ public class Model
 	 */
 	public String divide()
 	{
+		//Determine whether an expression is involved
 		opExpression = isExpression();
 		
 		if(sb.toString().equals(""))
 		{	
 			from_memory = true;
-			
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				
@@ -424,6 +453,8 @@ public class Model
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				zeroCheckOther();
@@ -435,12 +466,15 @@ public class Model
 		else
 		{
 			from_memory = false;
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				double value = divStoredWithHistory();
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				sb.delete(0, sb.length());
@@ -521,11 +555,13 @@ public class Model
 	 */
 	public String sin()
 	{
+		//Determine whether an expression is involved
 		opExpression = isExpression();
+		
 		if(sb.toString().equals(""))
 		{
 			from_memory = true;
-			
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				double value = sinStoredValues();
@@ -533,6 +569,8 @@ public class Model
 				return "" + value;
 				
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				sb.delete(0, sb.length());
@@ -560,17 +598,21 @@ public class Model
 	 */
 	public String cos()
 	{
+		//Determine whether an expression is involved
 		opExpression = isExpression();
 		
 		if(sb.toString().equals(""))
 		{
 			from_memory = true;
+			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				double value = cosStoredValues();
 				sb.delete(0, sb.length());
 				return "" + value;
 			}
+			//Otherwise update the history
+			//and return top element (new expression)
 			else
 			{
 				sb.delete(0, sb.length());
