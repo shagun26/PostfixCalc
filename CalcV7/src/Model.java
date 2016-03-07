@@ -535,14 +535,28 @@ public class Model
 			from_memory = true;
 			double value = factStoredValues();
 			sb.delete(0, sb.length());
+			if(value != 0)
+			{
 			return "" + value;
+			}
+			else
+			{
+			return "Invalid";
+			}
 		}
 		else
 		{
 			from_memory = false;
 			double value = factStoredWithHistory();
 			sb.delete(0, sb.length());
+			if(value != 0)
+			{
 			return "" + value;
+			}
+			else
+			{
+			return "Invalid";
+			}
 		}
 		
 	}
@@ -1213,15 +1227,21 @@ public class Model
 		zeroCheckOther();
 		double first_number = stored_values.pop();
 		double result = 1;
-		
-		for(int i = 2; first_number >= i; i++)
+		if(!isInt(first_number, (int)first_number) || first_number < 0)
 		{
-			result = result * i;
+			stored_values.push((double) 0);
+			return 0;
 		}
+			
+			for(int i = 2; first_number >= i; i++)
+			{
+				result = result * i;
+			}
 		
 		stored_values.push(result);
 		
 		return result;
+		
 	}
 	
 	private double factStoredWithHistory()
@@ -1229,16 +1249,20 @@ public class Model
 		
 		double history = Double.parseDouble(sb.toString());
 		double result = 1;
-		
-		for(int i = 1; history >= i; ++i)
+		if(!isInt(history, (int)history) || history < 0)
 		{
-			result *= i;
+			stored_values.push((double) 0);
+			return 0;
 		}
+			
+			for(int i = 2; history >= i; i++)
+			{
+				result = result * i;
+			}
 		
 		stored_values.push(result);
 		
 		return result;
-		
 	}
 	
 	private double sinStoredValues()
