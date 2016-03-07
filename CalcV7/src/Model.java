@@ -5,13 +5,12 @@ import java.util.Stack;
 public class Model
 {
 	/**
-	 * Stores a history of entered values and opeations.
+	 * Stores a history of entered values and operations.
 	 * (Section 3.3 in Design Document)
 	 */
 	private Stack<String> button_history = new Stack<String>();
 	
-	
-	private Stack<String> prev_history = new Stack<String>();
+	private Stack<Stack<String>> button_history_undo = new Stack<Stack<String>>();
 	
 	/**
 	 * Stores any entered values or results of operations.
@@ -19,11 +18,24 @@ public class Model
 	 */
 	private Stack<Double> stored_values = new Stack<Double>();
 	
+	private Stack<Stack<Double>> stored_values_undo = new Stack<Stack<Double>>();
+	
+	/**
+	 * A like-for-like copy of button_history.
+	 * Used to print the history.
+	 * (Section 3.3 in Design Document)
+	 */
+	private ArrayList<String> running_history = new ArrayList<String>();
+	
+	private Stack<ArrayList<String>> running_history_undo = new Stack<ArrayList<String>>();
+	
+	
 	/**
 	 * Stores the operators that are responsible for values
 	 * in stored_values (excluding Entered numbers)
 	 * (Section 3.3 in Design Document)
 	 */
+	
 	private Stack<String> precedence= new Stack<String>();
 	
 	/**
@@ -77,12 +89,6 @@ public class Model
 	 */
 	private StringBuilder sb_input_history = new StringBuilder();
 	
-	/**
-	 * A like-for-like copy of button_history.
-	 * Used to print the history.
-	 * (Section 3.3 in Design Document)
-	 */
-	private ArrayList<String> running_history = new ArrayList<String>();
 	
 	/**
 	 * Used to construct next entry into button_history
@@ -112,7 +118,7 @@ public class Model
 	
 	
 	/**
-	 * Instantstiate a Model object in its default state
+	 * Instantiate a Model object in its default state
 	 */
 	public Model()
 	{
@@ -252,8 +258,9 @@ public class Model
 	public void reset()
 	{
 		stored_values.clear();
+		stored_values_undo.clear();
 		button_history.clear();
-		prev_history.clear();
+		button_history_undo.clear();
 		precedence.clear();
 		expressions.clear();
 		
@@ -677,7 +684,7 @@ public class Model
 		//If not expression, continue as normal
 		
 		//Add last action
-		prev_history.push(button_history.peek());
+		//prev_history.push(button_history.peek());
 		
 		
 		second = button_history.pop();
@@ -701,7 +708,7 @@ public class Model
 			System.out.println(precedence.toString());
 			
 			updateHistDirect();
-			prev_history.push(operator);
+			//prev_history.push(operator);
 			
 			return printHistory() + EQUALS;
 		}
@@ -742,7 +749,7 @@ public class Model
 		System.out.println(precedence.toString());
 		updateHistMem();
 		
-		prev_history.push(operator);
+		//prev_history.push(operator);
 		
 		//print updated history
 		return printHistory() + EQUALS;
@@ -782,7 +789,7 @@ public class Model
 		
 			//replace them with updated computation
 			running_history.add(button_history.peek());
-			prev_history.push(operator);
+			//prev_history.push(operator);
 			
 			//Update precedence list
 			precedence.push(operator);
@@ -823,7 +830,7 @@ public class Model
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 		
-			prev_history.push(operator);
+			//prev_history.push(operator);
 			
 			//print updated history
 			return printHistory() + EQUALS;
@@ -844,13 +851,13 @@ public class Model
 			if(button_history.empty())
 			{
 				//If machine started fresh, push default start message
-				prev_history.push(START);
+			//	prev_history.push(START);
 			}
 			else
 			{
 				//Else, push last entry
-				prev_history.push(button_history.peek());
-				prev_history.push(ENTER);
+			//	prev_history.push(button_history.peek());
+			//	prev_history.push(ENTER);
 			}
 			
 			
@@ -916,7 +923,7 @@ public class Model
 			
 			//replace them with updated computation
 			running_history.add(button_history.peek());
-			prev_history.push(funct);
+			//prev_history.push(funct);
 			
 			
 			
@@ -966,7 +973,7 @@ public class Model
 			
 			expressions.add(button_history.peek());
 		
-			prev_history.push(funct);
+			//prev_history.push(funct);
 			
 			//print updated history
 			return printHistory() + EQUALS;
@@ -1035,6 +1042,8 @@ public class Model
 		//{
 			//Otherwise parse the number
 		stored_values.push(Double.parseDouble(sb.toString()));
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		System.out.println(stored_values_undo.peek().toString());
 		sb.delete(0, sb.length());
 		double result = stored_values.peek();
 		if(isInt(Math.abs(result), Math.abs((int) result)))
@@ -1685,6 +1694,38 @@ public class Model
 		
 	}
 	
-	
-	
+	public String undoValue()
+	{
+		if(!sb.toString().equals(""))
+		{
+			sb.deleteCharAt(sb.length()-1);
+			return updateValue();
+		}
+		
+		stored_values_undo.pop();
+		stored_values =  stored_values_undo.peek();
+		double result = stored_values.peek();
+		
+		if(isInt(result, (int) result))
+		{
+			return (int) result + "";
+		}
+		
+		return  result + "";
+	}
+	 
+	public String undoHistory()
+	{
+		if(sb.toString().equals(""))
+		{
+			//running_history = running_history_undo.get(running_history_undo.size()-1);
+			//running_history_undo.remove(running_history_undo.size() - 1);
+			//button_history = button_history_undo.get(button_history_undo.size()-1);
+			//button_history_undo.remove(button_history_undo.size() - 1);
+			
+			return stored_values + "";
+		}
+		
+		return "";
+	}
 }

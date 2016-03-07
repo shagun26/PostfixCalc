@@ -2,10 +2,6 @@ import java.awt.GridLayout;
 
 
 
-
-
-
-
 //import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,7 +27,7 @@ public class View extends JFrame
 	private static final String DIV = "/";
 	private static final String MINUS = "-";
 	private static final String FACT = "!";
-//	private static final String UNDO = "Undo";
+	private static final String UNDO = "Undo";
 	private static final String PI = "\u03C0";
 	private static final String PLUSMINUS = "+/-";
 	private static final String COS = "COS(";
@@ -51,7 +47,6 @@ public class View extends JFrame
 	private static final String DECIMAL_POINT = ".";
 	
 	private static final String EXPRESSION = 'x' + "";
-	
 	
 	private GridLayout window_layout_manager = new GridLayout(3, 1);
 	private GridLayout display_layout_manager = new GridLayout(2, 1);
@@ -292,7 +287,6 @@ public class View extends JFrame
 			}
 		});
 		
-		/*
 		operators.add(new ButtonAdapter(UNDO)
 		{
 			public void pressed()
@@ -300,8 +294,6 @@ public class View extends JFrame
 				controller.undo();
 			}
 		});
-		*/
-		
 		
 		
 		operators.add(new ButtonAdapter(PI)
@@ -323,6 +315,8 @@ public class View extends JFrame
 			
 			
 		});
+		
+		
 		
 		value_display.setText("0");
 		history_display.setText("Start new Calculation");

@@ -105,7 +105,12 @@ public class Controller
 		window.updateHistory(model.trigHistory(funct));
 	}
 	
-	
+	public void undo()
+	{
+
+		window.updateValue(model.undoValue());
+		window.updateHistory(model.undoHistory());
+	}
 	
 
 }
