@@ -107,9 +107,9 @@ public class Controller
 	
 	public void undo()
 	{
-
-		window.updateValue(model.undoValue());
 		window.updateHistory(model.undoHistory());
+		window.updateValue(model.undoValue());
+		
 	}
 	
 

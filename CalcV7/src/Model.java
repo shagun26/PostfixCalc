@@ -170,6 +170,7 @@ public class Model
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
 		stored_values.push(Math.PI);
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
 		return "" + Math.PI;
 		
 	}
@@ -180,8 +181,16 @@ public class Model
 	 */
 	public String historyPi()
 	{
+		
+		if(!button_history.empty())
+		{
+			button_history_undo.push((Stack<String>) button_history.clone());
+			running_history_undo.push((ArrayList<String>) running_history.clone());
+		}
+		
 		button_history.push(PI);
 		running_history.add(PI);
+		
 		return printHistory();
 	}
 	
@@ -203,6 +212,13 @@ public class Model
 	 */
 	public String expressionHist()
 	{
+		
+		if(!button_history.empty())
+		{
+			button_history_undo.push((Stack<String>) button_history.clone());
+			running_history_undo.push((ArrayList<String>) running_history.clone());
+		}
+		
 		button_history.push(EXPRESSION);
 		running_history.add(EXPRESSION);
 		expressions.add(EXPRESSION);
@@ -858,6 +874,8 @@ public class Model
 				//Else, push last entry
 			//	prev_history.push(button_history.peek());
 			//	prev_history.push(ENTER);
+				running_history_undo.push((ArrayList<String>)running_history.clone());
+				button_history_undo.push((Stack<String>) button_history.clone());
 			}
 			
 			
@@ -1694,6 +1712,7 @@ public class Model
 		
 	}
 	
+	
 	public String undoValue()
 	{
 		if(!sb.toString().equals(""))
@@ -1703,6 +1722,15 @@ public class Model
 		}
 		
 		stored_values_undo.pop();
+		
+		if(stored_values_undo.empty())
+		{
+			stored_values.pop();
+			System.out.println(stored_values);
+			return "" + 0;
+		}
+			
+		
 		stored_values =  stored_values_undo.peek();
 		double result = stored_values.peek();
 		
@@ -1718,14 +1746,18 @@ public class Model
 	{
 		if(sb.toString().equals(""))
 		{
-			//running_history = running_history_undo.get(running_history_undo.size()-1);
-			//running_history_undo.remove(running_history_undo.size() - 1);
-			//button_history = button_history_undo.get(button_history_undo.size()-1);
-			//button_history_undo.remove(button_history_undo.size() - 1);
+			if(running_history_undo.empty() && button_history_undo.empty())
+			{
+				running_history.remove(0);
+				button_history.pop();
+				return "Start New Calculation";
+			}
+				
 			
-			return stored_values + "";
+			running_history = running_history_undo.pop();
+			button_history = button_history_undo.pop();	
 		}
 		
-		return "";
+		return printHistory();
 	}
 }
