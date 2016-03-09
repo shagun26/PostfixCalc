@@ -4,6 +4,10 @@ import java.util.Stack;
 
 public class Model
 {
+	
+	private  BinaryOperations bin_code;
+	private  SingleOperations single_code;
+	
 	/**
 	 * Stores a history of entered values and operations.
 	 * (Section 3.3 in Design Document)
@@ -301,6 +305,8 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		
+		bin_code = new SumOperation();
+		
 		if(sb.toString().equals(""))
 		{	
 			from_memory = true;
@@ -308,8 +314,9 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				
-				double value = addStoredValues();
+				bin_code.zeroCheckBinary(stored_values, button_history);
+				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
+				stored_values.push(value);
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
@@ -317,7 +324,7 @@ public class Model
 			//and return top element (new expression)
 			else
 			{
-				zeroCheckOther();
+				zeroCheckExpr();
 				operandHistory(PLUS);
 				return button_history.peek() ;
 			}
@@ -329,9 +336,20 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				double value = addStoredWithHistory();
+				bin_code.zeroCheckSingle(stored_values, button_history);
+				double history = Double.parseDouble(sb.toString());
 				sb.delete(0, sb.length());
-				return "" + value;	
+				
+				double value = bin_code.calculate(history, stored_values.pop());
+				stored_values.push(value);
+				
+				if(isInt(history, (int) history))
+				{
+					sb_input_history.delete(0, sb_input_history.length());
+					sb_input_history.append((int) history);
+				}
+				
+				return "" + value;
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
@@ -356,6 +374,7 @@ public class Model
 	{
 		//Determine whether an expression is involved
 		opExpression = isExpression();
+		bin_code = new MinusOperation();
 		
 		if(sb.toString().equals(""))
 		{	
@@ -363,8 +382,10 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				
-				double value = subStoredValues();
+				bin_code.zeroCheckBinary(stored_values, button_history);
+				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
+				stored_values.push(value);
+				//double value = subStoredValues();
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
@@ -372,7 +393,7 @@ public class Model
 			//and return top element (new expression)
 			else
 			{
-				zeroCheckOther();
+				zeroCheckExpr();
 				operandHistory(MINUS);
 				return button_history.peek();
 			}
@@ -384,8 +405,21 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				double value = subStoredWithHistory();
+				//double value = subStoredWithHistory();
+				bin_code.zeroCheckSingle(stored_values, button_history);
+				double history = Double.parseDouble(sb.toString());
 				sb.delete(0, sb.length());
+				
+				double value = bin_code.calculate(history, stored_values.pop());
+				stored_values.push(value);
+				
+				if(isInt(history, (int) history))
+				{
+					sb_input_history.delete(0, sb_input_history.length());
+					sb_input_history.append((int) history);
+				}
+				
+				
 				return "" + value;	
 			}
 			//Otherwise update the history
@@ -410,6 +444,7 @@ public class Model
 	{
 		//Determine whether an expression is involved
 		opExpression = isExpression();
+		bin_code = new MultOperation();
 		
 		if(sb.toString().equals(""))
 		{	
@@ -417,8 +452,9 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				
-				double value = multStoredValues();
+				bin_code.zeroCheckBinary(stored_values, button_history);
+				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
+				stored_values.push(value);
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
@@ -426,7 +462,7 @@ public class Model
 			//and return top element (new expression)
 			else
 			{
-				zeroCheckOther();
+				zeroCheckExpr();
 				operandHistory(MULT);
 				return button_history.peek();
 			}
@@ -438,8 +474,20 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				double value = multStoredWithHistory();
+				bin_code.zeroCheckSingle(stored_values, button_history);
+				double history = Double.parseDouble(sb.toString());
 				sb.delete(0, sb.length());
+				
+				double value = bin_code.calculate(history, stored_values.pop());
+				stored_values.push(value);
+				
+				if(isInt(history, (int) history))
+				{
+					sb_input_history.delete(0, sb_input_history.length());
+					sb_input_history.append((int) history);
+				}
+				
+				
 				return "" + value;	
 			}
 			//Otherwise update the history
@@ -464,6 +512,7 @@ public class Model
 	{
 		//Determine whether an expression is involved
 		opExpression = isExpression();
+		bin_code = new DivideOperation();
 		
 		if(sb.toString().equals(""))
 		{	
@@ -471,8 +520,9 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				
-				double value = divStoredValues();
+				bin_code.zeroCheckBinary(stored_values, button_history);
+				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
+				stored_values.push(value);
 				sb.delete(0, sb.length());
 				return "" + value;	
 			}
@@ -480,7 +530,7 @@ public class Model
 			//and return top element (new expression)
 			else
 			{
-				zeroCheckOther();
+				zeroCheckExpr();
 				operandHistory(DIV);
 				return button_history.peek();
 			}
@@ -492,8 +542,20 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				double value = divStoredWithHistory();
+				bin_code.zeroCheckSingle(stored_values, button_history);
+				double history = Double.parseDouble(sb.toString());
 				sb.delete(0, sb.length());
+				
+				double value = bin_code.calculate(history, stored_values.pop());
+				stored_values.push(value);
+				
+				if(isInt(history, (int) history))
+				{
+					sb_input_history.delete(0, sb_input_history.length());
+					sb_input_history.append((int) history);
+				}
+				
+				
 				return "" + value;	
 			}
 			//Otherwise update the history
@@ -553,33 +615,40 @@ public class Model
 	 */
 	public String factorial()
 	{
+		single_code = new FactorialOperation();
+		
 		if(sb.toString().equals(""))
 		{
 			from_memory = true;
-			double value = factStoredValues();
-			sb.delete(0, sb.length());
-			if(value != 0)
+			single_code.zeroCheckSingle(stored_values, button_history);
+			double input = stored_values.pop();
+			
+			if(!isInt(input, (int)(input) )|| input < 0)
 			{
+				stored_values.push((double) 0);
+				return "Invalid" ;
+			}
+			
+			
+			double value = single_code.calculate(input);
+			stored_values.push(value);
 			return "" + value;
-			}
-			else
-			{
-			return "Invalid";
-			}
 		}
 		else
 		{
 			from_memory = false;
-			double value = factStoredWithHistory();
-			sb.delete(0, sb.length());
-			if(value != 0)
+			double input = Double.parseDouble(sb.toString());
+			
+			if(!isInt(input, (int)(input) )|| input < 0)
 			{
+				stored_values.push((double) 0);
+				return "Invalid" ;
+			}
+			
+			double value = single_code.calculate(input);
+			stored_values.push(value);
 			return "" + value;
-			}
-			else
-			{
-			return "Invalid";
-			}
+			
 		}
 		
 	}
@@ -594,6 +663,7 @@ public class Model
 	{
 		//Determine whether an expression is involved
 		opExpression = isExpression();
+		single_code = new SinOperation();
 		
 		if(sb.toString().equals(""))
 		{
@@ -601,7 +671,9 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				double value = sinStoredValues();
+				single_code.zeroCheckSingle(stored_values, button_history);
+				double value = single_code.calculate(stored_values.pop());
+				stored_values.push(value);
 				sb.delete(0, sb.length());
 				return "" + value;
 				
@@ -620,8 +692,19 @@ public class Model
 		else
 		{
 			from_memory = false;
-			double value = sinStoredWithHistory();
+			double history = Double.parseDouble(sb.toString());
 			sb.delete(0, sb.length());
+			
+			double value = single_code.calculate(history);
+			
+			if(isInt(history, (int) history))
+			{
+				sb_input_history.delete(0, sb_input_history.length());
+				sb_input_history.append((int) history);
+			}
+			
+			stored_values.push(value);
+			
 			return "" + value;
 		}
 
@@ -637,6 +720,7 @@ public class Model
 	{
 		//Determine whether an expression is involved
 		opExpression = isExpression();
+		single_code = new CosOperation();
 		
 		if(sb.toString().equals(""))
 		{
@@ -644,7 +728,9 @@ public class Model
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				double value = cosStoredValues();
+				single_code.zeroCheckSingle(stored_values, button_history);
+				double value = single_code.calculate(stored_values.pop());
+				stored_values.push(value);
 				sb.delete(0, sb.length());
 				return "" + value;
 			}
@@ -661,8 +747,19 @@ public class Model
 		else
 		{
 			from_memory = false;
-			double value = cosStoredWithHistory();
+			double history = Double.parseDouble(sb.toString());
 			sb.delete(0, sb.length());
+			
+			double value = single_code.calculate(history);
+			
+			if(isInt(history, (int) history))
+			{
+				sb_input_history.delete(0, sb_input_history.length());
+				sb_input_history.append((int) history);
+			}
+			
+			stored_values.push(value);
+			
 			return "" + value;
 		}
 
@@ -1075,309 +1172,8 @@ public class Model
 		return "" + result;
 	}
 	
-	/**
-	 * Case 1 in Section 5.1 of Design Document
-	 * Adds two numbers from stored_values and returns the result.
-	 * @return The result of the addition
-	 */
-	private double addStoredValues()
-	{
-		zeroCheckBinStored();
-		double first_number = stored_values.pop();
-		double second_number = stored_values.pop();
-		double result = first_number + second_number;
-		
-		stored_values.push(result);
-		
-		return result;
-	}
 	
-	/**
-	 * Case 2 in section 5.1 of Design Document
-	 * Adds one number from stored_values and one
-	 * from the traced character sequence (sb).
-	 * Returns the result of the addition
-	 * @return The result of the addition
-	 */
-	private double addStoredWithHistory()
-	{
-		zeroCheckOther();
-		double stored = stored_values.pop();
-		double history = Double.parseDouble(sb.toString());
-		
-		if(isInt(history, (int) history))
-		{
-			sb_input_history.delete(0, sb_input_history.length());
-			sb_input_history.append((int) history);
-		}
-		
-		double result = stored + history;
-		
-		stored_values.push(result);
-		
-		return result;
-		
-	}
 	
-	/**
-	 * Case 1 in Section 5.1 of Design Document
-	 * Subtracts two numbers from stored_values and returns the result.
-	 * @return The result of the addition
-	 */
-	private double subStoredValues()
-	{
-		zeroCheckBinStored();
-		double first_number = stored_values.pop();
-		double second_number = stored_values.pop();
-		double result = second_number - first_number;
-		
-		stored_values.push(result);
-		
-		return result;
-	}
-	
-	/**
-	 * Case 2 in section 5.1 of Design Document
-	 * Subtracts value of traced character sequence (sb)
-	 * from the top element in stored_values..
-	 * Returns the result of the subtraction
-	 * @return The result of the subtraction
-	 */
-	private double subStoredWithHistory()
-	{
-		zeroCheckOther();
-		double stored = stored_values.pop();
-		double history = Double.parseDouble(sb.toString());
-		double result = stored - history;
-		
-		
-		if(isInt(history, (int) history))
-		{
-			sb_input_history.delete(0, sb_input_history.length());
-			sb_input_history.append((int) history);
-		}
-		
-		stored_values.push(result);
-		
-		return result;
-		
-	}
-	
-	/**
-	 * Case 1 in Section 5.1 of Design Document
-	 * Multiplies two numbers from stored_values and returns the result.
-	 * @return The result of the multiplication
-	 */
-	private double multStoredValues()
-	{
-		zeroCheckBinStored();
-		double first_number = stored_values.pop();
-		double second_number = stored_values.pop();
-		double result = second_number * first_number;
-		
-		stored_values.push(result);
-		
-		return result;
-	}
-	
-	/**
-	 * Case 2 in section 5.1 of Design Document
-	 * Multiplies top element of stored_values by 
-	 * value of traced character input (sb)
-	 * Returns the result of the multiplication
-	 * @return The result of the multiplication
-	 */
-	private double multStoredWithHistory()
-	{
-		zeroCheckOther();
-		double stored = stored_values.pop();
-		double history = Double.parseDouble(sb.toString());
-		double result = stored * history;
-		
-		if(isInt(history, (int) history))
-		{
-			sb_input_history.delete(0, sb_input_history.length());
-			sb_input_history.append((int) history);
-		}
-		
-		stored_values.push(result);
-		
-		return result;
-		
-	}
-	
-	/**
-	 * Case 1 in Section 5.1 of Design Document
-	 * Divides two numbers from stored_values and returns the result.
-	 * @return The result of the division
-	 */
-	private double divStoredValues()
-	{
-		zeroCheckBinStored();
-		double first_number = stored_values.pop();
-		double second_number = stored_values.pop();
-		double result = second_number / first_number;
-		
-		stored_values.push(result);
-		
-		return result;
-	}
-	
-	/**
-	 * Case 2 in section 5.1 of Design Document
-	 * Divides top element of stored_values by 
-	 * value of traced character input (sb)
-	 * Returns the result of the division
-	 * @return The result of the division
-	 */
-	private double divStoredWithHistory()
-	{
-		zeroCheckOther();
-		double stored = stored_values.pop();
-		double history = Double.parseDouble(sb.toString());
-		double result = stored / history;
-		
-		if(isInt(history, (int) history))
-		{
-			sb_input_history.delete(0, sb_input_history.length());
-			sb_input_history.append((int) history);
-		}
-		
-		stored_values.push(result);
-		
-		return result;
-		
-	}
-	
-	private double factStoredValues()
-	{
-		zeroCheckOther();
-		double first_number = stored_values.pop();
-		double result = 1;
-		if(!isInt(first_number, (int)first_number) || first_number < 0)
-		{
-			stored_values.push((double) 0);
-			return 0;
-		}
-			
-			for(int i = 2; first_number >= i; i++)
-			{
-				result = result * i;
-			}
-		
-		stored_values.push(result);
-		
-		return result;
-		
-	}
-	
-	private double factStoredWithHistory()
-	{
-		
-		double history = Double.parseDouble(sb.toString());
-		double result = 1;
-		if(!isInt(history, (int)history) || history < 0)
-		{
-			stored_values.push((double) 0);
-			return 0;
-		}
-			
-			for(int i = 2; history >= i; i++)
-			{
-				result = result * i;
-			}
-		
-		stored_values.push(result);
-		
-		return result;
-	}
-	
-	private double sinStoredValues()
-	{
-		zeroCheckOther();
-		//System.out.println("wee");
-		double first_number = stored_values.pop();
-		//System.out.println(second_number);
-
-		double result = Math.sin(first_number);
-		if(Math.abs(result) < (Math.pow(10, -15)))
-		{
-			result = 0;
-		}
-		else if ( (Math.abs(result - 0.5)) < (Math.pow(10, -15)))
-		{
-			if(result > 0) result = 0.5;
-			if(result < 0) result = -0.5;
-		}
-		stored_values.push(result);
-
-		return result;
-	}
-
-	private double sinStoredWithHistory()
-	{
-		double history = Double.parseDouble(sb.toString());
-
-		double result = Math.sin(history);
-
-		if(Math.abs(result) < (Math.pow(10, -15)))
-		{
-			result = 0;
-		}
-		else if ( (Math.abs(result - 0.5)) < (Math.pow(10, -15)))
-		{
-			if(result > 0) result = 0.5;
-			if(result < 0) result = -0.5;
-		}
-		stored_values.push(result);
-
-		return result;
-
-	}
-
-	private double cosStoredValues()
-	{
-		zeroCheckOther();
-		//System.out.println("wee");
-		double first_number = stored_values.pop();
-		//System.out.println(second_number);
-
-		double result = Math.cos(first_number);
-		if(Math.abs(result) < (Math.pow(10, -15)))
-		{
-			result = 0;
-		}
-		else if ( (Math.abs(result - 0.5)) < (Math.pow(10, -15)))
-		{
-			if(result > 0) result = 0.5;
-			if(result < 0) result = -0.5;
-		}
-
-		stored_values.push(result);
-
-		return result;
-	}
-
-	private double cosStoredWithHistory()
-	{
-		double history = Double.parseDouble(sb.toString());
-		double result = Math.cos(history);
-		if(Math.abs(result) < (Math.pow(10, -15)))
-		{
-			result = 0;
-		}
-		else if ( (Math.abs(result - 0.5)) < (Math.pow(10, -15)))
-		{
-			if(result > 0) result = 0.5;
-			if(result < 0) result = -0.5;
-		}
-
-		stored_values.push(result);
-
-		return result;
-
-	}
-
 	private double negateStoredValues()
 	{
 		//System.out.println("wee");
@@ -1422,62 +1218,28 @@ public class Model
 		//stored_values.push(result);
 	}
 	
-	/**
-	 * Replaces missing operand(s) with zero in binary operation
-	 * with stored values (Case 1 Section ...)
-	 */
-	private void zeroCheckBinStored()
-	{
-		if(stored_values.empty())
-		{
-			stored_values.push((double) 0);
-			stored_values.push((double) 0);
-			button_history.push("" +  0);
-			button_history.push("" +  0);
-			
-		}
-		if(stored_values.size() == 1)
-		{
-			stored_values.push((double) 0);
-			button_history.push("" +  0);
-			
-		}
-	}
 	
 	/**
 	 * Replaces missing operand with 0 for direct operations
 	 * (Case 2 in section ...)
 	 */
-	private void zeroCheckOther()
+	private void zeroCheckExpr()
 	{
 		//If no values in system
 		if(stored_values.empty())
 		{
-			//If operation did not involve an expression
-			//Continue as normal
-			if(!opExpression)
-			{
-				stored_values.push((double) 0);
-				button_history.push("" +  0);
-				System.out.println("Not expr");
-			}
-			//Otherwise if only one expression
-			// use 0
-			else if(expressions.size() < 2)
+			if(expressions.size() < 2)
 			{
 				button_history.push("" +  0);
 				System.out.println("One expr");
 			}
 			
-			//running_history.add("" + 0);
+			
 		}
-		//Otherwise if last op used an expression
-		//remove last value and place in expression list
 		else if(opExpression)
 		{
 			expressions.add("" + stored_values.pop());
 		}
-		
 		
 	}
 	
