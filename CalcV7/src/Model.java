@@ -624,14 +624,20 @@ public class Model
 			System.out.println("Fact from stored_values");
 			double input = stored_values.pop();
 			
-			if(!isInt(input, (int)(input) )|| input < 0)
+			if(!isInt(input, (int)(input) )||  input < 0)
 			{
 				stored_values.push((double) 0);
-				return INVALID;
+				return "NOT DEFINED";
 			}
 			
-			
 			double value = single_code.calculate(input);
+			
+			if(Double.isInfinite(value))
+			{
+				stored_values.push((double) 0);
+				return "NOT DEFINED";
+			}
+			
 			stored_values.push(value);
 			return "" + value;
 		}
@@ -647,6 +653,13 @@ public class Model
 			}
 		
 			double value = single_code.calculate(input);
+			
+			if(Double.isInfinite(value))
+			{
+				stored_values.push((double) 0);
+				return "NOT DEFINED";
+			}
+			
 			stored_values.push(value);
 			return "" + value;
 			
@@ -895,11 +908,6 @@ public class Model
 			// Reset completed operations string_builder for next entry
 			sb_completed_operations.delete(0, sb_completed_operations.length());
 			
-			
-			/*if(!(running_history.isEmpty()))
-			{
-				running_history.remove(running_history.size()- 1);
-			}*/
 		
 			//replace them with updated computation
 			running_history.add(button_history.peek());
