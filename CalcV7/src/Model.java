@@ -620,7 +620,7 @@ public class Model
 		if(sb.toString().equals(""))
 		{
 			from_memory = true;
-			single_code.zeroCheckSingle(stored_values, button_history);
+			System.out.println("Fact from stored_values");
 			double input = stored_values.pop();
 			
 			if(!isInt(input, (int)(input) )|| input < 0)
@@ -638,13 +638,13 @@ public class Model
 		{
 			from_memory = false;
 			double input = Double.parseDouble(sb.toString());
-			
+			sb.delete(0, sb.length());
 			if(!isInt(input, (int)(input) )|| input < 0)
 			{
 				stored_values.push((double) 0);
 				return "Invalid" ;
 			}
-			
+		
 			double value = single_code.calculate(input);
 			stored_values.push(value);
 			return "" + value;
