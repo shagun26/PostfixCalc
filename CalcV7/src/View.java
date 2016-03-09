@@ -6,6 +6,20 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.Font;
+import javax.swing.JSplitPane;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import java.awt.BorderLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import javax.swing.UIManager;
+import java.awt.Button;
 
 
 @SuppressWarnings("serial")
@@ -48,10 +62,9 @@ public class View extends JFrame
 	
 	private static final String EXPRESSION = 'x' + "";
 	
-	private GridLayout window_layout_manager = new GridLayout(3, 1);
-	private GridLayout display_layout_manager = new GridLayout(2, 1);
+	private GridLayout window_layout_manager = new GridLayout(2, 1);
 	private GridLayout keypad_layout_manager = new GridLayout(4, 4);
-	private GridLayout operator_layout_manager = new GridLayout(5, 1);
+	private GridLayout operator_layout_manager = new GridLayout(0, 3);
 	
 	private JPanel display = new JPanel();
 	private JPanel keypad = new JPanel();
@@ -62,35 +75,55 @@ public class View extends JFrame
 	
 	
 	private Controller controller;
+	private final JPanel panel = new JPanel();
+	private final ButtonAdapter buttonAdapter = new ButtonAdapter("Graph") {
+	public void pressed() {
+		
+	}
+};
 	
 	
 	public View()
 	{
 		super("Numeric Keypad");
+		getContentPane().setBackground(Color.WHITE);
+		setForeground(Color.WHITE);
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-		setLayout(window_layout_manager);
+		getContentPane().setLayout(window_layout_manager);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		controller = new Controller(this);
-		
-		keypad.setSize(KEYPAD_WIDTH, KEYPAD_HEIGHT);
-		keypad.setLayout(keypad_layout_manager);
-		keypad.setVisible(true);
-		
-		operators.setSize(OPERATOR_HEIGHT, OPERATOR_WIDTH);
-		operators.setLayout(operator_layout_manager);
-		operators.setVisible(true);
+		display.setBackground(UIManager.getColor("Button.background"));
 		
 		display.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-		display.setLayout(display_layout_manager);
 		display.setVisible(true);
 		
 		
-		add(display);
-		add(keypad);
-		add(operators);
+		getContentPane().add(display);
+		display.setLayout(null);
+		history_display.setFont(new Font("Dialog", Font.BOLD, 30));
+		history_display.setBounds(12, 12, 576, 131);
 		display.add(history_display);
+		value_display.setBounds(12, 143, 576, 78);
+		value_display.setHorizontalAlignment(SwingConstants.TRAILING);
+		value_display.setFont(new Font("Dialog", Font.BOLD, 30));
 		display.add(value_display);
+		
+		
+		
+		value_display.setText("0");
+		history_display.setText("Start new Calculation");
+		buttonAdapter.setBounds(504, 233, 84, 63);
+		
+		display.add(buttonAdapter);
+		
+		getContentPane().add(panel);
+		keypad.setLocation(12, 12);
+		
+		keypad.setSize(302, 269);
+		keypad_layout_manager.setVgap(5);
+		keypad_layout_manager.setHgap(5);
+		keypad.setLayout(keypad_layout_manager);
 		
 		
 		keypad.add(new ButtonAdapter(SEVEN)
@@ -191,6 +224,12 @@ public class View extends JFrame
 				controller.enter();
 			}
 		});
+		operators.setLocation(326, 12);
+		
+		operators.setSize(262, 269);
+		operator_layout_manager.setVgap(5);
+		operator_layout_manager.setHgap(5);
+		operators.setLayout(operator_layout_manager);
 		
 		
 		operators.add(new ButtonAdapter(PLUS)
@@ -315,11 +354,9 @@ public class View extends JFrame
 			
 			
 		});
-		
-		
-		
-		value_display.setText("0");
-		history_display.setText("Start new Calculation");
+		panel.setLayout(null);
+		panel.add(keypad);
+		panel.add(operators);
 	}
 	
 	public void updateValue(String next_value)
@@ -338,6 +375,4 @@ public class View extends JFrame
 		value_display.setText("0");
 		history_display.setText("Start new Calculation");
 	}
-	
-	
 }
