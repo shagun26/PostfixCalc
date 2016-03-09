@@ -48,6 +48,7 @@ public class Model
 	private static final String EQUALS = "=";
 	private static final String START = "Start new Calculation";
 	private static final String ENTER = "Enter";
+	private static final String INVALID = "Invalid";
 	private static final String FACT = "!";
 	private static final String PLUS = "+";
 	private static final String MINUS = "-";
@@ -626,7 +627,7 @@ public class Model
 			if(!isInt(input, (int)(input) )|| input < 0)
 			{
 				stored_values.push((double) 0);
-				return "Invalid" ;
+				return INVALID;
 			}
 			
 			
@@ -642,7 +643,7 @@ public class Model
 			if(!isInt(input, (int)(input) )|| input < 0)
 			{
 				stored_values.push((double) 0);
-				return "Invalid" ;
+				return INVALID;
 			}
 		
 			double value = single_code.calculate(input);
