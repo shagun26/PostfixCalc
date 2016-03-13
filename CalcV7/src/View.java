@@ -7,19 +7,19 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Font;
-import javax.swing.JSplitPane;
-import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import java.awt.BorderLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+//import javax.swing.JSplitPane;
+//import java.awt.FlowLayout;
+//import javax.swing.BoxLayout;
+//import com.jgoodies.forms.layout.FormLayout;
+//import com.jgoodies.forms.layout.ColumnSpec;
+//import com.jgoodies.forms.layout.RowSpec;
+//import java.awt.BorderLayout;
+//import javax.swing.GroupLayout;
+//import javax.swing.GroupLayout.Alignment;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import javax.swing.UIManager;
-import java.awt.Button;
+//import java.awt.Button;
 
 
 @SuppressWarnings("serial")
@@ -27,25 +27,13 @@ public class View extends JFrame
 {
 	private static final int WINDOW_WIDTH = 600;
 	private static final int WINDOW_HEIGHT = 600;
-	private static final int KEYPAD_WIDTH = 200;
-	private static final int KEYPAD_HEIGHT = 200;
-	private static final int OPERATOR_HEIGHT = 100;
-	private static final int OPERATOR_WIDTH = 100;
+	//private static final int KEYPAD_WIDTH = 200;
+	//private static final int KEYPAD_HEIGHT = 200;
+	//private static final int OPERATOR_HEIGHT = 100;
+	//private static final int OPERATOR_WIDTH = 100;
 	private static final int DISPLAY_HEIGHT = 300;
 	private static final int DISPLAY_WIDTH = 300;
 	
-	private static final String CLEAR = "Clear";
-	private static final String ENTER = "Enter";
-	private static final String PLUS = "+";
-	private static final String MULT = "*";
-	private static final String DIV = "/";
-	private static final String MINUS = "-";
-	private static final String FACT = "!";
-	private static final String UNDO = "Undo";
-	private static final String PI = "\u03C0";
-	private static final String PLUSMINUS = "+/-";
-	private static final String COS = "COS(";
-	private static final String SIN = "SIN(";
 	
 	private static final String ZERO = "0";
 	private static final String ONE = "1";
@@ -57,10 +45,8 @@ public class View extends JFrame
 	private static final String SEVEN = "7";
 	private static final String EIGHT = "8";
 	private static final String NINE = "9";
-	
 	private static final String DECIMAL_POINT = ".";
 	
-	private static final String EXPRESSION = 'x' + "";
 	
 	private GridLayout window_layout_manager = new GridLayout(2, 1);
 	private GridLayout keypad_layout_manager = new GridLayout(4, 4);
@@ -78,7 +64,7 @@ public class View extends JFrame
 	private final JPanel panel = new JPanel();
 	private final ButtonAdapter buttonAdapter = new ButtonAdapter("Graph") {
 	public void pressed() {
-		
+		controller.changeToGraph( controller);
 	}
 };
 	
@@ -200,7 +186,7 @@ public class View extends JFrame
 			}
 		});
 		
-		keypad.add(new ButtonAdapter(CLEAR)
+		keypad.add(new ButtonAdapter(Controller.CLEAR)
 		{
 			public void pressed()
 			{
@@ -217,7 +203,7 @@ public class View extends JFrame
 			}
 		});
 		
-		keypad.add(new ButtonAdapter(ENTER)
+		keypad.add(new ButtonAdapter(Controller.ENTER)
 		{
 			public void pressed()
 			{
@@ -232,63 +218,63 @@ public class View extends JFrame
 		operators.setLayout(operator_layout_manager);
 		
 		
-		operators.add(new ButtonAdapter(PLUS)
+		operators.add(new ButtonAdapter(Controller.PLUS)
 		{
 			public void pressed()
 			{
 				controller.sum();
-				controller.historyOperation(PLUS);
+				controller.historyOperation(Controller.PLUS);
 			}
 			
 		});
 		
 		
 		
-		operators.add(new ButtonAdapter(MINUS)
+		operators.add(new ButtonAdapter(Controller.MINUS)
 		{
 			public void pressed()
 			{
 				controller.subtract();
-				controller.historyOperation(MINUS);
+				controller.historyOperation(Controller.MINUS);
 			}
 			
 		});
 		
 		
 		
-		operators.add(new ButtonAdapter(MULT)
+		operators.add(new ButtonAdapter(Controller.MULT)
 		{
 			public void pressed()
 			{
 				controller.multiply();
-				controller.historyOperation(MULT);
+				controller.historyOperation(Controller.MULT);
 			}
 			
 		});
 		
 		
 		
-		operators.add(new ButtonAdapter(DIV)
+		operators.add(new ButtonAdapter(Controller.DIV)
 		{
 			public void pressed()
 			{
 				controller.divide();
-				controller.historyOperation(DIV);
+				controller.historyOperation(Controller.DIV);
 			}
 			
 		});
 		
-		operators.add(new ButtonAdapter(FACT)
+		operators.add(new ButtonAdapter(Controller.FACT)
 		{
 			public void pressed()
 			{
 				controller.factorial();
-				controller.factHistoryOperation(FACT);
+				controller.factHistoryOperation(Controller.FACT);
 			}
 					
 		});
 		
-		operators.add(new ButtonAdapter(PLUSMINUS)
+		operators.add(new ButtonAdapter(Controller.PLUSMINUS)
 		{
 			public void pressed()
 			{
@@ -302,7 +288,7 @@ public class View extends JFrame
 			public void pressed()
 			{
 				controller.cos();
-				controller.trigHistoryOperation(COS);
+				controller.trigHistoryOperation(Controller.COS);
 			}
 			
 		});
@@ -312,7 +298,7 @@ public class View extends JFrame
 			public void pressed()
 			{
 				controller.sin();
-				controller.trigHistoryOperation(SIN);
+				controller.trigHistoryOperation(Controller.SIN);
 			}
 			
 		});
@@ -326,7 +312,7 @@ public class View extends JFrame
 			}
 		});
 		
-		operators.add(new ButtonAdapter(UNDO)
+		operators.add(new ButtonAdapter(Controller.UNDO)
 		{
 			public void pressed()
 			{
@@ -335,7 +321,7 @@ public class View extends JFrame
 		});
 		
 		
-		operators.add(new ButtonAdapter(PI)
+		operators.add(new ButtonAdapter(Controller.PI)
 		{
 			public void pressed()
 			{
@@ -344,7 +330,7 @@ public class View extends JFrame
 			}
 		});
 		
-		operators.add(new ButtonAdapter(EXPRESSION)
+		operators.add(new ButtonAdapter(Controller.EXPRESSION)
 		{
 			public void pressed()
 			{

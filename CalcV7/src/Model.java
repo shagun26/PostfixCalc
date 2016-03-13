@@ -16,6 +16,8 @@ public class Model
 	
 	private Stack<Stack<String>> button_history_undo = new Stack<Stack<String>>();
 	
+	private static final String EQUALS = "=";
+	
 	/**
 	 * Stores any entered values or results of operations.
 	 * (Section 3.3 in Design Document)
@@ -42,22 +44,7 @@ public class Model
 	
 	private Stack<String> precedence= new Stack<String>();
 	
-	/**
-	 * String Constants that will be needed
-	 */
-	private static final String EQUALS = "=";
-	private static final String START = "Start new Calculation";
-	private static final String ENTER = "Enter";
-	private static final String INVALID = "Invalid";
-	private static final String FACT = "!";
-	private static final String PLUS = "+";
-	private static final String MINUS = "-";
-	private static final String MULT = "*";
-	private static final String DIV = "/";
-	private static final String SIN = "SIN(";
-	private static final String COS = "COS(";
-	private static final String PI = "\u03C0";
-	private static final String EXPRESSION = "" + 'x';
+	
 	
 	/**
 	 * A reference to high precedence operators not including 
@@ -78,7 +65,9 @@ public class Model
 	/**
 	 * Stores a list of expressions
 	 */
-	private ArrayList<String> expressions = new ArrayList<String>();
+	private Stack<String> expressionsInFix = new Stack<String>();
+	
+	private Stack<String> expressionsPostFix = new Stack<String>();
 	
 	
 	/**
@@ -109,6 +98,7 @@ public class Model
 	 */
 	private boolean from_memory = false;
 	private boolean pi = false;
+	private boolean error = false;
 	
 	/**
 	 * Indicates whether an operation uses an expression
@@ -129,15 +119,25 @@ public class Model
 	{
 		reset();
 		
-		high_precedence.add(MULT);
-		high_precedence.add(DIV);
+		high_precedence.add(Controller.MULT);
+		high_precedence.add(Controller.DIV);
 		
-		lowest_precedence.add(PLUS);
-		lowest_precedence.add(MINUS);
+		lowest_precedence.add(Controller.PLUS);
+		lowest_precedence.add(Controller.MINUS);
 		
 		
-		highest_precedence.add(FACT);
+		highest_precedence.add(Controller.FACT);
 		
+	}
+	
+	public Stack<String> getInFixExpressionList()
+	{
+		return expressionsInFix;
+	}
+	
+	public Stack<String> getPostExpressionList()
+	{
+		return expressionsPostFix;
 	}
 	
 	
@@ -146,7 +146,7 @@ public class Model
 	 * specified in the Requirements Document
 	 * @return The string representation of running_history
 	 */
-	private String printHistory()
+	public String printHistory()
 	{
 		int size = running_history.size();
 		/*if(size == 1)
@@ -154,6 +154,9 @@ public class Model
 			return arraylist.get(0);
 		}
 		return printHistory(arraylist, size - 1) + ", " + arraylist.get(size - 1);*/
+		if(size == 0)
+			return "";
+		
 		StringBuilder result = new StringBuilder();
 		for(int i = 0; i < size - 1; i++)
 		{
@@ -193,8 +196,8 @@ public class Model
 			running_history_undo.push((ArrayList<String>) running_history.clone());
 		}
 		
-		button_history.push(PI);
-		running_history.add(PI);
+		button_history.push(Controller.PI);
+		running_history.add(Controller.PI);
 		
 		return printHistory();
 	}
@@ -207,7 +210,7 @@ public class Model
 	public String expressionVal()
 	{
 		opExpression = true;
-		return EXPRESSION;
+		return Controller.EXPRESSION;
 	}
 	
 	/**
@@ -224,9 +227,10 @@ public class Model
 			running_history_undo.push((ArrayList<String>) running_history.clone());
 		}
 		
-		button_history.push(EXPRESSION);
-		running_history.add(EXPRESSION);
-		expressions.add(EXPRESSION);
+		button_history.push(Controller.EXPRESSION);
+		running_history.add(Controller.EXPRESSION);
+		expressionsInFix.push(Controller.EXPRESSION);
+		expressionsPostFix.push(Controller.EXPRESSION);
 		return printHistory();
 	}
 	
@@ -283,11 +287,13 @@ public class Model
 		button_history.clear();
 		button_history_undo.clear();
 		precedence.clear();
-		expressions.clear();
+		expressionsInFix.clear();
+		expressionsPostFix.clear();
 		
 		opExpression = false;
 		exprUpdated = false;
 		pi = false;
+		error = false;
 		
 		sb_input_history.delete(0, sb_input_history.length());
 		sb_completed_operations.delete(0, sb_completed_operations.length());
@@ -326,7 +332,7 @@ public class Model
 			else
 			{
 				zeroCheckExpr();
-				operandHistory(PLUS);
+				operandHistory(Controller.PLUS);
 				return button_history.peek() ;
 			}
 			
@@ -357,7 +363,7 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				operandHistory(PLUS);
+				operandHistory(Controller.PLUS);
 				return button_history.peek() ;
 			}
 			
@@ -395,7 +401,7 @@ public class Model
 			else
 			{
 				zeroCheckExpr();
-				operandHistory(MINUS);
+				operandHistory(Controller.MINUS);
 				return button_history.peek();
 			}
 			
@@ -428,7 +434,7 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				operandHistory(MINUS);
+				operandHistory(Controller.MINUS);
 				return button_history.peek();
 			}
 			
@@ -464,7 +470,7 @@ public class Model
 			else
 			{
 				zeroCheckExpr();
-				operandHistory(MULT);
+				operandHistory(Controller.MULT);
 				return button_history.peek();
 			}
 			
@@ -496,7 +502,7 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				operandHistory(MULT);
+				operandHistory(Controller.MULT);
 				return button_history.peek();
 			}
 			
@@ -532,7 +538,7 @@ public class Model
 			else
 			{
 				zeroCheckExpr();
-				operandHistory(DIV);
+				operandHistory(Controller.DIV);
 				return button_history.peek();
 			}
 			
@@ -564,7 +570,7 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				operandHistory(DIV);
+				operandHistory(Controller.DIV);
 				return button_history.peek();
 			}
 			
@@ -617,6 +623,14 @@ public class Model
 	public String factorial()
 	{
 		single_code = new FactorialOperation();
+		opExpression = isExpression();
+		
+		if(opExpression)
+		{
+			error = true;
+			return "NOT DEFINED";
+		}
+			
 		
 		if(sb.toString().equals(""))
 		{
@@ -626,7 +640,8 @@ public class Model
 			
 			if(!isInt(input, (int)(input) )||  input < 0)
 			{
-				stored_values.push((double) 0);
+				stored_values.push(input);
+				error = true;
 				return "NOT DEFINED";
 			}
 			
@@ -634,7 +649,8 @@ public class Model
 			
 			if(Double.isInfinite(value))
 			{
-				stored_values.push((double) 0);
+				stored_values.push(input);
+				error = true;
 				return "NOT DEFINED";
 			}
 			
@@ -648,15 +664,17 @@ public class Model
 			sb.delete(0, sb.length());
 			if(!isInt(input, (int)(input) )|| input < 0)
 			{
-				stored_values.push((double) 0);
-				return INVALID;
+				//stored_values.push(input);
+				error = true;
+				return "NOT DEFINED";
 			}
 		
 			double value = single_code.calculate(input);
 			
 			if(Double.isInfinite(value))
 			{
-				stored_values.push((double) 0);
+				//stored_values.push(input);
+				error = true;
 				return "NOT DEFINED";
 			}
 			
@@ -697,7 +715,7 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				trigHistory(SIN);
+				trigHistory(Controller.SIN);
 				return button_history.peek();
 			}
 			
@@ -753,7 +771,7 @@ public class Model
 			else
 			{
 				sb.delete(0, sb.length());
-				trigHistory(COS);
+				trigHistory(Controller.COS);
 				return button_history.peek();
 			}
 			
@@ -798,7 +816,7 @@ public class Model
 		{
 			opExpression = false;
 			exprUpdated = false;
-			return printHistory() + EQUALS;
+			return printHistory() + " " + EQUALS;
 		}
 		//Else if expression has not been updated,
 		//set boolean variable true to indicate that it will be
@@ -822,11 +840,11 @@ public class Model
 			//use the button press to update to the stack
 			if(!checkBrackets(second, operator))
 			{
-				sb_completed_operations.append(second + " " + operator + " " + sb_input_history.toString() + " ");
+				sb_completed_operations.append(second + " " + operator + " " + sb_input_history.toString());
 			}
 			else
 			{
-				sb_completed_operations.append("(" + second + ")" + " " + operator + " " +  sb_input_history.toString()  + " ");
+				sb_completed_operations.append("(" + second + ")" + " " + operator + " " +  sb_input_history.toString());
 			}
 			
 			//Update precedence list
@@ -834,6 +852,13 @@ public class Model
 			
 			System.out.println(precedence.toString());
 			
+			if(opExpression)
+			{
+				expressionsPostFix.push(sb_input_history.toString());
+				expressionsPostFix.push(operator);
+			}
+			
+			System.out.println(expressionsPostFix.toString());
 			updateHistDirect();
 			//prev_history.push(operator);
 			
@@ -844,6 +869,16 @@ public class Model
 		
 		first = button_history.pop();
 		
+		if(opExpression)
+		{
+			if(!stored_values.empty())
+				expressionsPostFix.push("" + stored_values.pop());
+			
+			expressionsPostFix.push(operator);
+			System.out.println(expressionsPostFix.toString());
+		}
+		
+		
 		//If the last element needs brackets
 		if(checkBrackets(second, operator))	
 		{
@@ -851,23 +886,23 @@ public class Model
 			//And so does the one before
 			//Put them
 			if(checkBrackets(first, operator))
-				sb_completed_operations.append("(" + first +  ") " + operator + " " + "(" + second + ")" + " ");
+				sb_completed_operations.append("(" + first +  ") " + operator + " " + "(" + second + ")");
 			//Otherwise just on the last element
 			else
 			{
-				sb_completed_operations.append(first +  " " + operator + " " + "(" + second + ")" + " ");
+				sb_completed_operations.append(first +  " " + operator + " " + "(" + second + ")");
 			}
 				
 		}
 		//If only the one before needs brackets
 		else if(checkBrackets(first, operator))
 		{
-			sb_completed_operations.append("(" + first +  ") " + operator + " " + second + " ");
+			sb_completed_operations.append("(" + first +  ") " + operator + " " + second);
 		}
 		//No brackets at all
 		else
 		{
-			sb_completed_operations.append(first + " " + operator + " " /*+ sb_input_history.toString() + " "*/ + second + " ");
+			sb_completed_operations.append(first + " " + operator + " " /*+ sb_input_history.toString() + " "*/ + second);
 		}
 		
 		//Update precedence list
@@ -879,7 +914,7 @@ public class Model
 		//prev_history.push(operator);
 		
 		//print updated history
-		return printHistory() + EQUALS;
+		return printHistory() + " " +  EQUALS;
 	}
 	
 	/**
@@ -894,10 +929,17 @@ public class Model
 		//Add last action
 		//prev_history.push(button_history.peek());
 		
+		if(opExpression || error)
+		{
+			error = false;
+			return printHistory();
+		}
+			
+		
 		if(!from_memory)
 		{
 			//set the string
-			sb_completed_operations.append(sb_input_history.toString() + operator + " ");
+			sb_completed_operations.append(sb_input_history.toString() + operator);
 			
 			//Reset button-press string for next use
 			sb_input_history.delete(0, sb_input_history.length());
@@ -925,9 +967,9 @@ public class Model
 			String first = button_history.pop();
 			
 			if(!checkBrackets(first, operator))
-				sb_completed_operations.append(first + operator + " ");
+				sb_completed_operations.append(first + operator);
 			else
-				sb_completed_operations.append("(" + first + ")" + operator + " ");
+				sb_completed_operations.append("(" + first + ")" + operator);
 			
 			//Update precedence list
 			precedence.push(operator);
@@ -955,7 +997,7 @@ public class Model
 			//prev_history.push(operator);
 			
 			//print updated history
-			return printHistory() + EQUALS;
+			return printHistory() + " " + EQUALS;
 		}
 				
 		
@@ -1019,7 +1061,7 @@ public class Model
 		{
 			opExpression = false;
 			exprUpdated = false;
-			return printHistory() + EQUALS;
+			return printHistory() + " " + EQUALS;
 		}
 		//Else if expression has not been updated,
 		//set boolean variable true to indicate that it will be
@@ -1027,12 +1069,14 @@ public class Model
 		else if(opExpression && !exprUpdated)
 		{
 			exprUpdated = true;
+			expressionsPostFix.push(funct);
+			System.out.println(expressionsPostFix.toString());
 		}
 		
 		if(!from_memory)
 		{
 			//set the string
-			sb_completed_operations.append(funct + sb_input_history.toString() + ") ");
+			sb_completed_operations.append(funct + sb_input_history.toString() + ")");
 			
 			//Reset button-press string for next use
 			sb_input_history.delete(0, sb_input_history.length());
@@ -1061,7 +1105,7 @@ public class Model
 			String first = button_history.pop();
 			
 			
-			sb_completed_operations.append(funct + first + ") ");
+			sb_completed_operations.append(funct + first + ")");
 			
 			
 			if(isOp(first))
@@ -1086,21 +1130,24 @@ public class Model
 				running_history.remove(running_history.size() - 1);
 			}
 			
-			if(!(expressions.isEmpty()))
+			if(!(expressionsInFix.isEmpty()))
 			{
-				expressions.remove(expressions.size() - 1);
+				expressionsInFix.pop();
 			}
 			
 			
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 			
-			expressions.add(button_history.peek());
-		
+			
+			
+			expressionsInFix.push(button_history.peek());
+			
+			
 			//prev_history.push(funct);
 			
 			//print updated history
-			return printHistory() + EQUALS;
+			return printHistory() + " " + EQUALS;
 		}
 		
 		
@@ -1138,7 +1185,7 @@ public class Model
 				{	
 					if(push == Math.PI)
 					{
-						sb_input_history.append(PI);
+						sb_input_history.append(Controller.PI);
 						pi = true;
 					}
 					else
@@ -1237,9 +1284,10 @@ public class Model
 		//If no values in system
 		if(stored_values.empty())
 		{
-			if(expressions.size() < 2)
+			if(expressionsInFix.size() < 2)
 			{
 				button_history.push("" +  0);
+				stored_values.push((double) 0);
 				System.out.println("One expr");
 			}
 			
@@ -1247,7 +1295,7 @@ public class Model
 		}
 		else if(opExpression)
 		{
-			expressions.add("" + stored_values.pop());
+			expressionsInFix.push("" + stored_values.peek());
 		}
 		
 	}
@@ -1262,7 +1310,7 @@ public class Model
 	{
 		//If input was pi
 		//not an operation
-		if(pi || input.equals(EXPRESSION))
+		if(pi || input.equals(Controller.EXPRESSION))
 			return false;
 		
 		try
@@ -1294,7 +1342,7 @@ public class Model
 		
 		//If last op was trig
 		//No brackets needed
-		if(precedence.peek().equals(COS) || precedence.peek().equals(SIN))
+		if(precedence.peek().equals(Controller.COS) || precedence.peek().equals(Controller.SIN))
 		{
 			precedence.pop();
 			return false;
@@ -1311,7 +1359,7 @@ public class Model
 			// via stored_values
 			if(precedence.peek().equals(operator))
 			{
-				if(operator.equals(DIV) && from_memory)
+				if(operator.equals(Controller.DIV) && from_memory)
 				{
 					precedence.pop();
 					return true;
@@ -1346,7 +1394,7 @@ public class Model
 			{
 				//If multiplication was first,
 				//brackets needed
-				if(operator == DIV && precedence.peek() == MULT)
+				if(operator == Controller.DIV && precedence.peek() == Controller.MULT)
 				{
 					precedence.pop();
 					return true;
@@ -1390,8 +1438,8 @@ public class Model
 		//replace last element with new expression op
 		if(opExpression)
 		{
-			expressions.remove(expressions.size() - 1);
-			expressions.add(button_history.peek());
+			expressionsInFix.pop();
+			expressionsInFix.push(button_history.peek());
 		}
 		
 		// Reset completed operations string_builder for next entry
@@ -1423,16 +1471,16 @@ public class Model
 		{
 			for(int i = 0; i < 2; i++)
 			{
-				if(!(expressions.isEmpty()))
+				if(!(expressionsInFix.isEmpty()))
 				{
-					expressions.remove(expressions.size() - 1);
+					expressionsInFix.pop();
 				}
 				
 			}
 			
-			expressions.add(button_history.peek());
+			expressionsInFix.push(button_history.peek());
 		}
-		System.out.println(expressions.toString());
+		System.out.println(expressionsInFix.toString());
 		// Reset completed operations string_builder for next use.
 		// This prevents duplication of previous entries
 		sb_completed_operations.delete(0, sb_completed_operations.length());
@@ -1472,10 +1520,10 @@ public class Model
 	 */
 	private boolean isExpression()
 	{
-		if(button_history.empty() || expressions.isEmpty())
+		if(button_history.empty() || expressionsInFix.isEmpty())
 			return false;
-		else if(expressions.contains(button_history.peek()) || 
-				expressions.contains(running_history.get(running_history.size() - 2)))
+		else if(expressionsInFix.contains(button_history.peek()) || 
+				expressionsInFix.contains(running_history.get(running_history.size() - 2)))
 		{
 			return true;
 		}
@@ -1489,6 +1537,7 @@ public class Model
 		if(!sb.toString().equals(""))
 		{
 			sb.deleteCharAt(sb.length()-1);
+			sb_input_history.deleteCharAt(sb_input_history.length() - 1);
 			return updateValue();
 		}
 		
