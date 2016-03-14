@@ -1189,8 +1189,8 @@ public class Model
 	
 	
 	/**
-	 * Replaces missing operand with 0 for direct operations
-	 * (Case 2 in section ...)
+	 * Replaces missing operand with 0 for expression operation
+	 * 
 	 */
 	private void zeroCheckExpr()
 	{
@@ -1265,11 +1265,12 @@ public class Model
 			{
 				return true;
 			}
+			
 		}
 		
 		//If Fact
 		//Brackets needed
-		if(operator.equals(Controller.FACT))
+		else if(operator.equals(Controller.FACT))
 		{
 				precedence.pop();
 				return true;
@@ -1277,7 +1278,7 @@ public class Model
 			
 		//If both operands are high precedence
 		//additional checks needed
-		if(high_precedence.contains(operator))
+		else if(high_precedence.contains(operator))
 		{
 			//If multiplication was first,
 			//brackets needed
@@ -1288,6 +1289,7 @@ public class Model
 				return true;
 			}		
 		}		
+		
 		return false;
 	}
 		
