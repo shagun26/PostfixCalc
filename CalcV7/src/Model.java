@@ -258,6 +258,7 @@ public class Model
 		sb.append(button);
 		sb_input_history.append(button);
 		pi = false;
+		from_memory = false;
 	}
 	
 	/**
@@ -315,10 +316,8 @@ public class Model
 		opExpression = isExpression();
 		bin_code = new SumOperation();
 		
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{	
-			from_memory = true;
-			
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -340,7 +339,6 @@ public class Model
 		}
 		else
 		{
-			from_memory = false;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -384,9 +382,8 @@ public class Model
 		opExpression = isExpression();
 		bin_code = new MinusOperation();
 		
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{	
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -409,7 +406,6 @@ public class Model
 		}
 		else
 		{
-			from_memory = false;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -454,9 +450,8 @@ public class Model
 		opExpression = isExpression();
 		bin_code = new MultOperation();
 		
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{	
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -478,7 +473,6 @@ public class Model
 		}
 		else
 		{
-			from_memory = false;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -522,9 +516,8 @@ public class Model
 		opExpression = isExpression();
 		bin_code = new DivideOperation();
 		
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{	
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -546,7 +539,6 @@ public class Model
 		}
 		else
 		{
-			from_memory = false;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -580,9 +572,8 @@ public class Model
 	
 	public String negate()
 	{
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{
-			from_memory = true;
 			double value = negateStoredValues();
 			sb.delete(0, sb.length());
 			sb_input_history.delete(0, sb_input_history.length());
@@ -608,7 +599,7 @@ public class Model
 		{
 			//If negation during number entry,
 			//the value shown to the user must be updated
-			from_memory = false;
+			//from_memory = false;
 			negateStoredWithHistory();
 			return sb.toString();
 		}
@@ -633,9 +624,9 @@ public class Model
 		}
 			
 		
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{
-			from_memory = true;
+			
 			System.out.println("Fact from stored_values");
 			double input = stored_values.pop();
 			
@@ -660,7 +651,6 @@ public class Model
 		}
 		else
 		{
-			from_memory = false;
 			double input = Double.parseDouble(sb.toString());
 			sb.delete(0, sb.length());
 			if(!isInt(input, (int)(input) )|| input < 0)
@@ -698,9 +688,8 @@ public class Model
 		opExpression = isExpression();
 		single_code = new SinOperation();
 		
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -724,7 +713,6 @@ public class Model
 		}
 		else
 		{
-			from_memory = false;
 			double history = Double.parseDouble(sb.toString());
 			sb.delete(0, sb.length());
 			
@@ -755,9 +743,8 @@ public class Model
 		opExpression = isExpression();
 		single_code = new CosOperation();
 		
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
@@ -771,6 +758,7 @@ public class Model
 			//and return top element (new expression)
 			else
 			{
+				System.out.println("expression");
 				sb.delete(0, sb.length());
 				trigHistory(Controller.COS);
 				return button_history.peek();
@@ -779,7 +767,6 @@ public class Model
 		}
 		else
 		{
-			from_memory = false;
 			double history = Double.parseDouble(sb.toString());
 			sb.delete(0, sb.length());
 			
@@ -858,7 +845,8 @@ public class Model
 			System.out.println(expressionsPostFix.toString());
 			updateHistDirect();
 			//prev_history.push(operator);
-			
+			System.out.println(button_history.peek());
+			from_memory = !from_memory;
 			return printHistory() + EQUALS;
 		}
 		
@@ -920,6 +908,7 @@ public class Model
 			//Update precedence list
 			precedence.push(operator);
 			System.out.println(precedence.toString());
+			from_memory = !from_memory;
 			
 			return printHistory() + EQUALS;
 			
@@ -1027,7 +1016,7 @@ public class Model
 			precedence.push(funct);
 			//replace them with updated computation
 			running_history.add(button_history.peek());
-			
+			from_memory = !from_memory;
 			return printHistory() + EQUALS;
 			
 		}
@@ -1055,13 +1044,14 @@ public class Model
 		}
 			
 		if(!(expressionsInFix.isEmpty()))
-		{
 			expressionsInFix.pop();
-		}
+		
+		if(opExpression)
+			expressionsInFix.push(button_history.peek());
 		
 		//replace them with updated computation
 		running_history.add(button_history.peek());
-		expressionsInFix.push(button_history.peek());
+		System.out.println(expressionsInFix.toString());
 		//print updated history
 		return printHistory() + " " + EQUALS;
 	}
@@ -1075,6 +1065,7 @@ public class Model
 	 */
 	public String enterValue()
 	{
+		from_memory = true;
 		if(sb.toString().equals(""))
 		{
 			if(stored_values.empty() && (!opExpression))
@@ -1200,13 +1191,13 @@ public class Model
 			if(expressionsInFix.size() < 2)
 			{
 				button_history.push("" +  0);
-				stored_values.push((double) 0);
+				//stored_values.push((double) 0);
 				System.out.println("One expr");
 			}
 			
 			
 		}
-		else if(opExpression)
+		else
 		{
 			expressionsInFix.push("" + stored_values.peek());
 		}
