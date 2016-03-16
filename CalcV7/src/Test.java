@@ -6,7 +6,6 @@ public class Test
 	{
 		View gui = new View();
 		gui.setVisible(true);
-		
 	}
 
 }

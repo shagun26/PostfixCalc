@@ -3,7 +3,7 @@ import java.util.Stack;
 
 public abstract class  ArithmeticOperations
 {
-
+	private static final double MIN_VALUE = 0.0000000000001;
 	public void zeroCheckSingle(Stack<Double> stored_values, Stack<String> button_history)
 	{
 		//If no values in system
@@ -18,8 +18,18 @@ public abstract class  ArithmeticOperations
 	
 	public boolean isInt(double double_val, int int_val)
 	{
-		if(double_val - int_val < Double.MIN_VALUE)
+		if(Math.abs(double_val) - Math.abs(int_val) < MIN_VALUE )
+			return true;
+		System.out.println(Math.abs(double_val) - Math.abs(int_val));
+		return false;
+	}
+	
+	public boolean round(double input)
+	{
+		float round = (float) input;
+		if(Math.abs(round - input)< MIN_VALUE )
 			return true;
 		return false;
 	}
+	
 }

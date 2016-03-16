@@ -4,7 +4,7 @@ import java.util.Stack;
 public abstract class BinaryOperations extends ArithmeticOperations
 {
 
-	public abstract double calculate(double first, double second);
+	//public abstract double calculate(double first, double second);
 	public abstract String execute(double first, double second);
 	
 	public void zeroCheckBinary(Stack<Double> stored_values, Stack<String> button_history)

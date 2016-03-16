@@ -3,13 +3,6 @@ public class DivideOperation extends BinaryOperations
 {
 
 	@Override
-	public double calculate(double first, double second)
-	{
-		// TODO Auto-generated method stub
-		return second / first;
-	}
-
-	@Override
 	public String execute(double first, double second)
 	{
 		double result = second / first;
