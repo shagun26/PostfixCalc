@@ -15,4 +15,11 @@ public abstract class  ArithmeticOperations
 		}
 				
 	}
+	
+	public boolean isInt(double double_val, int int_val)
+	{
+		if(double_val - int_val < Double.MIN_VALUE)
+			return true;
+		return false;
+	}
 }

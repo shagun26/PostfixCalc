@@ -315,58 +315,36 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new SumOperation();
-		
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
-				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
-				stored_values.push(value);
-				sb.delete(0, sb.length());
-				return "" + value;	
+				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;	
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				zeroCheckExpr();
-				operandHistory(Controller.PLUS);
-				return button_history.peek() ;
-			}
-			
+			zeroCheckExpr();
+			operandHistory(Controller.PLUS);
+			return button_history.peek() ;
 		}
-		else
+		//If not expression, continue as normal
+		if(!opExpression)
 		{
-			//If not expression, continue as normal
-			if(!opExpression)
-			{
-				bin_code.zeroCheckSingle(stored_values, button_history);
-				double history = Double.parseDouble(sb.toString());
-				sb.delete(0, sb.length());
-				
-				double value = bin_code.calculate(history, stored_values.pop());
-				stored_values.push(value);
-				
-				if(isInt(history, (int) history))
-				{
-					sb_input_history.delete(0, sb_input_history.length());
-					sb_input_history.append((int) history);
-				}
-				
-				return "" + value;
-			}
-			//Otherwise update the history
-			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				operandHistory(Controller.PLUS);
-				return button_history.peek() ;
-			}
-			
+			bin_code.zeroCheckSingle(stored_values, button_history);
+			String value = bin_code.execute(Double.parseDouble(sb.toString()), stored_values.pop());
+			sb.delete(0, sb.length());
+			stored_values.push(Double.parseDouble(value));
+			return "" + value;
 		}
+		//Otherwise update the history
+		//and return top element (new expression)
+		sb.delete(0, sb.length());
+		operandHistory(Controller.PLUS);
+		return button_history.peek();
 	}
 	
 	
@@ -381,61 +359,36 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new MinusOperation();
-		
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
-				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
-				stored_values.push(value);
-				//double value = subStoredValues();
-				sb.delete(0, sb.length());
-				return "" + value;	
+				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;	
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				zeroCheckExpr();
-				operandHistory(Controller.MINUS);
-				return button_history.peek();
-			}
-			
+			zeroCheckExpr();
+			operandHistory(Controller.PLUS);
+			return button_history.peek() ;
 		}
-		else
+		//If not expression, continue as normal
+		if(!opExpression)
 		{
-			//If not expression, continue as normal
-			if(!opExpression)
-			{
-				//double value = subStoredWithHistory();
-				bin_code.zeroCheckSingle(stored_values, button_history);
-				double history = Double.parseDouble(sb.toString());
-				sb.delete(0, sb.length());
-				
-				double value = bin_code.calculate(history, stored_values.pop());
-				stored_values.push(value);
-				
-				if(isInt(history, (int) history))
-				{
-					sb_input_history.delete(0, sb_input_history.length());
-					sb_input_history.append((int) history);
-				}
-				
-				
-				return "" + value;	
-			}
-			//Otherwise update the history
-			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				operandHistory(Controller.MINUS);
-				return button_history.peek();
-			}
-			
+			bin_code.zeroCheckSingle(stored_values, button_history);
+			String value = bin_code.execute(Double.parseDouble(sb.toString()), stored_values.pop());
+			sb.delete(0, sb.length());
+			stored_values.push(Double.parseDouble(value));
+			return "" + value;
 		}
+		//Otherwise update the history
+		//and return top element (new expression)
+		sb.delete(0, sb.length());
+		operandHistory(Controller.PLUS);
+		return button_history.peek();
 	}
 	
 	/**
@@ -449,59 +402,36 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new MultOperation();
-		
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
-				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
-				stored_values.push(value);
-				sb.delete(0, sb.length());
-				return "" + value;	
+				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;	
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				zeroCheckExpr();
-				operandHistory(Controller.MULT);
-				return button_history.peek();
-			}
-			
+			zeroCheckExpr();
+			operandHistory(Controller.PLUS);
+			return button_history.peek() ;
 		}
-		else
-		{
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckSingle(stored_values, button_history);
-				double history = Double.parseDouble(sb.toString());
+				String value = bin_code.execute(Double.parseDouble(sb.toString()), stored_values.pop());
 				sb.delete(0, sb.length());
-				
-				double value = bin_code.calculate(history, stored_values.pop());
-				stored_values.push(value);
-				
-				if(isInt(history, (int) history))
-				{
-					sb_input_history.delete(0, sb_input_history.length());
-					sb_input_history.append((int) history);
-				}
-				
-				
-				return "" + value;	
+				stored_values.push(Double.parseDouble(value));
+				return "" + value;
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				operandHistory(Controller.MULT);
-				return button_history.peek();
-			}
-			
-		}
+			sb.delete(0, sb.length());
+			operandHistory(Controller.PLUS);
+			return button_history.peek();
 	}
 	
 	/**
@@ -515,59 +445,36 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new DivideOperation();
-		
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
-				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
-				stored_values.push(value);
-				sb.delete(0, sb.length());
-				return "" + value;	
+				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;	
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				zeroCheckExpr();
-				operandHistory(Controller.DIV);
-				return button_history.peek();
-			}
-			
+			zeroCheckExpr();
+			operandHistory(Controller.PLUS);
+			return button_history.peek() ;
 		}
-		else
-		{
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckSingle(stored_values, button_history);
-				double history = Double.parseDouble(sb.toString());
+				String value = bin_code.execute(Double.parseDouble(sb.toString()), stored_values.pop());
 				sb.delete(0, sb.length());
-				
-				double value = bin_code.calculate(history, stored_values.pop());
-				stored_values.push(value);
-				
-				if(isInt(history, (int) history))
-				{
-					sb_input_history.delete(0, sb_input_history.length());
-					sb_input_history.append((int) history);
-				}
-				
-				
-				return "" + value;	
+				stored_values.push(Double.parseDouble(value));
+				return "" + value;
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				operandHistory(Controller.DIV);
-				return button_history.peek();
-			}
-			
-		}
+			sb.delete(0, sb.length());
+			operandHistory(Controller.PLUS);
+			return button_history.peek();
 	}
 	
 	public String negate()
@@ -1366,9 +1273,7 @@ public class Model
 				{
 					expressionsInFix.pop();
 				}
-				
 			}
-			
 			expressionsInFix.push(button_history.peek());
 		}
 		System.out.println(expressionsInFix.toString());
@@ -1383,7 +1288,6 @@ public class Model
 			{
 				running_history.remove(running_history.size() - 1);
 			}
-			
 		}
 		//replace them with updated computation
 		running_history.add(button_history.peek());
@@ -1419,7 +1323,6 @@ public class Model
 			return true;
 		}
 		return false;
-		
 	}
 	
 	
@@ -1431,25 +1334,19 @@ public class Model
 			sb_input_history.deleteCharAt(sb_input_history.length() - 1);
 			return updateValue();
 		}
-		
 		stored_values_undo.pop();
-		
 		if(stored_values_undo.empty())
 		{
 			stored_values.pop();
 			System.out.println(stored_values);
 			return "" + 0;
 		}
-			
-		
 		stored_values =  stored_values_undo.peek();
 		double result = stored_values.peek();
-		
 		if(isInt(result, (int) result))
 		{
 			return (int) result + "";
 		}
-		
 		return  result + "";
 	}
 	 
@@ -1464,11 +1361,9 @@ public class Model
 				return "Start New Calculation";
 			}
 				
-			
 			running_history = running_history_undo.pop();
 			button_history = button_history_undo.pop();	
 		}
-		
 		return printHistory();
 	}
 }

@@ -9,4 +9,18 @@ public class MinusOperation extends BinaryOperations
 		return second - first;
 	}
 
+	@Override
+	public String execute(double first, double second)
+	{
+		double result = second - first  ;
+		
+		if(isInt(result, (int) result))
+		{
+			return "" + (int) result;
+		}
+		
+		return "" + result;
+		
+	}
+
 }
