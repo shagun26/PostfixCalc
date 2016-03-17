@@ -143,7 +143,10 @@ public class Controller
 	{
 		window.updateHistory(model.undoHistory());
 		window.updateValue(model.undoValue());
-		
+		System.out.println("Button History\t" + model.button_history_undo);
+		System.out.println("Stored Values\t" + model.stored_values_undo);
+		System.out.println("Running History\t" + model.running_history_undo);
+		System.out.println("Precendence\t" + model.precedence_undo);
 	}
 	
 

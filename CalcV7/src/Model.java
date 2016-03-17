@@ -13,7 +13,7 @@ public class Model
 	 * (Section 3.3 in Design Document)
 	 */
 	private Stack<String> button_history = new Stack<String>();
-	private Stack<Stack<String>> button_history_undo = new Stack<Stack<String>>();
+	protected Stack<Stack<String>> button_history_undo = new Stack<Stack<String>>();
 	private static final String EQUALS = "=";
 	
 	/**
@@ -21,7 +21,7 @@ public class Model
 	 * (Section 3.3 in Design Document)
 	 */
 	private Stack<Double> stored_values = new Stack<Double>();
-	private Stack<Stack<Double>> stored_values_undo = new Stack<Stack<Double>>();
+	protected Stack<Stack<Double>> stored_values_undo = new Stack<Stack<Double>>();
 	
 	/**
 	 * A like-for-like copy of button_history.
@@ -29,7 +29,7 @@ public class Model
 	 * (Section 3.3 in Design Document)
 	 */
 	private ArrayList<String> running_history = new ArrayList<String>();
-	private Stack<ArrayList<String>> running_history_undo = new Stack<ArrayList<String>>();
+	protected Stack<ArrayList<String>> running_history_undo = new Stack<ArrayList<String>>();
 	
 	
 	/**
@@ -39,6 +39,7 @@ public class Model
 	 */
 	
 	private Stack<String> precedence= new Stack<String>();
+	protected Stack<Stack<String>> precedence_undo = new Stack<Stack<String>>();
 
 	/**
 	 * A reference to high precedence operators not including 
@@ -207,6 +208,7 @@ public class Model
 		opExpression = true;
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
 		return Controller.EXPRESSION;
 	}
 	
@@ -285,6 +287,7 @@ public class Model
 		button_history.clear();
 		button_history_undo.clear();
 		precedence.clear();
+		precedence_undo.clear();
 		expressionsInFix.clear();
 		expressionsPostFix.clear();
 		
@@ -296,6 +299,7 @@ public class Model
 		sb_input_history.delete(0, sb_input_history.length());
 		sb_completed_operations.delete(0, sb_completed_operations.length());
 		running_history.clear();
+		running_history_undo.clear();
 		sb.delete(0, sb.length());
 	}
 	
@@ -310,14 +314,19 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new SumOperation();
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
+			System.out.println(stored_values_undo);
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
+				
 				bin_code.zeroCheckBinary(stored_values, button_history);
 				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				System.out.println(stored_values_undo);
 				stored_values.push(Double.parseDouble(value));
+				System.out.println(stored_values_undo);
 				return value;	
 			}
 			//Otherwise update the history
@@ -354,6 +363,7 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new MinusOperation();
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
@@ -397,6 +407,7 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new MultOperation();
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
@@ -440,6 +451,7 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new DivideOperation();
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
@@ -524,19 +536,22 @@ public class Model
 			error = true;
 			return "NOT DEFINED";
 		}
-			
+		
+		
 		if(from_memory)
 		{
-			double input = stored_values.pop();
+			
+			double input = stored_values.peek();
 			String value = single_code.execute(input);
 			
 			if(value.equals("NOT DEFINED"))
 			{
-				stored_values.push(input);
 				error = true;
 			}
 			else
 			{
+				stored_values_undo.push((Stack<Double>) stored_values.clone());
+				stored_values.pop();
 				stored_values.push(Double.parseDouble(value));
 			}
 			return value;
@@ -554,6 +569,7 @@ public class Model
 			}
 			else
 			{
+				stored_values_undo.push((Stack<Double>) stored_values.clone());
 				stored_values.push(Double.parseDouble(value));
 			}
 			return value;	
@@ -571,6 +587,7 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		single_code = new SinOperation();
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
 		
 		if(from_memory)
 		{
@@ -607,6 +624,7 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		single_code = new CosOperation();
+		stored_values_undo.push((Stack<Double>) stored_values.clone());
 				
 		if(from_memory)
 		{
@@ -654,11 +672,13 @@ public class Model
 		//Else if expression has not been updated,
 		//set boolean variable true to indicate that it will be
 		//after this call
+		
 		else if(opExpression && !exprUpdated)
 		{
 			exprUpdated = true;
 		}
-		
+		button_history_undo.push((Stack<String>) button_history.clone());
+		running_history_undo.push((ArrayList<String>) running_history.clone());
 		//If not expression, continue as normal
 		second = button_history.pop();
 		if(!from_memory)
@@ -725,6 +745,8 @@ public class Model
 			return printHistory();
 		}
 		
+		button_history_undo.push((Stack<String>) button_history.clone());
+		running_history_undo.push((ArrayList<String>) running_history.clone());
 		if(!from_memory)
 		{
 			//set the string
@@ -732,6 +754,7 @@ public class Model
 			//Reset button-press string for next use
 			sb_input_history.delete(0, sb_input_history.length());
 			//Add updated history to the stack (First and only element)
+			running_history_undo.push((ArrayList<String>) running_history.clone());
 			button_history.push(sb_completed_operations.toString());
 			// Reset completed operations string_builder for next entry
 			sb_completed_operations.delete(0, sb_completed_operations.length());
@@ -780,7 +803,7 @@ public class Model
 	{
 		if(error)
 			return printHistory();
-			
+		
 		if(!button_history.empty())
 		{
 			running_history_undo.push((ArrayList<String>)running_history.clone());
@@ -825,12 +848,16 @@ public class Model
 		//Else if expression has not been updated,
 		//set boolean variable true to indicate that it will be
 		//after this call
+		
 		else if(opExpression && !exprUpdated)
 		{
 			exprUpdated = true;
 			expressionsPostFix.push(funct);
 			System.out.println(expressionsPostFix.toString());
 		}
+		
+		button_history_undo.push((Stack<String>) button_history.clone());
+		running_history_undo.push((ArrayList<String>) running_history.clone());		
 		
 		if(!from_memory)
 		{
@@ -919,8 +946,11 @@ public class Model
 		}
 		
 		error = false;
+		if(!stored_values.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		
 		stored_values.push(pushed);
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		
 		if(isInt(Math.abs(pushed), Math.abs((int) pushed)))
 		{
 			sb.delete(0, sb.length());
@@ -1219,20 +1249,18 @@ public class Model
 	
 	public String undoValue()
 	{
+		
 		if(!sb.toString().equals(""))
 		{
 			sb.deleteCharAt(sb.length()-1);
 			sb_input_history.deleteCharAt(sb_input_history.length() - 1);
 			return updateValue();
 		}
-		stored_values_undo.pop();
 		if(stored_values_undo.empty())
 		{
-			stored_values.pop();
-			System.out.println(stored_values);
-			return "" + 0;
+			return "0";
 		}
-		stored_values =  stored_values_undo.peek();
+		stored_values = stored_values_undo.pop();	
 		double result = stored_values.peek();
 		if(isInt(result, (int) result))
 		{
@@ -1249,7 +1277,7 @@ public class Model
 			{
 				running_history.remove(0);
 				button_history.pop();
-				return "Start New Calculation";
+				return "Start new Calculation";
 			}
 				
 			running_history = running_history_undo.pop();
