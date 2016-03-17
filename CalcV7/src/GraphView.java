@@ -1,8 +1,14 @@
 import java.awt.GridLayout;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Cursor;
 
 
 public class GraphView extends JFrame 
@@ -13,9 +19,7 @@ public class GraphView extends JFrame
 	private static final int GRAPH_WIDTH = 550;
 	private static final int DISPLAY_WIDTH = 50;
 	private static final int DISPLAY_HEIGHT = 50;
-	
-	private GridLayout window_layout_manager = new GridLayout(2, 1);
-	private GridLayout buttons_manager = new GridLayout(2, 1);
+	private GridLayout buttons_manager = new GridLayout(0, 3);
 	private GridLayout top_manager = new GridLayout(1, 2);
 	
 	private JPanel top = new JPanel();
@@ -31,18 +35,23 @@ public class GraphView extends JFrame
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-		setLayout(window_layout_manager);
+		top.setBackground(Color.DARK_GRAY);
 		
 		
 		
 		top.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 		top.setLayout(top_manager);
+		buttons.setBackground(Color.DARK_GRAY);
 		
 		
 		
 		buttons.setSize(20, 20);
+		buttons_manager.setVgap(5);
+		buttons_manager.setHgap(5);
 		buttons.setLayout(buttons_manager);
-		buttons.add(new ButtonAdapter("Calc")
+		
+		ButtonAdapter calc;
+		buttons.add(calc = new ButtonAdapter("Calc")
 		{
 			
 			public void pressed()
@@ -51,8 +60,13 @@ public class GraphView extends JFrame
 				controller.changeToCalc();
 			}
 		});
+		calc.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		calc.setFont(new Font("Dialog", Font.BOLD, 16));
+		calc.setForeground(Color.WHITE);
+		calc.setBackground(Color.BLACK);
 		
-		buttons.add(new ButtonAdapter("Fav")
+		ButtonAdapter fav;
+		buttons.add(fav = new ButtonAdapter("Fav")
 		{
 			
 			public void pressed()
@@ -60,8 +74,29 @@ public class GraphView extends JFrame
 				controller.changToFav();
 			}
 		});
+		fav.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		fav.setFont(new Font("Dialog", Font.BOLD, 16));
+		fav.setForeground(Color.WHITE);
+		fav.setBackground(Color.BLACK);
+		
+		ButtonAdapter button3;
+		buttons.add(button3 = new ButtonAdapter("button3")
+		{
+			
+			public void pressed()
+			{
+				;
+			}
+		});
+		button3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		button3.setFont(new Font("Dialog", Font.BOLD, 16));
+		button3.setForeground(Color.WHITE);
+		button3.setBackground(Color.BLACK);
 		
 		buttons.setVisible(true);
+		expression.setForeground(Color.WHITE);
+		expression.setFont(new Font("Dialog", Font.BOLD, 24));
+		expression.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		
 		top.add(expression);
@@ -70,9 +105,24 @@ public class GraphView extends JFrame
 
 		bottom.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
 		bottom.setVisible(true);
-		
-		add(top);
-		add(bottom);
+		GroupLayout groupLayout = new GroupLayout(getContentPane());
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(top, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE)
+						.addComponent(bottom, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(top, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(bottom, GroupLayout.PREFERRED_SIZE, 489, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
+		getContentPane().setLayout(groupLayout);
 		
 		
 	}
@@ -81,11 +131,4 @@ public class GraphView extends JFrame
 	{
 		expression.setText(expr);
 	}
-	
-	//public static void main(String[] args)
-	//{
-		//GraphView v = new GraphView();
-		//v.setVisible(true);
-	//}
-	
 }
