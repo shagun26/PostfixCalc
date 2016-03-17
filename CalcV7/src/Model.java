@@ -208,7 +208,10 @@ public class Model
 		opExpression = true;
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		if(stored_values_undo.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		else
+			stored_values_undo.push((Stack<Double>) stored_values_undo.peek());
 		return Controller.EXPRESSION;
 	}
 	
@@ -1260,7 +1263,15 @@ public class Model
 		{
 			return "0";
 		}
-		stored_values = stored_values_undo.pop();	
+		Stack<Double> popped = stored_values_undo.pop();
+		if(!stored_values_undo.empty())
+		{
+			System.out.println(popped);
+			System.out.println(stored_values_undo.peek());
+			if(stored_values_undo.peek().equals(popped))
+				return "" + button_history.peek();
+		}
+		stored_values = popped;
 		double result = stored_values.peek();
 		if(isInt(result, (int) result))
 		{
@@ -1283,6 +1294,8 @@ public class Model
 			running_history = running_history_undo.pop();
 			button_history = button_history_undo.pop();	
 		}
+		if(isOp(button_history.peek()))
+			return printHistory() + " " + EQUALS;
 		return printHistory();
 	}
 }
