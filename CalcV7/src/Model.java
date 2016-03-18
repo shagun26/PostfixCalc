@@ -372,7 +372,7 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new MinusOperation();
-		if(!stored_values_undo.empty())
+		if(!stored_values.empty())
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
@@ -417,7 +417,7 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new MultOperation();
-		if(!stored_values_undo.empty())
+		if(!stored_values.empty())
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
@@ -462,7 +462,7 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new DivideOperation();
-		if(!stored_values_undo.empty())
+		if(!stored_values.empty())
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
@@ -552,7 +552,7 @@ public class Model
 		
 		if(from_memory)
 		{
-			
+			single_code.zeroCheckSingle(stored_values, button_history);
 			double input = stored_values.peek();
 			String value = single_code.execute(input);
 			
@@ -601,13 +601,14 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		single_code = new SinOperation();
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		
 		
 		if(from_memory)
 		{
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
+				stored_values_undo.push((Stack<Double>) stored_values.clone());
 				single_code.zeroCheckSingle(stored_values, button_history);
 				String value = single_code.execute(stored_values.pop());
 				stored_values.push(Double.parseDouble(value));
@@ -619,6 +620,9 @@ public class Model
 			trigHistory(Controller.SIN);
 			return button_history.peek();
 		}
+		
+		if(!stored_values.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		
 		double history = Double.parseDouble(sb.toString());
 		sb.delete(0, sb.length());
@@ -638,13 +642,13 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		single_code = new CosOperation();
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
 				
 		if(from_memory)
 		{
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
+				stored_values_undo.push((Stack<Double>) stored_values.clone());
 				single_code.zeroCheckSingle(stored_values, button_history);
 				String value = single_code.execute(stored_values.pop());
 				stored_values.push(Double.parseDouble(value));
@@ -656,11 +660,15 @@ public class Model
 			trigHistory(Controller.SIN);
 			return button_history.peek();		
 		}
-			double history = Double.parseDouble(sb.toString());
-			sb.delete(0, sb.length());
-			String value = single_code.execute(history);
-			stored_values.push(Double.parseDouble(value));
-			return "" + value;
+		
+		if(!stored_values.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		
+		double history = Double.parseDouble(sb.toString());
+		sb.delete(0, sb.length());
+		String value = single_code.execute(history);
+		stored_values.push(Double.parseDouble(value));
+		return "" + value;
 	}
 	
 	/**
@@ -1328,9 +1336,10 @@ public class Model
 			precedence = precedence_undo.pop();
 		
 		System.out.println("this is sparta " + precedence);
+		System.out.println("Before: " + button_history)	;
 		if(sb.toString().equals(""))
 		{
-			if(running_history_undo.empty() && button_history_undo.empty())
+			if(stored_values_undo.empty())
 			{
 				if(!button_history.empty())
 				{

@@ -45,17 +45,12 @@ public class Controller
 	public void addToEntry(String button)
 	{
 		model.addToEntry(button);
-		
 		window.updateValue(model.updateValue());
 		
 		if(model.isHistoryEmpty())
 			window.updateHistory("");
 		else
-		{
 			window.updateHistory(model.printHistory());
-		}
-		
-		
 	}
 	
 	
@@ -122,6 +117,7 @@ public class Controller
 	public void negate()
 	{
 		window.updateValue(model.negate());
+		window.updateHistory(model.printHistory());
 	}
 	
 	public void historyOperation(String operator)

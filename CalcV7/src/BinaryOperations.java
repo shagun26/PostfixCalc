@@ -18,7 +18,7 @@ public abstract class BinaryOperations extends ArithmeticOperations
 			button_history.push("" +  0);
 			
 		}
-		if(stored_values.size() == 1)
+		else if(stored_values.size() == 1)
 		{
 			stored_values.push((double) 0);
 			button_history.push("" +  0);
