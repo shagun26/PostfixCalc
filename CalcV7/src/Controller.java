@@ -143,6 +143,8 @@ public class Controller
 		System.out.println("Stored Values\t" + model.stored_values_undo);
 		System.out.println("Running History\t" + model.running_history_undo);
 		System.out.println("Precedence\t" + model.precedence_undo);
+		System.out.println("Expression InFix\t" + model.expressionsInFix_undo);
+		System.out.println("Expression PostFix\t" + model.expressionsPostFix_undo);
 	}
 	
 
