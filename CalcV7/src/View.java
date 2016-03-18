@@ -467,7 +467,7 @@ public class View extends JFrame
 	
 	public void updateHistory(String next_result)
 	{
-		history_display.setText(next_result);
+		history_display.setText("<html>" + next_result + "</html>");
 	}
 	
 	public void clearDisplay()

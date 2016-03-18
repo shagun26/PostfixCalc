@@ -91,7 +91,7 @@ public class Model
 	 * stored_values were used in an operation or otherwise
 	 * (Section 3.3 in Design Document)
 	 */
-	private boolean from_memory = false;
+	private boolean from_memory = true;
 	private boolean pi = false;
 	private boolean error = false;
 	
@@ -173,8 +173,10 @@ public class Model
 		from_memory = true;
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
+		if(!stored_values.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		stored_values.push(Math.PI);
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		;
 		return "" + Math.PI;
 		
 	}
@@ -190,6 +192,7 @@ public class Model
 		{
 			button_history_undo.push((Stack<String>) button_history.clone());
 			running_history_undo.push((ArrayList<String>) running_history.clone());
+			precedence_undo.push((Stack<String>)precedence.clone());
 		}
 		
 		button_history.push(Controller.PI);
@@ -227,6 +230,7 @@ public class Model
 		{
 			button_history_undo.push((Stack<String>) button_history.clone());
 			running_history_undo.push((ArrayList<String>) running_history.clone());
+			precedence_undo.push((Stack<String>)precedence.clone());
 		}
 		
 		button_history.push(Controller.EXPRESSION);
@@ -317,7 +321,9 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new SumOperation();
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		if(!stored_values.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		System.out.println("GG " + stored_values_undo);
 		if(from_memory)
 		{	
 			System.out.println(stored_values_undo);
@@ -366,7 +372,8 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new MinusOperation();
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		if(!stored_values_undo.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
@@ -410,7 +417,8 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new MultOperation();
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		if(!stored_values_undo.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
@@ -454,7 +462,8 @@ public class Model
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		bin_code = new DivideOperation();
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
+		if(!stored_values_undo.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		if(from_memory)
 		{	
 			//If not expression, continue as normal
@@ -572,7 +581,9 @@ public class Model
 			}
 			else
 			{
-				stored_values_undo.push((Stack<Double>) stored_values.clone());
+				if(!stored_values.empty())
+					stored_values_undo.push((Stack<Double>) stored_values.clone());
+				
 				stored_values.push(Double.parseDouble(value));
 			}
 			return value;	
@@ -680,12 +691,18 @@ public class Model
 		{
 			exprUpdated = true;
 		}
-		button_history_undo.push((Stack<String>) button_history.clone());
-		running_history_undo.push((ArrayList<String>) running_history.clone());
+		
+		if(!button_history.empty())
+		{
+			button_history_undo.push((Stack<String>) button_history.clone());
+			running_history_undo.push((ArrayList<String>) running_history.clone());
+			precedence_undo.push((Stack<String>)precedence.clone());
+		}
 		//If not expression, continue as normal
 		second = button_history.pop();
 		if(!from_memory)
 		{
+			
 			//If the stack is empty or operation is completed using a button press, 
 			//use the button press to update to the stack
 			if(!checkBrackets(second, operator))
@@ -713,7 +730,7 @@ public class Model
 			//prev_history.push(operator);
 			System.out.println(button_history.peek());
 			from_memory = !from_memory;
-			return printHistory() + EQUALS;
+			return printHistory() + " " + EQUALS;
 		}
 		//Else, use the last two entries in the stack and anything else as necessary
 		first = button_history.pop();
@@ -748,8 +765,14 @@ public class Model
 			return printHistory();
 		}
 		
-		button_history_undo.push((Stack<String>) button_history.clone());
-		running_history_undo.push((ArrayList<String>) running_history.clone());
+		if(!button_history.empty())
+		{
+			
+			button_history_undo.push((Stack<String>) button_history.clone());
+			running_history_undo.push((ArrayList<String>) running_history.clone());
+			precedence_undo.push((Stack<String>)precedence.clone());
+		}
+		
 		if(!from_memory)
 		{
 			//set the string
@@ -757,7 +780,7 @@ public class Model
 			//Reset button-press string for next use
 			sb_input_history.delete(0, sb_input_history.length());
 			//Add updated history to the stack (First and only element)
-			running_history_undo.push((ArrayList<String>) running_history.clone());
+			//running_history_undo.push((ArrayList<String>) running_history.clone());
 			button_history.push(sb_completed_operations.toString());
 			// Reset completed operations string_builder for next entry
 			sb_completed_operations.delete(0, sb_completed_operations.length());
@@ -768,7 +791,7 @@ public class Model
 			precedence.push(operator);
 			System.out.println(precedence.toString());
 			from_memory = !from_memory;
-			return printHistory() + EQUALS;
+			return printHistory() + " " + EQUALS;
 		}
 		
 		String first = button_history.pop();
@@ -811,6 +834,7 @@ public class Model
 		{
 			running_history_undo.push((ArrayList<String>)running_history.clone());
 			button_history_undo.push((Stack<String>) button_history.clone());
+			precedence_undo.push((Stack<String>)precedence.clone());
 		}
 			
 		if(pi)
@@ -859,8 +883,12 @@ public class Model
 			System.out.println(expressionsPostFix.toString());
 		}
 		
-		button_history_undo.push((Stack<String>) button_history.clone());
-		running_history_undo.push((ArrayList<String>) running_history.clone());		
+		if(!button_history.empty())
+		{
+			button_history_undo.push((Stack<String>) button_history.clone());
+			running_history_undo.push((ArrayList<String>) running_history.clone());
+			precedence_undo.push((Stack<String>)precedence.clone());
+		}
 		
 		if(!from_memory)
 		{
@@ -876,7 +904,7 @@ public class Model
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 			from_memory = !from_memory;
-			return printHistory() + EQUALS;
+			return printHistory() + " " + EQUALS;
 			
 		}
 		String first = button_history.pop();
@@ -950,8 +978,10 @@ public class Model
 		
 		error = false;
 		if(!stored_values.empty())
+		{
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
-		
+		}
+			
 		stored_values.push(pushed);
 		
 		if(isInt(Math.abs(pushed), Math.abs((int) pushed)))
@@ -1062,7 +1092,7 @@ public class Model
 	{
 		//If input was pi
 		//not an operation
-		if(pi || input.equals(Controller.EXPRESSION))
+		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION))
 			return false;
 		
 		try
@@ -1255,13 +1285,25 @@ public class Model
 		
 		if(!sb.toString().equals(""))
 		{
-			sb.deleteCharAt(sb.length()-1);
-			sb_input_history.deleteCharAt(sb_input_history.length() - 1);
+			if(Double.parseDouble(sb.toString()) < 0)
+			{
+				sb.deleteCharAt(0);
+				sb_input_history.deleteCharAt(0);
+			}
+			else
+			{
+				sb.deleteCharAt(sb.length()-1);
+				sb_input_history.deleteCharAt(sb_input_history.length() - 1);
+			}
+			
 			return updateValue();
 		}
 		if(stored_values_undo.empty())
 		{
-			return "0";
+			if(!stored_values.empty())
+				stored_values.pop();
+			
+			return "" + 0;
 		}
 		Stack<Double> popped = stored_values_undo.pop();
 		if(!stored_values_undo.empty())
@@ -1282,20 +1324,30 @@ public class Model
 	 
 	public String undoHistory()
 	{
+		if(!precedence_undo.empty())
+			precedence = precedence_undo.pop();
+		
+		System.out.println("this is sparta " + precedence);
 		if(sb.toString().equals(""))
 		{
 			if(running_history_undo.empty() && button_history_undo.empty())
 			{
-				running_history.remove(0);
-				button_history.pop();
+				if(!button_history.empty())
+				{
+					running_history.remove(0);
+					button_history.pop();
+				}
 				return "Start new Calculation";
 			}
-				
+			System.out.println("Hi " + button_history_undo)	;
 			running_history = running_history_undo.pop();
 			button_history = button_history_undo.pop();	
+			
+			if(isOp(button_history.peek()))
+				return printHistory() + " " + EQUALS;
+			
+			return printHistory();
 		}
-		if(isOp(button_history.peek()))
-			return printHistory() + " " + EQUALS;
 		return printHistory();
 	}
 }
