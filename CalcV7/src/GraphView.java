@@ -29,7 +29,7 @@ public class GraphView extends JFrame
 	private JLabel expression = new JLabel("y = x");
 	
 	
-	public GraphView(GraphController controller)
+	public GraphView(final GraphController controller)
 	{
 		super("Graph");
 		
