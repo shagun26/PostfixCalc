@@ -716,7 +716,7 @@ public class Model
 			//Update precedence list
 			precedence.push(operator);
 			
-			System.out.println(precedence.toString());
+			System.out.println("Precedence after op : " + precedence.toString());
 			
 			if(opExpression)
 			{
@@ -957,7 +957,7 @@ public class Model
 				sb.append(0);
 				sb_input_history.append(0);
 			}
-			else if(expressionsInFix.peek().equals(button_history.peek()))
+			else if(!expressionsInFix.empty() && expressionsInFix.peek().equals(button_history.peek()))
 			{
 				expressionVal();
 				System.out.println("Haha");
@@ -1124,6 +1124,7 @@ public class Model
 		{
 			return false;
 		}
+		
 		//If last op was trig
 		//No brackets needed
 		if(precedence.peek().equals(Controller.COS) || precedence.peek().equals(Controller.SIN)
@@ -1147,16 +1148,14 @@ public class Model
 		}	
 		//If both operands are high precedence
 		//additional checks needed
-		else if(high_precedence.contains(operator))
+		else if(high_precedence.contains(operator) || lowest_precedence.contains(operator))
 		{
 			//If multiplication was first,
 			//brackets needed
 			String prev = precedence.pop();
 			if((operator.equals(Controller.DIV) && prev.equals(Controller.MULT)) || 
 					lowest_precedence.contains(prev) )
-			{
-				return true;
-			}		
+				return true;		
 		}		
 		return false;
 	}
