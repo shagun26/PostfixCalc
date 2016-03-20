@@ -9,11 +9,11 @@ public  class EvaluateSine extends ExpressionsParser
 	{
 		double[] num1 = valuation.pop();
 		
-		if(num1 == EXPR || num1.length > 1)
+		if(num1.length > 1)
 		{
 			for(int i = 0; i < 10; i++)
 			{
-				y[i] = Math.sin(y[i]);
+				y[i] = Math.sin(num1[i]);
 			}
 			valuation.push(y);
 		}
@@ -21,7 +21,6 @@ public  class EvaluateSine extends ExpressionsParser
 		{
 			double[] result = {Math.sin(num1[0])};
 			valuation.push(result);
-			
 		}
 		
 		return y;

@@ -689,6 +689,8 @@ public class Model
 		else if(opExpression && !exprUpdated)
 		{
 			exprUpdated = true;
+			expressionsInFix_undo.push((Stack<String>) expressionsInFix.clone());
+			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 		}
 		
 		if(!button_history.empty())
@@ -701,23 +703,14 @@ public class Model
 		second = button_history.pop();
 		if(!from_memory)
 		{
-			
-			//If the stack is empty or operation is completed using a button press, 
-			//use the button press to update to the stack
+			//Necessary check for parentheses
 			if(!checkBrackets(second, operator))
-			{
 				sb_completed_operations.append(second + " " + operator + " " + sb_input_history.toString());
-			}
 			else
-			{
 				sb_completed_operations.append("(" + second + ")" + " " + operator + " " +  sb_input_history.toString());
-			}
 			
 			//Update precedence list
 			precedence.push(operator);
-			
-			System.out.println("Precedence after op : " + precedence.toString());
-			
 			if(opExpression)
 			{
 				expressionsPostFix.push(sb_input_history.toString());
@@ -726,7 +719,6 @@ public class Model
 			
 			System.out.println(expressionsPostFix.toString());
 			updateHistDirect();
-			//prev_history.push(operator);
 			System.out.println(button_history.peek());
 			from_memory = !from_memory;
 			return printHistory() + " " + EQUALS;
@@ -1164,28 +1156,20 @@ public class Model
 	{
 		//If the last element needs brackets
 		if(checkBrackets(second, operator))	
-		{
-			System.out.println("second is true");
-			//And so does the one before
+		{	//And so does the one before
 			//Put them
 			if(checkBrackets(first, operator))
 				sb_completed_operations.append("(" + first +  ") " + operator + " " + "(" + second + ")");
-				//Otherwise just on the last element
-				else
-				{
-						sb_completed_operations.append(first +  " " + operator + " " + "(" + second + ")");
-				}			
+			//Otherwise just on the last element
+			else
+				sb_completed_operations.append(first +  " " + operator + " " + "(" + second + ")");			
 		}
 		//If only the one before needs brackets
 		else if(checkBrackets(first, operator))
-		{
 			sb_completed_operations.append("(" + first +  ") " + operator + " " + second);
-		}
 		//No brackets at all
 		else
-		{
 			sb_completed_operations.append(first + " " + operator + " " /*+ sb_input_history.toString() + " "*/ + second);
-		}
 	}
 	
 	/**

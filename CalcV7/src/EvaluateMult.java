@@ -11,28 +11,14 @@ public class EvaluateMult extends ExpressionsParser
 		double[] num2 = valuation.pop();
 		
 		
-		if(num1 == EXPR)
-		{
-				for(int i = 0; i < 11; i++)
-				{
-					y[i] = GraphModel.X[i] * num2[0];
-				}
-		}
-		else if(num2 == EXPR)
-		{
-				for(int i = 0; i < 11; i++)
-				{
-					y[i] = GraphModel.X[i] * num1[0];
-				}
-		}
-		else if(num2.length < 2)
+		if(num2.length < 2 && num1.length > 2)
 		{
 			for(int i = 0; i < 11; i++)
 			{
 				y[i] = num2[0] * num1[i];
 			}
 		}
-		else if(num1.length < 2)
+		else if(num1.length < 2 && num2.length > 2)
 		{
 			for(int i = 0; i < 11; i++)
 			{

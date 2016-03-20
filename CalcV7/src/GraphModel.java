@@ -21,6 +21,7 @@ public class GraphModel
 	{
 		Iterator<String> iter = expressionsPostFix.iterator();
 		Arrays.fill(y, 0);
+		valuation.clear();
 		while(iter.hasNext())
 		{
 			String next = iter.next();
@@ -49,7 +50,7 @@ public class GraphModel
 	public void var()
 	{
 		parser = new EvaluateVar();
-		parser.evaluate(valuation, y);
+		y = parser.evaluate(valuation, y);
 	}
 	
 	public void sum()

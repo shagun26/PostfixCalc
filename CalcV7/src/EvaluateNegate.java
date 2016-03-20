@@ -10,11 +10,11 @@ public class EvaluateNegate extends ExpressionsParser
 		// TODO Auto-generated method stub
 		double[] num1 = valuation.pop();
 		
-		if(num1 == EXPR || num1.length > 1)
+		if(num1.length > 1)
 		{
 			for(int i = 0; i < 10; i++)
 			{
-				y[i] = y[i] * -1;
+				y[i] = num1[i] * -1;
 			}
 			valuation.push(y);
 		}
