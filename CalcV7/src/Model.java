@@ -174,7 +174,7 @@ public class Model
 		from_memory = true;
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
-		if(!stored_values.empty())
+		if(!button_history.empty())
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		stored_values.push(Math.PI);
 		;
@@ -398,7 +398,7 @@ public class Model
 		//Otherwise update the history
 		//and return top element (new expression)
 		sb.delete(0, sb.length());
-		operandHistory(Controller.PLUS);
+		operandHistory(Controller.MINUS);
 		return button_history.peek();
 	}
 	
@@ -443,7 +443,7 @@ public class Model
 			//Otherwise update the history
 			//and return top element (new expression)
 			sb.delete(0, sb.length());
-			operandHistory(Controller.PLUS);
+			operandHistory(Controller.MULT);
 			return button_history.peek();
 	}
 	
@@ -488,7 +488,7 @@ public class Model
 			//Otherwise update the history
 			//and return top element (new expression)
 			sb.delete(0, sb.length());
-			operandHistory(Controller.PLUS);
+			operandHistory(Controller.DIV);
 			return button_history.peek();
 	}
 	
@@ -596,10 +596,10 @@ public class Model
 	
 		if(from_memory)
 		{
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
-				stored_values_undo.push((Stack<Double>) stored_values.clone());
 				single_code.zeroCheckSingle(stored_values, button_history);
 				String value = single_code.execute(stored_values.pop());
 				stored_values.push(Double.parseDouble(value));
@@ -728,7 +728,7 @@ public class Model
 		if(opExpression)
 		{
 			if(!stored_values.empty())
-				expressionsPostFix.push("" + stored_values.pop());
+				expressionsPostFix.push("" + stored_values.peek());
 			
 			expressionsPostFix.push(operator);
 			System.out.println(expressionsPostFix.toString());
@@ -875,6 +875,8 @@ public class Model
 		else if(opExpression && !exprUpdated)
 		{
 			exprUpdated = true;
+			expressionsInFix_undo.push((Stack<String>) expressionsInFix.clone());
+			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 			expressionsPostFix.push(funct);
 			System.out.println(expressionsPostFix.toString());
 		}
@@ -1260,7 +1262,7 @@ public class Model
 		if(button_history.empty() || expressionsInFix.isEmpty())
 			return false;
 		else if(expressionsInFix.contains(button_history.peek()) || 
-				expressionsInFix.contains(running_history.get(running_history.size() - 2)))
+				expressionsInFix.contains(running_history.get(running_history.size() - 2)) && from_memory)
 		{
 			return true;
 		}
@@ -1273,6 +1275,8 @@ public class Model
 		//Case 1 : Undoing a character entry OR negate
 		if(!sb.toString().equals(""))
 		{
+			if(sb.length() == 1)
+				from_memory = !from_memory;
 			//If canceling negate, remove '-'
 			if(Double.parseDouble(sb.toString()) < 0)
 			{
@@ -1285,6 +1289,8 @@ public class Model
 				sb.deleteCharAt(sb.length()-1);
 				sb_input_history.deleteCharAt(sb_input_history.length() - 1);
 			}
+			
+			
 			return updateValue();
 		}
 		//Case 2: Reached the default state by undos
@@ -1297,7 +1303,7 @@ public class Model
 		Stack<Double> popped = stored_values_undo.pop();
 		stored_values = popped;
 		//Case 3 - Undoing something expression-related
-		if(isExpression())
+		if(expressionsInFix.contains(button_history.peek()))
 			return "" + button_history.peek();
 		//Case 4 - Undoing with no expressions involved
 		double result = stored_values.peek();
@@ -1317,11 +1323,10 @@ public class Model
 		{
 			if(stored_values_undo.empty())
 			{
-				if(!button_history.empty())
-				{
-					running_history.remove(0);
-					button_history.pop();
-				}
+				running_history.clear();
+				button_history.clear();
+				expressionsInFix.clear();
+				expressionsPostFix.clear();	
 				return "Start new Calculation";
 			}
 			else if(expressionsInFix.contains(button_history.peek()))
@@ -1339,7 +1344,7 @@ public class Model
 			}
 			running_history = running_history_undo.pop();
 			button_history = button_history_undo.pop();	
-			
+			System.out.println("THis is top: " + button_history.peek());
 			if(isOp(button_history.peek()))
 				return printHistory() + " " + EQUALS;
 			
