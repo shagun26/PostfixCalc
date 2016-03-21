@@ -355,6 +355,9 @@ public class Model
 		running_history.clear();
 		running_history_undo.clear();
 		sb.delete(0, sb.length());
+		
+		single_code = null;
+		bin_code = null;
 	}
 	
 	/**
