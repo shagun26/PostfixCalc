@@ -5,8 +5,9 @@ public class EvaluateMult extends ExpressionsParser
 {
 
 	@Override
-	public double[] evaluate(Stack<double[]> valuation, double[] y) {
+	public double[] evaluate(Stack<double[]> valuation) {
 		// TODO Auto-generated method stub
+		double[] y = new double[11];
 		double[] num1 = valuation.pop();
 		double[] num2 = valuation.pop();
 		
@@ -30,7 +31,9 @@ public class EvaluateMult extends ExpressionsParser
 			for(int i = 0; i < 11; i++)
 			{
 				y[i] = num2[i] * num1[i];
+				System.out.println(num2[i] + " " + num1[i]);
 			}
+			System.out.println("Array mult");
 		}
 		valuation.push(y);
 		

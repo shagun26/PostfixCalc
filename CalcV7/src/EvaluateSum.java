@@ -4,11 +4,11 @@ import java.util.Stack;
 public class EvaluateSum extends ExpressionsParser
 {
 	@Override
-	public double[] evaluate(Stack<double[]> valuation, double[] y) 
+	public double[] evaluate(Stack<double[]> valuation) 
 	{
 		double[] num1 = valuation.pop();
 		double[] num2 = valuation.pop();
-		
+		double[] y = new double[11];
 		
 		if(num2.length < 2 && num1.length > 2)
 		{

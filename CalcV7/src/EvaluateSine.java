@@ -5,9 +5,10 @@ public  class EvaluateSine extends ExpressionsParser
 {
 
 	@Override
-	public double[] evaluate(Stack<double[]> valuation, double[] y) 
+	public double[] evaluate(Stack<double[]> valuation) 
 	{
 		double[] num1 = valuation.pop();
+		double[] y = new double[11];
 		
 		if(num1.length > 1)
 		{

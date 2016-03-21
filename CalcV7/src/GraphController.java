@@ -13,12 +13,11 @@ public class GraphController
 			grph_view = new GraphView(this);
 		
 		if(grph_model == null)
-			grph_model = new GraphModel(expressionsPostFix);
-			
+			grph_model = new GraphModel();
+		
 		cntrl = control;
-		
-		
-		grph_model.getValues();
+	
+		grph_model.getValues(expressionsPostFix);
 		grph_view.updateExpr("y = " + expressionsInFix.peek());
 		
 		grph_view.setVisible(true);

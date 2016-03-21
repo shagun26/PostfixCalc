@@ -939,7 +939,8 @@ public class Model
 		button_history.push(sb_completed_operations.toString());
 		running_history.remove(running_history.size() - 1);
 		running_history.add(button_history.peek());
-		expressionsInFix.push(button_history.peek());
+		if(opExpression)
+			expressionsInFix.push(button_history.peek());
 		sb_completed_operations.delete(0, sb_completed_operations.length());
 		return printHistory() + " " + EQUALS;
 	}
@@ -1147,12 +1148,12 @@ public class Model
 		if(isInt(push, (int) push))
 		{
 			sb_input_history.append((int) push);
-			pi = false;
+			//pi = false;
 		}
 		//Set sb_input_history as pi symbol for history
-		if(push == Math.PI)
+		if(Math.abs(push) == Math.PI)
 		{
-			sb_input_history.append(Controller.PI);
+			sb_input_history.append(button_history.peek());
 			pi = true;
 		}
 		//Set sb_input_history as double
@@ -1210,7 +1211,7 @@ public class Model
 		//If input was pi or x
 		//not an operation
 		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION) ||
-				input.equals("-" + Controller.EXPRESSION))
+				input.equals("-" + Controller.EXPRESSION) || input.equals("-" + Controller.PI))
 			return false;
 		//Otherwise try to parse it
 		try
@@ -1363,7 +1364,7 @@ public class Model
 	 */
 	private boolean isInt(double double_val, int int_val)
 	{
-		if(double_val - int_val < Double.MIN_VALUE)
+		if(Math.abs(double_val - int_val) < Double.MIN_VALUE)
 			return true;
 		return false;
 	}
