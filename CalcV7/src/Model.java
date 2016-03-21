@@ -8,13 +8,13 @@ public class Model
 	 * Used to enter correct routine for binary operations
 	 * (Section 11.2)
 	 */
-	private  BinaryOperations bin_code;
+	private  BinaryOperations bin_code = null;
 	
 	/**
 	 * Used to enter correct routine for single operations
 	 * (Section 11.2)
 	 */
-	private  SingleOperations single_code;
+	private  SingleOperations single_code = null;
 	
 	/**
 	 * Stores a history of entered values and operations.
@@ -276,7 +276,7 @@ public class Model
 			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 		}
 		//Checks for Entering an expression using enter	
-		if(button_history.empty() || button_history.peek().equals(Controller.EXPRESSION))
+		if(single_code == null && bin_code == null)
 		{
 			expressionsInFix.push(Controller.EXPRESSION);
 			button_history.push(Controller.EXPRESSION);
@@ -284,7 +284,7 @@ public class Model
 			expressionsPostFix.push(Controller.EXPRESSION);
 		}
 		else
-		{	
+		{
 			expressionsInFix.push(button_history.peek());
 			button_history.push(button_history.peek());
 			running_history.add(button_history.peek());
@@ -1023,6 +1023,12 @@ public class Model
 			else if(!expressionsInFix.empty() && expressionsInFix.peek().equals(button_history.peek()))
 			{
 				expressionVal();
+				if(button_history.peek().equals(Controller.EXPRESSION))
+				{
+					System.out.println("top element: " + button_history.peek());
+					bin_code = null;
+					single_code = null;
+				}
 				System.out.println("Haha");
 				return button_history.peek();
 			}
