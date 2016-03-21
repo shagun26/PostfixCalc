@@ -617,17 +617,17 @@ public class Model
 		if(from_memory)
 		{
 			single_code.zeroCheckSingle(stored_values, button_history);
-			double input = stored_values.pop();
+			double input = stored_values.peek();
 			String value = single_code.execute(input);
 			
 			if(value.equals("NOT DEFINED"))
 			{	//Precondition not met
 				error = true;
-				stored_values.push(input);
 			}
 			else
 			{	//Update previous state of stored_values
 				stored_values_undo.push((Stack<Double>) stored_values.clone());
+				stored_values.pop();
 				stored_values.push(Double.parseDouble(value));
 			}
 			return value;
@@ -1108,6 +1108,7 @@ public class Model
 	 */
 	private double negateStoredValues()
 	{
+		from_memory = false;
 		double first_number = stored_values.peek();
 		double result = first_number * (-1);
 		if(Math.abs(result) == Math.PI)
