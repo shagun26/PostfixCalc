@@ -247,6 +247,19 @@ public class View extends JFrame
 		zero.setForeground(Color.WHITE);
 		zero.setBackground(Color.BLACK);
 		
+		ButtonAdapter decimal_point;
+		keypad.add(decimal_point = new ButtonAdapter(DECIMAL_POINT)
+		{
+			public void pressed()
+			{
+				controller.addToEntry(DECIMAL_POINT);
+			}
+		});
+		decimal_point.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		decimal_point.setFont(new Font("Dialog", Font.BOLD, 18));
+		decimal_point.setForeground(Color.WHITE);
+		decimal_point.setBackground(Color.BLACK);
+		
 		ButtonAdapter enter;
 		keypad.add(enter = new ButtonAdapter(Controller.ENTER)
 		{
@@ -259,20 +272,6 @@ public class View extends JFrame
 		enter.setFont(new Font("Dialog", Font.BOLD, 18));
 		enter.setForeground(Color.WHITE);
 		enter.setBackground(Color.ORANGE);
-		
-		
-		ButtonAdapter clear;
-		keypad.add(clear = new ButtonAdapter(Controller.CLEAR)
-		{
-			public void pressed()
-			{
-				controller.clear();
-			}
-		});
-		clear.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		clear.setFont(new Font("Dialog", Font.BOLD, 18));
-		clear.setForeground(Color.WHITE);
-		clear.setBackground(Color.ORANGE);
 		
 		operators.setBackground(Color.DARK_GRAY);
 		operators.setLocation(326, 12);
@@ -428,19 +427,19 @@ public class View extends JFrame
 		undo.setFont(new Font("Dialog", Font.BOLD, 16));
 		undo.setForeground(Color.WHITE);
 		undo.setBackground(Color.ORANGE);
-		
-		ButtonAdapter decimal_point;
-		operators.add(decimal_point = new ButtonAdapter(DECIMAL_POINT)
+
+		ButtonAdapter clear;
+		operators.add(clear = new ButtonAdapter(Controller.CLEAR)
 		{
 			public void pressed()
 			{
-				controller.addToEntry(DECIMAL_POINT);
+				controller.clear();
 			}
 		});
-		decimal_point.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		decimal_point.setFont(new Font("Dialog", Font.BOLD, 18));
-		decimal_point.setForeground(Color.WHITE);
-		decimal_point.setBackground(Color.BLACK);
+		clear.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		clear.setFont(new Font("Dialog", Font.BOLD, 18));
+		clear.setForeground(Color.WHITE);
+		clear.setBackground(Color.ORANGE);
 		
 		ButtonAdapter expression;
 		operators.add(expression = new ButtonAdapter(Controller.EXPRESSION)

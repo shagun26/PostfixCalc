@@ -1163,7 +1163,6 @@ public class Model
 		}	
 		sb.append(push);	
 	}
-	
 	/**
 	 * Negates the char sequence being constructed
 	 */

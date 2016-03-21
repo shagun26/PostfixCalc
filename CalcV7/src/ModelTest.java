@@ -36,6 +36,8 @@ public class ModelTest {
 		assertEquals(m.sum(),"3");
 		m.reset();
 		// Case 3: Addition with expression and stored numbers in stack.
+		m.expressionVal();
+		
 		m.expressionHist();
 		m.addToEntry("2");
 		m.enterValue();
@@ -482,37 +484,38 @@ public class ModelTest {
 		
 		m.addToEntry("5");
 		m.enterValue();
-		m.sb.delete(0, m.sb.length());
+		m.enterHistory();
 		m.addToEntry("2");
 		m.enterValue();
-		m.sb.delete(0, m.sb.length());
-		
+		m.enterHistory();
+		m.undoHistory();
 		assertEquals(m.undoValue(), "5"); 
 		
 		m.reset();
 		
 		m.addToEntry("5.1");
 		m.enterValue();
-		m.sb.delete(0, m.sb.length());
+		m.enterHistory();
 		m.addToEntry("2.1");
 		m.enterValue();
-		m.sb.delete(0, m.sb.length());
-		
+		m.enterHistory();
+		m.undoHistory();
 		assertEquals(m.undoValue(), "5.1"); 
 		m.reset();
 		
 
 		m.addToEntry("5");
 		m.enterValue();
-		m.sb.delete(0, m.sb.length());
-		
+		m.enterHistory();
+		m.undoHistory();
 		assertEquals(m.undoValue(), "0"); 
 		m.reset();
 		
 		m.addToEntry("5");
 		m.enterValue();
-		m.sb.delete(0, m.sb.length());
-		m.sb.append("3");
+		m.enterHistory();
+		m.addToEntry("3");
+		m.undoHistory();
 		assertEquals(m.undoValue(), ""); 
 	}
 	
