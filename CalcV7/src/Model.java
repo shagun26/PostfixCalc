@@ -102,7 +102,7 @@ public class Model
 	 * Used to trace character presses.
 	 * (Section 3.3 in Design Document)
 	 */
-	private StringBuilder sb = new StringBuilder();
+	protected StringBuilder sb = new StringBuilder();
 	
 	/**
 	 * Same functionality as sb except used for
