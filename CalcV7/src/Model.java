@@ -293,6 +293,10 @@ public class Model
 			//Copy elements
 			while(i < size)
 				expressionsPostFix.push(expressionsPostFix.get(i++));
+			//Set binary and single codes to null
+			//as operation has completed (default state)
+			single_code = null;
+			bin_code = null;
 		}
 		return printHistory();
 	}
@@ -1026,6 +1030,8 @@ public class Model
 			else if(!expressionsInFix.empty() && expressionsInFix.peek().equals(button_history.peek()))
 			{
 				expressionVal();
+				//If x was entered, not an op.
+				//Hence, codes must be set accordingly
 				if(button_history.peek().equals(Controller.EXPRESSION))
 				{
 					System.out.println("top element: " + button_history.peek());
