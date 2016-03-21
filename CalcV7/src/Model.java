@@ -22,6 +22,7 @@ public class Model
 	 */
 	private Stack<String> button_history = new Stack<String>();
 	
+	
 	/**
 	 * Stores the previous states of button_history
 	 */
@@ -276,16 +277,16 @@ public class Model
 			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 		}
 		//Checks for Entering an expression using enter	
-		if(single_code == null && bin_code == null)
-		{
+		//if(single_code == null && bin_code == null)
+		//{
 			expressionsInFix.push(Controller.EXPRESSION);
 			button_history.push(Controller.EXPRESSION);
 			running_history.add(Controller.EXPRESSION);
 			expressionsPostFix.push(Controller.EXPRESSION);
-		}
-		else
-		{
-			expressionsInFix.push(button_history.peek());
+		//}
+		//else
+		//{
+			/*expressionsInFix.push(button_history.peek());
 			button_history.push(button_history.peek());
 			running_history.add(button_history.peek());
 			int size = expressionsPostFix.size();
@@ -296,8 +297,8 @@ public class Model
 			//Set binary and single codes to null
 			//as operation has completed (default state)
 			single_code = null;
-			bin_code = null;
-		}
+			bin_code = null;*/
+		//}
 		return printHistory();
 	}
 	
@@ -374,7 +375,7 @@ public class Model
 	public String sum()
 	{
 		//Determine whether an expression is involved
-		opExpression = isExpression();
+		opExpression = isExpressionBin();
 		bin_code = new SumOperation();
 		//Update previous state of stored_values
 		if(!button_history.empty())
@@ -426,7 +427,7 @@ public class Model
 	public String subtract()
 	{
 		//Determine whether an expression is involved
-		opExpression = isExpression();
+		opExpression = isExpressionBin();
 		bin_code = new MinusOperation();
 		//Update previous state of stored_values
 		if(!button_history.empty())
@@ -473,7 +474,7 @@ public class Model
 	public String multiply()
 	{
 		//Determine whether an expression is involved
-		opExpression = isExpression();
+		opExpression = isExpressionBin();
 		bin_code = new MultOperation();
 		//Update previous state of stored_values
 		if(!button_history.empty())
@@ -520,7 +521,7 @@ public class Model
 	public String divide()
 	{
 		//Determine whether an expression is involved
-		opExpression = isExpression();
+		opExpression = isExpressionBin();
 		bin_code = new DivideOperation();
 		//Update previous state of stored_values
 		if(!button_history.empty())
@@ -557,30 +558,26 @@ public class Model
 			return button_history.peek();
 	}
 	/**
-	 * Negates either the top element of stored_values
+	 * s either the top element of stored_values
 	 * or the element currently constructed
 	 * @return - A string representation of the negated element
 	 */
 	public String negate()
 	{
+		opExpression = isExpression();
+		single_code = new NegateOperation();
 		if(from_memory)
-		{
-			double value = negateStoredValues();
-			sb.delete(0, sb.length());
-			sb_input_history.delete(0, sb_input_history.length());
-			int alt = (int) value;
-			
-			if(isInt(Math.abs(value), Math.abs(alt)))
-			{
-				sb.append("" + (int) value);
-				sb_input_history.append("" + (int) value);
+		{	
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+			if(!opExpression)
+			{	
+				single_code.zeroCheckSingle(stored_values, button_history);
+				String value = single_code.execute(stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;
 			}
-			else
-			{
-				sb.append("" + value);
-				sb_input_history.append("" + value);
-			}
-			return sb.toString();
+			negateHistory();
+			return button_history.peek();
 		}
 		else
 		{
@@ -617,17 +614,17 @@ public class Model
 		if(from_memory)
 		{
 			single_code.zeroCheckSingle(stored_values, button_history);
-			double input = stored_values.pop();
+			double input = stored_values.peek();
 			String value = single_code.execute(input);
 			
 			if(value.equals("NOT DEFINED"))
 			{	//Precondition not met
 				error = true;
-				stored_values.push(input);
 			}
 			else
 			{	//Update previous state of stored_values
 				stored_values_undo.push((Stack<Double>) stored_values.clone());
+				stored_values.pop();
 				stored_values.push(Double.parseDouble(value));
 			}
 			return value;
@@ -881,6 +878,71 @@ public class Model
 		//print updated history
 		return printHistory() + " " + EQUALS;
 	}
+	
+	public String negateHistory()
+	{
+		if(!from_memory)
+			return printHistory();
+		
+		//If call made with an expression
+		//that was already updated, set both boolean
+		//variables to false and return without any changes made
+		if(opExpression && exprUpdated)
+		{
+			exprUpdated = false;
+			return printHistory() + " " + EQUALS;
+		}
+		//Else if expression has not been updated,
+		//set boolean variable true to indicate that it will be
+		//after this call
+		else if(opExpression && !exprUpdated)
+		{
+			exprUpdated = true;
+			//Update the previous states of expressions list 
+			expressionsInFix_undo.push((Stack<String>) expressionsInFix.clone());
+			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
+			expressionsPostFix.push(Controller.PLUSMINUS);
+		}
+				
+		if(!button_history.empty())
+		{	//Update the previous states of history lists and precedence 
+			button_history_undo.push((Stack<String>) button_history.clone());
+			running_history_undo.push((ArrayList<String>) running_history.clone());
+			precedence_undo.push((Stack<String>)precedence.clone());
+		}
+		
+		String first = button_history.pop();
+		System.out.println(first);
+		if(isOp(first))
+		{	
+			if(first.charAt(0) == '-' && first.charAt(1) == '(')
+			{	sb_completed_operations.append(first);
+				sb_completed_operations.deleteCharAt(0);
+				sb_completed_operations.deleteCharAt(0);
+				sb_completed_operations.deleteCharAt(sb_completed_operations.length() - 1);
+			}
+			else
+				sb_completed_operations.append("-(" + first + ")");
+		}	
+		else
+		{
+			if(first.charAt(0) != '-')
+				sb_completed_operations.append("-" + first);
+			else
+			{	
+				sb_completed_operations.append(first);
+				sb_completed_operations.deleteCharAt(0);
+			}
+				
+		}
+		
+		button_history.push(sb_completed_operations.toString());
+		running_history.remove(running_history.size() - 1);
+		running_history.add(button_history.peek());
+		expressionsInFix.push(button_history.peek());
+		sb_completed_operations.delete(0, sb_completed_operations.length());
+		return printHistory() + " " + EQUALS;
+	}
 				
 	/**
 	 * Adds the 'Entered' number into running_history 
@@ -1103,27 +1165,6 @@ public class Model
 	}
 	
 	/**
-	 * Negates the top element of stored_values
-	 * @return - the value of this negation
-	 */
-	private double negateStoredValues()
-	{
-		double first_number = stored_values.peek();
-		double result = first_number * (-1);
-		if(Math.abs(result) == Math.PI)
-		{
-			pi = true;
-			if(result < 0)
-				sb_input_history.append("-" + Controller.PI);
-			else
-				sb_input_history.append(Controller.PI);
-		}	
-		else
-			pi = false;
-	
-		return result;
-	}
-	/**
 	 * Negates the char sequence being constructed
 	 */
 	private void negateStoredWithHistory()
@@ -1169,7 +1210,8 @@ public class Model
 	{
 		//If input was pi or x
 		//not an operation
-		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION))
+		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION) ||
+				input.equals("-" + Controller.EXPRESSION))
 			return false;
 		//Otherwise try to parse it
 		try
@@ -1335,6 +1377,15 @@ public class Model
 	{
 		if(button_history.empty() || expressionsInFix.isEmpty())
 			return false;
+		else if(expressionsInFix.contains(button_history.peek())  && from_memory)
+			return true;
+		return false;
+	}
+	
+	private boolean isExpressionBin()
+	{
+		if(button_history.empty() || expressionsInFix.isEmpty())
+			return false;
 		else if(expressionsInFix.contains(button_history.peek()) || 
 				expressionsInFix.contains(running_history.get(running_history.size() - 2)) && from_memory)
 			return true;
@@ -1353,20 +1404,8 @@ public class Model
 		//Case 1 : Undoing a character entry OR negate
 		if(!sb.toString().equals(""))
 		{
-			if(sb.length() == 1)
-				from_memory = !from_memory;
-			//If canceling negate, remove '-'
-			if(Double.parseDouble(sb.toString()) < 0)
-			{
-				sb.deleteCharAt(0);
-				sb_input_history.deleteCharAt(0);
-			}
-			//Otherwise remove last char
-			else
-			{
-				sb.deleteCharAt(sb.length()-1);
-				sb_input_history.deleteCharAt(sb_input_history.length() - 1);
-			}
+			sb.deleteCharAt(sb.length()-1);
+			sb_input_history.deleteCharAt(sb_input_history.length() - 1);
 			return updateValue();
 		}
 		//Case 2: Reached the default state by undos

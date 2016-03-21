@@ -20,6 +20,7 @@ public class GraphModel
 	public void getValues()
 	{
 		Iterator<String> iter = expressionsPostFix.iterator();
+		System.out.println(expressionsPostFix);
 		Arrays.fill(y, 0);
 		valuation.clear();
 		while(iter.hasNext())
@@ -33,6 +34,8 @@ public class GraphModel
 				mult();
 			else if(next.equals("SIN("))
 				sin();
+			else if(next.equals(Controller.PLUSMINUS))
+				negate();
 			else
 			{
 				double[] pushed = {Double.parseDouble(next)};
@@ -47,6 +50,12 @@ public class GraphModel
 		}
 	}
 	
+	public void negate() 
+	{
+		parser = new EvaluateNegate();
+		y = parser.evaluate(valuation, y);
+	}
+
 	public void var()
 	{
 		parser = new EvaluateVar();

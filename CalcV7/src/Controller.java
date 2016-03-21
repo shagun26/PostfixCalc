@@ -117,7 +117,7 @@ public class Controller
 	public void negate()
 	{
 		window.updateValue(model.negate());
-		window.updateHistory(model.printHistory());
+		window.updateHistory(model.negateHistory());
 	}
 	
 	public void historyOperation(String operator)
