@@ -8,7 +8,7 @@ public class EvaluateVar extends ExpressionsParser
 	public double[] evaluate(Stack<double[]> valuation, double[] y) 
 	{
 		valuation.push(GraphModel.X);
-		return y;
+		return GraphModel.X;
 	}
 	
 

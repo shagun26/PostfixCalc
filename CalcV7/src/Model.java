@@ -293,6 +293,10 @@ public class Model
 			//Copy elements
 			while(i < size)
 				expressionsPostFix.push(expressionsPostFix.get(i++));
+			//Set binary and single codes to null
+			//as operation has completed (default state)
+			single_code = null;
+			bin_code = null;
 		}
 		return printHistory();
 	}
@@ -613,17 +617,17 @@ public class Model
 		if(from_memory)
 		{
 			single_code.zeroCheckSingle(stored_values, button_history);
-			double input = stored_values.pop();
+			double input = stored_values.peek();
 			String value = single_code.execute(input);
 			
 			if(value.equals("NOT DEFINED"))
 			{	//Precondition not met
 				error = true;
-				stored_values.push(input);
 			}
 			else
 			{	//Update previous state of stored_values
 				stored_values_undo.push((Stack<Double>) stored_values.clone());
+				stored_values.pop();
 				stored_values.push(Double.parseDouble(value));
 			}
 			return value;
@@ -1026,6 +1030,8 @@ public class Model
 			else if(!expressionsInFix.empty() && expressionsInFix.peek().equals(button_history.peek()))
 			{
 				expressionVal();
+				//If x was entered, not an op.
+				//Hence, codes must be set accordingly
 				if(button_history.peek().equals(Controller.EXPRESSION))
 				{
 					System.out.println("top element: " + button_history.peek());
@@ -1102,6 +1108,7 @@ public class Model
 	 */
 	private double negateStoredValues()
 	{
+		from_memory = false;
 		double first_number = stored_values.peek();
 		double result = first_number * (-1);
 		if(Math.abs(result) == Math.PI)
