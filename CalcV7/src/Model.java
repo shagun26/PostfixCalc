@@ -796,7 +796,7 @@ public class Model
 		if(opExpression)
 		{	//Update the PostFix expressions list
 			if(!stored_values.empty())
-				expressionsPostFix.push("" + stored_values.peek());
+				expressionsPostFix.push("" + stored_values.pop());
 			else if(isOp(first) && isOp(second))
 				start = 0;
 			expressionsPostFix.push(operator);
@@ -939,7 +939,8 @@ public class Model
 		}
 		
 		button_history.push(sb_completed_operations.toString());
-		running_history.remove(running_history.size() - 1);
+		if(!running_history.isEmpty())
+			running_history.remove(running_history.size() - 1);
 		running_history.add(button_history.peek());
 		if(opExpression)
 			expressionsInFix.push(button_history.peek());
@@ -1265,8 +1266,7 @@ public class Model
 			//If multiplication was first,
 			//brackets needed
 			String prev = precedence.pop();
-			if((operator.equals(Controller.DIV) && prev.equals(Controller.MULT)) || 
-					lowest_precedence.contains(prev) )
+			if((operator.equals(Controller.DIV) && prev.equals(Controller.MULT)))
 				return true;		
 		}		
 		return false;
