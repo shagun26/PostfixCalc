@@ -308,11 +308,14 @@ public class Model
 	 */
 	public void addToEntry(String button)
 	{
+		
 		sb.append(button);
 		sb_input_history.append(button);
 		pi = false;
 		from_memory = false;
 		opExpression = false;
+		
+		
 	}
 	
 	/**
@@ -1406,7 +1409,22 @@ public class Model
 		{
 			sb.deleteCharAt(sb.length()-1);
 			sb_input_history.deleteCharAt(sb_input_history.length() - 1);
-			return updateValue();
+			System.out.println(sb.length());
+			if(sb.length() > 0)
+				return updateValue();
+			
+			from_memory = true;
+			if(button_history.empty())
+				return "0";
+			
+			if(expressionsInFix.contains(button_history.peek()))
+				return "" + button_history.peek();
+			
+			double result = stored_values.peek();
+			if(isInt(result, (int) result))
+				return (int) result + "";
+			return  result + "";
+			
 		}
 		//Case 2: Reached the default state by undos
 		if(stored_values_undo.empty())
@@ -1435,7 +1453,16 @@ public class Model
 	public String undoHistory()
 	{	
 		//If character undo, no changes needed
-		if(!sb.toString().equals(""))
+		if(sb.length() == 1)
+		{
+			if(button_history.empty())
+				return "Start new Calculation";
+			
+			if(isOp(button_history.peek()))
+				return printHistory() + " " + EQUALS;
+			return printHistory();
+		}
+		else if(sb.length() > 1)
 			return printHistory();
 		
 		//Change precedence to its previous state
