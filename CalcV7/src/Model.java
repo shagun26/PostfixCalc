@@ -4,6 +4,7 @@ import java.util.Stack;
 
 public class Model
 {
+	private int start = 0;
 	/**
 	 * Used to enter correct routine for binary operations
 	 * (Section 11.2)
@@ -248,7 +249,6 @@ public class Model
 	@SuppressWarnings("unchecked")
 	public String expressionVal()
 	{
-		opExpression = true;
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
 		//Update previous state of stored_values
@@ -276,29 +276,29 @@ public class Model
 			expressionsInFix_undo.push((Stack<String>) expressionsInFix.clone());
 			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 		}
-		//Checks for Entering an expression using enter	
-		//if(single_code == null && bin_code == null)
-		//{
-			expressionsInFix.push(Controller.EXPRESSION);
+		
+		if(expressionsInFix.empty() || !exprUpdated)
 			button_history.push(Controller.EXPRESSION);
-			running_history.add(Controller.EXPRESSION);
+		else 
+			button_history.push(expressionsInFix.peek());
+			
+		expressionsInFix.push(button_history.peek());
+		running_history.add(button_history.peek());
+		
+		if(expressionsPostFix.empty() || expressionsInFix.peek().equals(Controller.EXPRESSION))
 			expressionsPostFix.push(Controller.EXPRESSION);
-		//}
-		//else
-		//{
-			/*expressionsInFix.push(button_history.peek());
-			button_history.push(button_history.peek());
-			running_history.add(button_history.peek());
+		else
+		{
 			int size = expressionsPostFix.size();
-			int i = 0;
 			//Copy elements
-			while(i < size)
-				expressionsPostFix.push(expressionsPostFix.get(i++));
-			//Set binary and single codes to null
-			//as operation has completed (default state)
-			single_code = null;
-			bin_code = null;*/
-		//}
+			while(start < size)
+				expressionsPostFix.push(expressionsPostFix.get(start++));
+		
+			if(isOp(expressionsInFix.peek()))
+				precedence.push(precedence.peek());
+			
+		}System.out.println(expressionsPostFix);
+		System.out.println(start);
 		return printHistory();
 	}
 	
@@ -363,9 +363,8 @@ public class Model
 		running_history.clear();
 		running_history_undo.clear();
 		sb.delete(0, sb.length());
-		
-		single_code = null;
-		bin_code = null;
+	
+		start = 0;
 	}
 	
 	/**
@@ -793,14 +792,14 @@ public class Model
 			return printHistory() + " " + EQUALS;
 		}
 		//Else, use the last two entries in the stack and anything else as necessary
-		
 		first = button_history.pop();
 		if(opExpression)
 		{	//Update the PostFix expressions list
 			if(!stored_values.empty())
 				expressionsPostFix.push("" + stored_values.peek());
+			else if(isOp(first) && isOp(second))
+				start = 0;
 			expressionsPostFix.push(operator);
-			
 		}
 		formNewEntry(first, second, operator);
 		//Update precedence list
@@ -959,13 +958,14 @@ public class Model
 	@SuppressWarnings("unchecked")
 	public String enterHistory()
 	{	//Precondition not met
-		if(error)
-			return printHistory();
-		else if(opExpression)
+		if(error || exprUpdated)
 		{
-			//Enter an expression
-			return expressionHist();
+			exprUpdated = false;
+			error = false;
+			return printHistory();
 		}
+			
+	
 		//Update the previous states of the history lists and precedence
 		if(!button_history.empty())
 		{
@@ -1086,7 +1086,7 @@ public class Model
 		//Enter from value field
 		if(sb.toString().equals(""))
 		{	//Enter from default state
-			if(stored_values.empty() && (!opExpression))
+			if(stored_values.empty() && (!isExpression()))
 			{
 				stored_values.push((double) 0);
 				sb.append(0);
@@ -1095,22 +1095,15 @@ public class Model
 			//Entering an expression
 			else if(!expressionsInFix.empty() && expressionsInFix.peek().equals(button_history.peek()))
 			{
+				exprUpdated = true;
 				expressionVal();
-				//If x was entered, not an op.
-				//Hence, codes must be set accordingly
-				if(button_history.peek().equals(Controller.EXPRESSION))
-				{
-					System.out.println("top element: " + button_history.peek());
-					bin_code = null;
-					single_code = null;
-				}
+				expressionHist();
 				System.out.println("Haha");
 				return button_history.peek();
 			}
 			//Entering from value field
 			prepareForEnter();
 		}
-		
 		//Error checking
 		double pushed;
 		try
@@ -1201,6 +1194,8 @@ public class Model
 		{	//Replace missing operand with 0
 			if(expressionsInFix.size() < 2)
 				button_history.push("" +  0);
+			
+			System.out.println("Hi " + button_history.peek());
 		}
 	}
 	/**
@@ -1342,6 +1337,8 @@ public class Model
 		if(opExpression)
 		{
 			expressionsInFix.pop();
+			if(!expressionsInFix.empty())
+				expressionsInFix.pop();
 			expressionsInFix.push(button_history.peek());
 		}
 		// Reset completed operations string_builder for next use.
@@ -1458,7 +1455,7 @@ public class Model
 			if(button_history.empty())
 				return "Start new Calculation";
 			
-			if(isOp(button_history.peek()))
+			if(isOp(running_history.get(running_history.size() - 1)))
 				return printHistory() + " " + EQUALS;
 			return printHistory();
 		}
@@ -1497,7 +1494,7 @@ public class Model
 		button_history = button_history_undo.pop();	
 		//If the last element of previous state
 		//was an op, '=' required
-		if(isOp(button_history.peek()))
+		if(isOp(running_history.get(running_history.size() - 1)))
 			return printHistory() + " " + EQUALS;
 		return printHistory();
 	}

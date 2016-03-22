@@ -44,51 +44,30 @@ public class GraphModel
 	{
 		parser = new EvaluateNegate();
 		y = parser.evaluate(valuation);
-		for(int i = 0; i < 11; i++)
-		{
-			System.out.print(y[i] + " ");
-		}System.out.println();
 	}
 
 	public void var()
 	{
 		parser = new EvaluateVar();
 		y = parser.evaluate(valuation);
-		for(int i = 0; i < 11; i++)
-		{
-			System.out.print(y[i] + " ");
-		}
-		System.out.println();
 	}
 	
 	public void sum()
 	{
 		parser = new EvaluateSum();
 		y = parser.evaluate(valuation);
-		for(int i = 0; i < 11; i++)
-		{
-			System.out.print(y[i] + " ");
-		}System.out.println();
 	}
 	
 	public void mult()
 	{
 		parser = new EvaluateMult();
 		y = parser.evaluate(valuation);
-		for(int i = 0; i < 11; i++)
-		{
-			System.out.print(y[i] + " ");
-		}System.out.println();
 	}
 	
 	public void sin()
 	{
 		parser = new EvaluateSine();
 		y = parser.evaluate(valuation);
-		for(int i = 0; i < 11; i++)
-		{
-			System.out.print(y[i] + " ");
-		}System.out.println();
 	}
 
 
