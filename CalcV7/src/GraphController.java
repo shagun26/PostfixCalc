@@ -14,12 +14,13 @@ public class GraphController
 		
 		double[] y = grph_model.getValues(expressionsPostFix);
 		
-		grph_view = new GraphView(this);
+		if(grph_view == null)
+			grph_view = new GraphView(this);
 		
 		cntrl = control;
 	
 		grph_view.updateExpr("y = " + expressionsInFix.peek());
-		
+		grph_view.drawGraph(y);
 		grph_view.setVisible(true);
 	}
 	
@@ -36,8 +37,4 @@ public class GraphController
 		
 	}
 	
-	public double[] calculate()
-	{
-		return grph_model.returny();
-	}
 }

@@ -22,6 +22,11 @@ public class DrawPanel extends JPanel
 	{
 		y = A;
 	}
+	
+	public void setY(double[] input)
+	{
+		y = input;
+	}
 
 	public void paintComponent (Graphics g)
 	{
@@ -30,7 +35,7 @@ public class DrawPanel extends JPanel
 	    widthH = getWidth()/2;
 	    heightH = getHeight()/2;
 	    xFactor = width / (y.length-1);
-	    yFactor = height / (y.length-1)*2;
+	    yFactor = height / (y.length-1)*4;
 		Graphics2D g2d = (Graphics2D) g;
 	    super.paintComponent(g2d);
 	
@@ -59,9 +64,9 @@ public class DrawPanel extends JPanel
 	    //Evaluate Graph
 	    for(int i = 0; i < y.length - 1; i++)
 		{
-	    	Line2D line = new Line2D.Double((xFactor * i), (heightH - y[i] * yFactor), (xFactor * (i+1)), (heightH - y[i+1] * yFactor));
-	    	//g.drawLine((int) (xFactor * i), (int) (heightH - y[i] * yFactor), (int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
-	    	g2d.draw(line);
+	    	//Line2D line = new Line2D.Double((xFactor * i), (heightH - y[i] * yFactor), (xFactor * (i+1)), (heightH - y[i+1] * yFactor));
+	    	g.drawLine((int) (xFactor * i), (int) (heightH - y[i] * yFactor), (int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
+	    	//g2d.draw(line);
 		}
 	    
 	}

@@ -26,7 +26,7 @@ public class GraphView extends JFrame
 	private GridLayout top_manager = new GridLayout(1, 2);
 	
 	private JPanel top = new JPanel();
-	private DrawPanel bottom;
+	private static DrawPanel  bottom = null;
 	private JPanel buttons = new JPanel();
 	
 	private JLabel expression = new JLabel("y = x");
@@ -39,8 +39,6 @@ public class GraphView extends JFrame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		top.setBackground(Color.DARK_GRAY);
-		
-		y = controller.calculate();
 		
 		top.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 		top.setLayout(top_manager);
@@ -90,9 +88,7 @@ public class GraphView extends JFrame
 		top.add(expression);
 		top.add(buttons);
 		top.setVisible(true);
-		
-		//bottom = new DrawPanel(y);
-
+	
 		bottom.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
 		bottom.setVisible(true);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
@@ -122,4 +118,15 @@ public class GraphView extends JFrame
 		expression.setText(expr);
 	}
 	
+	public void drawGraph(double[] y)
+	{
+		if(bottom == null)
+			bottom = new DrawPanel(y);
+		else
+		{
+			bottom.setY(y);
+			bottom.repaint();
+		}
+			
+	}
 }
