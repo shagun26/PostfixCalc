@@ -77,11 +77,6 @@ public class Model
 	private ArrayList<String> lowest_precedence = new ArrayList<String>();
 	
 	/**
-	 * A reference to high precedence operators
-	 */
-	private ArrayList<String> highest_precedence = new ArrayList<String>();
-	
-	/**
 	 * Stores a list of expressions in
 	 * InFix notation
 	 */
@@ -160,9 +155,6 @@ public class Model
 		
 		lowest_precedence.add(Controller.PLUS);
 		lowest_precedence.add(Controller.MINUS);
-		
-		
-		highest_precedence.add(Controller.FACT);
 		
 	}
 	
@@ -917,7 +909,8 @@ public class Model
 		System.out.println(first);
 		if(isOp(first))
 		{	
-			if(first.charAt(0) == '-' && first.charAt(1) == '(')
+			if(first.charAt(0) == '-' && first.charAt(1) == '(' 
+					&& first.charAt(first.length() - 1) == ')')
 			{	sb_completed_operations.append(first);
 				sb_completed_operations.deleteCharAt(0);
 				sb_completed_operations.deleteCharAt(0);
