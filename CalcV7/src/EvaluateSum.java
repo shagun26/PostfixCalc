@@ -8,25 +8,25 @@ public class EvaluateSum extends ExpressionsParser
 	{
 		double[] num1 = valuation.pop();
 		double[] num2 = valuation.pop();
-		double[] y = new double[11];
+		double[] y = new double[21];
 		
 		if(num2.length < 2 && num1.length > 2)
 		{
-			for(int i = 0; i < 11; i++)
+			for(int i = 0; i < 21; i++)
 			{
 				y[i] = num2[0] + num1[i];
 			}
 		}
 		else if(num1.length < 2 && num2.length > 2)
 		{
-			for(int i = 0; i < 11; i++)
+			for(int i = 0; i < 21; i++)
 			{
 				y[i] = num2[i] + num1[0];
 			}
 		}
 		else
 		{
-			for(int i = 0; i < 11; i++)
+			for(int i = 0; i < 21; i++)
 			{
 				y[i] = num2[i] + num1[i];
 			}

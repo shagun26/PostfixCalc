@@ -9,15 +9,16 @@ public class GraphController
 	
 	public void open(Controller control, Stack<String> expressionsPostFix, Stack<String> expressionsInFix)
 	{
-		if(grph_view == null)
-			grph_view = new GraphView(this);
-		
 		if(grph_model == null)
 			grph_model = new GraphModel();
 		
+		grph_model.getValues(expressionsPostFix);
+		
+		
+		grph_view = new GraphView(this);
+		
 		cntrl = control;
 	
-		grph_model.getValues(expressionsPostFix);
 		grph_view.updateExpr("y = " + expressionsInFix.peek());
 		
 		grph_view.setVisible(true);
@@ -34,5 +35,10 @@ public class GraphController
 	{
 		System.out.println("FAV PLS");
 		
+	}
+	
+	public double[] calculate()
+	{
+		return grph_model.returny();
 	}
 }

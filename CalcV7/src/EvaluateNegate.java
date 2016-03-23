@@ -9,9 +9,9 @@ public class EvaluateNegate extends ExpressionsParser
 	{
 		// TODO Auto-generated method stub
 		double[] num1 = valuation.pop();
-		double[] y = new double[11];
+		double[] y = new double[21];
 		
-		for(int i = 0; i < 11; i++)
+		for(int i = 0; i < 21; i++)
 		{
 				y[i] = num1[i] * -1;
 		}

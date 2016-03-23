@@ -1,4 +1,5 @@
 import java.awt.GridLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -6,6 +7,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
+
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -19,11 +21,12 @@ public class GraphView extends JFrame
 	private static final int GRAPH_WIDTH = 550;
 	private static final int DISPLAY_WIDTH = 50;
 	private static final int DISPLAY_HEIGHT = 50;
+	private double y[];
 	private GridLayout buttons_manager = new GridLayout(0, 3);
 	private GridLayout top_manager = new GridLayout(1, 2);
 	
 	private JPanel top = new JPanel();
-	private JPanel bottom = new JPanel();
+	private DrawPanel bottom;
 	private JPanel buttons = new JPanel();
 	
 	private JLabel expression = new JLabel("y = x");
@@ -37,26 +40,24 @@ public class GraphView extends JFrame
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		top.setBackground(Color.DARK_GRAY);
 		
-		
+		y = controller.calculate();
 		
 		top.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 		top.setLayout(top_manager);
 		buttons.setBackground(Color.DARK_GRAY);
 		
-		
-		
 		buttons.setSize(20, 20);
 		buttons_manager.setVgap(5);
 		buttons_manager.setHgap(5);
 		buttons.setLayout(buttons_manager);
+		bottom = new DrawPanel(y);
 		
-		ButtonAdapter calc;
+	    ButtonAdapter calc;
 		buttons.add(calc = new ButtonAdapter("Calc")
 		{
 			
 			public void pressed()
 			{
-				
 				controller.changeToCalc();
 			}
 		});
@@ -102,6 +103,8 @@ public class GraphView extends JFrame
 		top.add(expression);
 		top.add(buttons);
 		top.setVisible(true);
+		
+		bottom = new DrawPanel(y);
 
 		bottom.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
 		bottom.setVisible(true);
