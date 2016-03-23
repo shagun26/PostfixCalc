@@ -50,7 +50,10 @@ public class DrawPanel extends JPanel
 	    g.drawLine(0, (int)(heightH)*3/2, (int) width, (int) (heightH)*3/2);
 	    g.drawLine((int)widthH*3/2, 0, (int) widthH*3/2, (int) height);
 	    
-	    
+	    //THIS IS MISSION CRITICAL
+	    //DON'T CHANGE!
+	    //DON'T YOU DARE!
+	    //RED IS LOVE. RED IS LIFE
 	    g2d.setColor(Color.RED);
 	   
 	    //Evaluate Graph
