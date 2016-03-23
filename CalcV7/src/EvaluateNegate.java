@@ -9,19 +9,14 @@ public class EvaluateNegate extends ExpressionsParser
 	{
 		// TODO Auto-generated method stub
 		double[] num1 = valuation.pop();
-		double[] y = new double[21];
+		double[] y = new double[GraphModel.X.length];
 		
-		for(int i = 0; i < 21; i++)
+		for(int i = 0; i < y.length; i++)
 		{
 				y[i] = num1[i] * -1;
 		}
 		valuation.push(y);
 		
-		//else
-		//{
-			//double[] result = {num1[0] * -1};
-			//valuation.push(result);
-		//}
 		
 		return y;
 	}

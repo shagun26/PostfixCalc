@@ -80,19 +80,6 @@ public class GraphView extends JFrame
 		fav.setForeground(Color.WHITE);
 		fav.setBackground(Color.BLACK);
 		
-		ButtonAdapter button3;
-		buttons.add(button3 = new ButtonAdapter("button3")
-		{
-			
-			public void pressed()
-			{
-				;
-			}
-		});
-		button3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		button3.setFont(new Font("Dialog", Font.BOLD, 16));
-		button3.setForeground(Color.WHITE);
-		button3.setBackground(Color.BLACK);
 		
 		buttons.setVisible(true);
 		expression.setForeground(Color.WHITE);
@@ -104,7 +91,7 @@ public class GraphView extends JFrame
 		top.add(buttons);
 		top.setVisible(true);
 		
-		bottom = new DrawPanel(y);
+		//bottom = new DrawPanel(y);
 
 		bottom.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
 		bottom.setVisible(true);
@@ -134,4 +121,5 @@ public class GraphView extends JFrame
 	{
 		expression.setText(expr);
 	}
+	
 }

@@ -12,8 +12,7 @@ public class GraphController
 		if(grph_model == null)
 			grph_model = new GraphModel();
 		
-		grph_model.getValues(expressionsPostFix);
-		
+		double[] y = grph_model.getValues(expressionsPostFix);
 		
 		grph_view = new GraphView(this);
 		

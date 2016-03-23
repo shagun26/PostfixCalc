@@ -5,14 +5,23 @@ import java.util.Stack;
 
 public class GraphModel 
 {
-	public static  double[] X = {-5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
-	private double[] y = new double[21];
+	public static final  double[] X = new double[81]; //= {-5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
+	private double[] y; //= new double[X.length];
 	private Stack<double[]> valuation = new Stack<double[]>();
 	private ExpressionsParser parser;
-		
-	public void getValues(Stack<String> expressionsPostFix)
+	
+	public GraphModel()
 	{
-		System.out.println(expressionsPostFix);
+		int j = 0;
+		for(double i = -10; j < X.length;)
+		{
+			X[j++] = i;
+			i = i + 0.25;
+		}
+	}
+	
+	public double[] getValues(Stack<String> expressionsPostFix)
+	{
 		valuation.clear();
 		for(String next : expressionsPostFix)
 		{
@@ -38,10 +47,11 @@ public class GraphModel
 		//valuation.clear();
 		for(int i = 0; i < (y.length); i++)
 		{
-			System.out.print(y[i] + " ");
+			System.out.print("x y pair : " + X[i] + " " + y[i] + " ");
 		}
 		System.out.println("\n");
 		System.out.println(y.length);
+		return y;
 	}
 	
 	public void negate() 

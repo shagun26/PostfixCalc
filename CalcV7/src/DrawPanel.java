@@ -1,5 +1,9 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+
+import javafx.scene.shape.Shape;
 
 import javax.swing.JPanel;
 
@@ -27,8 +31,8 @@ public class DrawPanel extends JPanel
 	    heightH = getHeight()/2;
 	    xFactor = width / (y.length-1);
 	    yFactor = height / (y.length-1)*2;
-		
-	    super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
+	    super.paintComponent(g2d);
 	
 //	    System.out.println(xFactor);
 //	    System.out.println(yFactor);
@@ -47,11 +51,14 @@ public class DrawPanel extends JPanel
 	    g.drawLine((int)widthH*3/2, 0, (int) widthH*3/2, (int) height);
 	    
 	    
-	    g.setColor(Color.BLACK);
+	    g2d.setColor(Color.RED);
+	   
 	    //Evaluate Graph
-	    for(int i = 0; i < y.length-1; i++)
+	    for(int i = 0; i < y.length - 1; i++)
 		{
-	    	g.drawLine((int) (xFactor * i), (int) (heightH + y[i] * yFactor), (int) (xFactor * (i+1)), (int) (heightH + y[i+1] * yFactor));
+	    	Line2D line = new Line2D.Double((xFactor * i), (heightH - y[i] * yFactor), (xFactor * (i+1)), (heightH - y[i+1] * yFactor));
+	    	//g.drawLine((int) (xFactor * i), (int) (heightH - y[i] * yFactor), (int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
+	    	g2d.draw(line);
 		}
 	    
 	}

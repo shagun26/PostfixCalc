@@ -8,11 +8,11 @@ public  class EvaluateSine extends ExpressionsParser
 	public double[] evaluate(Stack<double[]> valuation) 
 	{
 		double[] num1 = valuation.pop();
-		double[] y = new double[21];
+		double[] y = new double[GraphModel.X.length];
 		
 		if(num1.length > 1)
 		{
-			for(int i = 0; i < 21; i++)
+			for(int i = 0; i < y.length; i++)
 			{
 				y[i] = Math.sin(num1[i]);
 			}
