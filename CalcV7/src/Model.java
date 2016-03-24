@@ -764,8 +764,16 @@ public class Model
 		if(opExpression)
 		{	//Update the PostFix expressions list
 			if(!stored_values.empty())
-			{
-				expressionsPostFix.push("" + stored_values.peek());
+			{	//If expression follows value and div
+				//Make changes to postfix list
+				if(operator.equals(Controller.DIV) && expressionsInFix.contains(second))
+				{
+					String expr = expressionsPostFix.pop();
+					expressionsPostFix.push("" + stored_values.peek());
+					expressionsPostFix.push(expr);
+				}
+				else
+					expressionsPostFix.push("" + stored_values.peek());
 				expressionsInFix.push("" + stored_values.pop());
 			}	
 			else if(isOp(first) && isOp(second))
@@ -985,14 +993,15 @@ public class Model
 		// This prevents duplication of previous entries
 		sb_completed_operations.delete(0, sb_completed_operations.length());
 		//remove last element in running_history
-		if(!(running_history.isEmpty()))
+		if(!running_history.isEmpty())
 			running_history.remove(running_history.size() - 1);
 		
-		if(!(expressionsInFix.isEmpty()))
-			expressionsInFix.pop();
-		
 		if(opExpression)
+		{
+			expressionsInFix.pop();
 			expressionsInFix.push(button_history.peek());
+		}
+			
 		//replace them with updated computation
 		running_history.add(button_history.peek());
 		System.out.println(expressionsInFix.toString());

@@ -5,7 +5,7 @@ import java.util.Stack;
 
 public class GraphModel 
 {
-	public static final  double[] X = new double[81]; //= {-5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
+	public static final  double[] X = new double[202]; //= {-5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
 	private double[] y; //= new double[X.length];
 	private Stack<double[]> valuation = new Stack<double[]>();
 	private ExpressionsParser parser;
@@ -16,7 +16,7 @@ public class GraphModel
 		for(double i = -10; j < X.length;)
 		{
 			X[j++] = i;
-			i = i + 0.25;
+			i = i + 0.1;
 		}
 	}
 	
@@ -31,6 +31,8 @@ public class GraphModel
 				sum();
 			else if(next.equals("*"))
 				mult();
+			else if(next.equals("/"))
+				div();
 			else if(next.equals("SIN("))
 				sin();
 			else if(next.equals("COS("))
@@ -54,6 +56,13 @@ public class GraphModel
 		return y;
 	}
 	
+	public void div() 
+	{
+		parser = new EvaluateDiv();
+		y = parser.evaluate(valuation);
+		
+	}
+
 	public void negate() 
 	{
 		parser = new EvaluateNegate();

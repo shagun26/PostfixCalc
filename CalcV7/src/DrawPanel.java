@@ -64,8 +64,9 @@ public class DrawPanel extends JPanel
 	    //Evaluate Graph
 	    for(int i = 0; i < y.length - 1; i++)
 		{
-	    	//Line2D line = new Line2D.Double((xFactor * i), (heightH - y[i] * yFactor), (xFactor * (i+1)), (heightH - y[i+1] * yFactor));
-	    	g.drawLine((int) (xFactor * i), (int) (heightH - y[i] * yFactor), (int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
+	    	if(!(Math.abs(y[i] - y[i + 1]) > 10000))
+	    			g.drawLine((int) (xFactor * i), (int) (heightH - y[i] * yFactor), 
+	    					(int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
 	    	//g2d.draw(line);
 		}
 	    
