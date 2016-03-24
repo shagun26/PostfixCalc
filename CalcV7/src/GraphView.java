@@ -73,7 +73,7 @@ public class GraphView extends JFrame
 			
 			public void pressed()
 			{
-				controller.changToFav(controller);
+				controller.changToFav();
 			}
 		});
 		fav.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -88,7 +88,7 @@ public class GraphView extends JFrame
 			
 			public void pressed()
 			{
-				//controller.addtoFav();
+				controller.addToFav();
 			}
 		});
 		fav.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

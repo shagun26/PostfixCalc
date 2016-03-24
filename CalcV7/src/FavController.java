@@ -7,42 +7,55 @@ public class FavController {
 	private static FavModel fav_model = null;
 	//private Controller controller;
 	private GraphController grph_controller;
-	private Controller cntrl;
 	
-	public void open(GraphController cntrl, Stack<String> expressionsPostFix, Stack<String> expressionsInFix)
+	public FavController()
 	{
 		if(fav_model == null)
 			fav_model = new FavModel();
+		
+		if(fav_view == null)
+			fav_view = new FavView(this);
+	}
+	
+	
+	public void open(GraphController cntrl, double[] y, Stack<String> expressionsInFix)
+	{
 //		System.out.println(expressionsPostFix);
 //		System.out.println(expressionsInFix);
-		System.out.println(cntrl + " , " + expressionsPostFix + " , " + expressionsInFix);
+		System.out.println(cntrl + " , " + y + " , " + expressionsInFix);
 		
-		fav_model.setValuePOST(expressionsPostFix);
-		fav_model.setValueIN(expressionsInFix);
+		//fav_model.setValue(expressionsPostFix);
+		//fav_model.setValueIN(expressionsInFix);
 		
 		grph_controller = cntrl;
 //		this.cntrl = cntrl;
 		
-		if(fav_view == null)
-			fav_view = new FavView(this);
-		
 		fav_view.setVisible(true);
 	}
 
-	public void changeToGraph() {
+	public void changeToGraph() 
+	{
 		
 		fav_view.setVisible(false);
-		System.out.println(cntrl + " , " + fav_model.getValuePOST() + " , " + fav_model.getValueIN());
-		grph_controller.open(cntrl,fav_model.getValuePOST(), fav_model.getValueIN());
+		//System.out.println( fav_model.getValuePOST() + " , " + fav_model.getValueIN());
+		grph_controller.open();
 		
 	}
 	
 
 	
-	public void savetoFav()
+	public void savetoFav(String exprInFix, double[] y)
 	{
-		System.out.println("Attempting to Save");
-		
+		boolean added = fav_model.addExpr(exprInFix, y);	
+		if(added)
+			fav_view.updateFav(exprInFix);
+	}
+
+
+	public void drawGraph(String expr) 
+	{
+		fav_view.setVisible(false);
+		grph_controller.drawGraph(expr, fav_model.getValue(expr));
 		
 	}
 

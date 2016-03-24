@@ -1,5 +1,6 @@
 import java.awt.GridLayout;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -101,16 +102,15 @@ import java.awt.Cursor;
 	
 	private JPanel top = new JPanel();
 	private JPanel buttons = new JPanel();
-	
 	private JLabel Title = new JLabel("Favorites");
-	
+	private final FavController favcntrl;
 
 	
 	
-	public FavView(final FavController favController)
+	public FavView(FavController favController)
 	{
 		super("Favorite");
-		
+		favcntrl = favController;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		top.setBackground(Color.DARK_GRAY);
@@ -131,7 +131,7 @@ import java.awt.Cursor;
 			
 			public void pressed()
 			{
-				favController.changeToGraph();
+				favcntrl.changeToGraph();
 			}
 		});
 		toGraph.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -164,7 +164,7 @@ import java.awt.Cursor;
 		top.add(Title);
 		top.add(buttons);
 		top.setVisible(true);
-	
+		
 		buttons.setSize(WINDOW_WIDTH, FUNC_HEIGHT);
 		buttons.setVisible(true);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
@@ -188,8 +188,16 @@ import java.awt.Cursor;
 		
 		
 	}
-	public void updateFav(String expr)
+	public void updateFav(final String expr)
 	{
-		//bottom.setText(expr);
+		buttons.add(new ButtonAdapter(expr)
+		{
+			
+			public void pressed()
+			{
+				favcntrl.drawGraph(expr);
+			}
+			
+		});
 	}
 }
