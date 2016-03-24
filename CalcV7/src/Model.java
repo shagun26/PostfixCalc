@@ -764,7 +764,10 @@ public class Model
 		if(opExpression)
 		{	//Update the PostFix expressions list
 			if(!stored_values.empty())
-				expressionsPostFix.push("" + stored_values.pop());
+			{
+				expressionsPostFix.push("" + stored_values.peek());
+				expressionsInFix.push("" + stored_values.pop());
+			}	
 			else if(isOp(first) && isOp(second))
 				start = 0;
 			expressionsPostFix.push(operator);
@@ -1258,8 +1261,7 @@ public class Model
 		if(opExpression)
 		{
 			expressionsInFix.pop();
-			if(!expressionsInFix.empty())
-				expressionsInFix.pop();
+			expressionsInFix.pop();
 			expressionsInFix.push(button_history.peek());
 		}
 		// Reset completed operations string_builder for next use.
