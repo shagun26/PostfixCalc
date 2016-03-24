@@ -31,6 +31,8 @@ public class GraphView extends JFrame
 	
 	private JLabel expression = new JLabel("y = x");
 	
+
+	
 	
 	public GraphView(final GraphController controller)
 	{
@@ -64,13 +66,29 @@ public class GraphView extends JFrame
 		calc.setForeground(Color.WHITE);
 		calc.setBackground(Color.BLACK);
 		
+
 		ButtonAdapter fav;
 		buttons.add(fav = new ButtonAdapter("Fav")
 		{
 			
 			public void pressed()
 			{
-				controller.changToFav();
+				controller.changToFav(controller);
+			}
+		});
+		fav.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		fav.setFont(new Font("Dialog", Font.BOLD, 16));
+		fav.setForeground(Color.WHITE);
+		fav.setBackground(Color.BLACK);
+		
+		
+		ButtonAdapter addFav;
+		buttons.add(addFav = new ButtonAdapter("Add to Favorites")
+		{
+			
+			public void pressed()
+			{
+				//controller.addtoFav();
 			}
 		});
 		fav.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
