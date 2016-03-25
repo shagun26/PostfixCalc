@@ -7,7 +7,6 @@ public class GraphModel
 {
 	public static final  double[] X = new double[202]; 
 	private double[] y;
-	private Stack<String> currentIN = new Stack<String>();
 	private Stack<double[]> valuation = new Stack<double[]>();
 	private ExpressionsParser parser;
 	
@@ -105,13 +104,6 @@ public class GraphModel
 		return y;
 	}
 	
-	
-	public Stack<String> getValueIN()
-	{
-		return currentIN;
-	}
-
-
 	
 	
 }
