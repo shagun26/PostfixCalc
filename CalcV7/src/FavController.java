@@ -18,11 +18,11 @@ public class FavController {
 	}
 	
 	
-	public void open(GraphController cntrl, double[] y, Stack<String> expressionsInFix)
+	public void open(GraphController cntrl, double[] y)
 	{
 //		System.out.println(expressionsPostFix);
 //		System.out.println(expressionsInFix);
-		System.out.println(cntrl + " , " + y + " , " + expressionsInFix);
+//		System.out.println(cntrl + " , " + y + " , " + expressionsInFix);
 		
 		//fav_model.setValue(expressionsPostFix);
 		//fav_model.setValueIN(expressionsInFix);

@@ -34,7 +34,7 @@ public class Controller
 	public void changeToGraph(Controller cntrl)
 	{
 		window.setVisible(false);
-		grph_controller.open(cntrl, model.getPostExpressionList(), model.getInFixExpressionList());
+		grph_controller.initialize(cntrl, model.getPostExpressionList(), model.getInFixExpressionList());
 	}
 	
 	public void open()
