@@ -59,7 +59,7 @@ public class GraphController
 	{
 		System.out.println("FAV PLS");
 		grph_view.setVisible(false);
-		favcntrl.open(this, Ys);
+		favcntrl.open(this);
 		
 	}
 
