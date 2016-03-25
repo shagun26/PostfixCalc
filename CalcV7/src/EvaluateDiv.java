@@ -1,7 +1,7 @@
 import java.util.Stack;
 
 
-public class EvaluateMult extends ExpressionsParser 
+public class EvaluateDiv extends ExpressionsParser 
 {
 
 	@Override
@@ -16,21 +16,21 @@ public class EvaluateMult extends ExpressionsParser
 		{
 			for(int i = 0; i < y.length; i++)
 			{
-				y[i] = num2[0] * num1[i];
+				y[i] = num2[0] / num1[i];
 			}
 		}
 		else if(num1.length < 2 && num2.length > 2)
 		{
 			for(int i = 0; i < y.length; i++)
 			{
-				y[i] = num2[i] * num1[0];
+				y[i] = num2[i] / num1[0];
 			}
 		}
 		else
 		{
 			for(int i = 0; i < y.length; i++)
 			{
-				y[i] = num2[i] * num1[i];
+				y[i] = num2[i] / num1[i];
 				System.out.println(num2[i] + " " + num1[i]);
 			}
 			System.out.println("Array mult");

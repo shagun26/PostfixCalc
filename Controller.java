@@ -7,6 +7,7 @@ public class Controller
 	private View window;
 	private Model model;
 	private GraphController grph_controller;
+	//private FavController fav_controller;
 	
 	public static final String CLEAR = "Clear";
 	public static final String ENTER = "Enter";
@@ -28,6 +29,7 @@ public class Controller
 		model = new Model();
 		window = view;
 		grph_controller = new GraphController();
+		//fav_controller = new FavController();
 		
 	}
 	

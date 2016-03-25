@@ -14,7 +14,8 @@ public class SumOperation extends BinaryOperations
 		{
 			return "" + (int) result;
 		}
-		return "" +  result;
+		
+		return "" + result;
 		
 	}
 

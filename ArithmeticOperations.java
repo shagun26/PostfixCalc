@@ -16,7 +16,7 @@ public abstract class  ArithmeticOperations
 				
 	}
 	
-	public static boolean isInt(double double_val, int int_val)
+	public boolean isInt(double double_val, int int_val)
 	{
 		if(Math.abs(double_val) - Math.abs(int_val) < MIN_VALUE )
 			return true;
