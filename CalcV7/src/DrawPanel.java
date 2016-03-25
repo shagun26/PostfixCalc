@@ -34,8 +34,8 @@ public class DrawPanel extends JPanel
 	    height = getHeight();
 	    widthH = getWidth()/2;
 	    heightH = getHeight()/2;
-	    xFactor = width / (y.length-1);
-	    yFactor = height / (y.length-1)*4;
+	    xFactor = width / (GraphModel.X.length-1);
+	    yFactor = height / (GraphModel.X.length-1)*4;
 		Graphics2D g2d = (Graphics2D) g;
 	    super.paintComponent(g2d);
 	
@@ -61,6 +61,9 @@ public class DrawPanel extends JPanel
 	    //RED IS LOVE. RED IS LIFE
 	    g2d.setColor(Color.RED);
 	   
+	    if(y == null)
+	    	return;
+	    
 	    //Evaluate Graph
 	    for(int i = 0; i < y.length - 1; i++)
 		{

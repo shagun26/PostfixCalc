@@ -29,7 +29,10 @@ public class GraphController
 		cntrl = controller;
 		if(!expressionsList.empty())
 			grph_view.updateExpr("y = " + expressionsList.peek());
-		grph_view.drawGraph(Ys);
+		
+		if(!expressionsPostFix.empty())
+			grph_view.drawGraph(Ys);
+		
 		grph_view.setVisible(true);
 	}
 	

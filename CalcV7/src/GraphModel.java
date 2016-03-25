@@ -46,13 +46,6 @@ public class GraphModel
 			}
 				
 		}
-		//valuation.clear();
-		for(int i = 0; i < (y.length); i++)
-		{
-			System.out.print("x y pair : " + X[i] + " " + y[i] + " ");
-		}
-		System.out.println("\n");
-		System.out.println(y.length);
 		return y;
 	}
 	
@@ -99,11 +92,6 @@ public class GraphModel
 		y = parser.evaluate(valuation);
 	}
 
-	public double[] returny()
-	{
-		return y;
-	}
-	
 	
 	
 }
