@@ -26,10 +26,10 @@ public class GraphView extends JFrame
 	private GridLayout top_manager = new GridLayout(1, 2);
 	
 	private JPanel top = new JPanel();
-	private static DrawPanel  bottom = null;
+	private  DrawPanel  bottom;
 	private JPanel buttons = new JPanel();
 	
-	private JLabel expression = new JLabel("y = x");
+	private JLabel expression = new JLabel();
 	
 
 	
@@ -138,13 +138,7 @@ public class GraphView extends JFrame
 	
 	public void drawGraph(double[] y)
 	{
-		if(bottom == null)
-			bottom = new DrawPanel(y);
-		else
-		{
 			bottom.setY(y);
 			bottom.repaint();
-		}
-			
-	}
+	}		
 }

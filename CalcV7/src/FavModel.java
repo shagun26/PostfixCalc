@@ -1,10 +1,9 @@
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.Stack;
 
 public class FavModel {
 	
-	private Stack<String> currentIN = new Stack<String>();
 	private HashMap<String, double[]> favs = new HashMap<String, double[]>();
 	
 	public void deleteExpr()
@@ -32,15 +31,6 @@ public class FavModel {
 		return true;
 	}
 
-	public void setValue(Stack<String> inExpr)
-	{
-		this.currentIN = inExpr;
-	}
-	
-	public Stack<String> getValueIN()
-	{
-		return currentIN;
-	}
 
 	
 

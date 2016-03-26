@@ -3,32 +3,22 @@ import java.util.Stack;
 
 public class FavController {
 
-	private static FavView fav_view = null;
-	private static FavModel fav_model = null;
+	private  FavView fav_view;
+	private  FavModel fav_model;
 	//private Controller controller;
-	private GraphController grph_controller;
+	private GraphController grph_controller = null;
 	
 	public FavController()
 	{
-		if(fav_model == null)
-			fav_model = new FavModel();
-		
-		if(fav_view == null)
-			fav_view = new FavView(this);
+		fav_model = new FavModel();
+		fav_view = new FavView(this);
 	}
 	
 	
-	public void open(GraphController cntrl, double[] y, Stack<String> expressionsInFix)
+	public void open(final GraphController cntrl)
 	{
-//		System.out.println(expressionsPostFix);
-//		System.out.println(expressionsInFix);
-		System.out.println(cntrl + " , " + y + " , " + expressionsInFix);
-		
-		//fav_model.setValue(expressionsPostFix);
-		//fav_model.setValueIN(expressionsInFix);
-		
-		grph_controller = cntrl;
-//		this.cntrl = cntrl;
+		if(grph_controller == null)
+			grph_controller = cntrl;		
 		
 		fav_view.setVisible(true);
 	}
@@ -37,7 +27,6 @@ public class FavController {
 	{
 		
 		fav_view.setVisible(false);
-		//System.out.println( fav_model.getValuePOST() + " , " + fav_model.getValueIN());
 		grph_controller.open();
 		
 	}

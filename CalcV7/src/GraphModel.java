@@ -5,10 +5,8 @@ import java.util.Stack;
 
 public class GraphModel 
 {
-	public static final  double[] X = new double[202]; //= {-5, -4.5, -4, -3.5, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5};
-	private double[] y; //= new double[X.length];
-	private Stack<String> currentPOST = new Stack<String>();
-	private Stack<String> currentIN = new Stack<String>();
+	public static final  double[] X = new double[202]; 
+	private double[] y;
 	private Stack<double[]> valuation = new Stack<double[]>();
 	private ExpressionsParser parser;
 	
@@ -48,13 +46,6 @@ public class GraphModel
 			}
 				
 		}
-		//valuation.clear();
-		for(int i = 0; i < (y.length); i++)
-		{
-			System.out.print("x y pair : " + X[i] + " " + y[i] + " ");
-		}
-		System.out.println("\n");
-		System.out.println(y.length);
 		return y;
 	}
 	
@@ -99,33 +90,6 @@ public class GraphModel
 	{
 		parser = new EvaluateCos();
 		y = parser.evaluate(valuation);
-	}
-
-	public double[] returny()
-	{
-		return y;
-	}
-	
-	public void setValuePOST(Stack<String> postExpr)
-	{
-		this.currentPOST = postExpr;
-	}
-	public void setValueIN(Stack<String> inExpr)
-	{
-		this.currentIN = inExpr;
-	}
-	public Stack<String> getValuePOST()
-	{
-		return currentPOST;
-	}
-	public Stack<String> getValueIN()
-	{
-		return currentIN;
-	}
-	
-	public void addFav()
-	{
-		
 	}
 
 	
