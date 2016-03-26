@@ -896,7 +896,7 @@ public class Model
 			}
 				
 		}
-		
+	
 		button_history.push(sb_completed_operations.toString());
 		if(!running_history.isEmpty())
 			running_history.remove(running_history.size() - 1);
@@ -1145,8 +1145,10 @@ public class Model
 	{
 		//If input was pi or x
 		//not an operation
-		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION) ||
-				input.equals("-" + Controller.EXPRESSION) || input.equals("-" + Controller.PI))
+		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION))
+			return false;
+		else if(button_history.size() > 1 && 
+				button_history.peek().equals(running_history.get(running_history.size() - 2)))
 			return false;
 		//Otherwise try to parse it
 		try
