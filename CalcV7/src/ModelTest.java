@@ -728,7 +728,7 @@ public class ModelTest {
 		assertEquals(m.expressionHist(),m.printHistory());
 		
 	}
-	
+	// comment this section if you want to edit and test.
 	@Test
 	public void def() {
 
