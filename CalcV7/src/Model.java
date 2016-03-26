@@ -21,7 +21,7 @@ public class Model
 	 * Stores a history of entered values and operations.
 	 * (Section 3.3 in Design Document)
 	 */
-	private Stack<String> button_history = new Stack<String>();
+	protected Stack<String> button_history = new Stack<String>();
 	
 	
 	/**
@@ -79,7 +79,7 @@ public class Model
 	 * Stores a list of expressions in
 	 * InFix notation
 	 */
-	private Stack<String> expressionsInFix = new Stack<String>();
+	protected Stack<String> expressionsInFix = new Stack<String>();
 	/**
 	 * Stores the previous states of expressionsInFix
 	 */
@@ -1360,6 +1360,7 @@ public class Model
 			return (int) result + "";
 		return  result + "";
 	}
+	
 	/**
 	 * Changes the history stacks, precedence stack and expressions stack
 	 * to their previous state. Returns the history string of the previous

@@ -9,11 +9,15 @@ import org.junit.Test;
 public class ModelTest {
 
 	private Model m;
+	private View v;
+	private Controller c;
 
 	// Initiating a tester Model object
 	@Before
 	public void setUp() throws Exception {
 		m = new Model();
+		v = new View();
+	 	c = new Controller(v);
 	}
 
 	// Testing summation with 5 cases.
@@ -213,8 +217,39 @@ public class ModelTest {
 			m.reset();
 			m.addToEntry("1");
 			assertEquals(m.negate(), "-1"); 
+			// Case 4: Negating expressions.
+			m.reset();
+			m.addToEntry("1");
+			m.enterValue();
+			m.enterHistory();
+			m.expressionHist();
+			m.expressionVal();
+			
+			assertEquals(m.negate(),"-x");
 			
 
+		}
+		
+		// Testing NegateHistory with 2 cases.
+		@Test 
+		public void testNegateHistory() {
+			// Case 1: An expression from Positive to negative and vise versa.
+			m.expressionHist();
+			assertEquals(m.negateHistory(),"-x =");
+			assertEquals(m.negateHistory(),"x =");
+			// Case2: Testing if neageHistory can negate bulk operations.
+			m.addToEntry("5");
+			m.enterValue();
+			m.enterHistory();
+			m.addToEntry("3");
+			m.enterValue();
+			m.enterHistory();
+			m.sum();
+			m.expressionHist();
+			m.multiply();
+			m.negateHistory();
+			assertEquals(m.negateHistory(),"x, 5, -(3 * x) =");
+			
 		}
 
 	// Testing factorial 
@@ -277,10 +312,17 @@ public class ModelTest {
 		m.addToEntry("720");
 		assertEquals(m.factorial(),"NOT DEFINED");
 		// Case 10: Factorial of an expression
+		
+	
+	}
+	
+	@Test
+	public void testFactorialOfExpressions() {
+		
 		m.reset();
+		m.expressionVal();
 		m.expressionHist();
 		assertEquals(m.factorial(),"NOT DEFINED");
-	
 	}
 
 	// Testing Sin function with 3 cases.
@@ -414,6 +456,7 @@ public class ModelTest {
 	String historyNotEmpty = "1, π";
 	m.addToEntry("1");
 	m.enterHistory();
+	m.valuePi();
 	assertEquals(m.historyPi(),  historyNotEmpty);
 
 	
@@ -431,12 +474,24 @@ public class ModelTest {
 	@Test
 	public void testUndoHistory() {
 		
-		// Case 1: Undo history from stored values.
+		// Case 1: Undo history from stored values with length 1.
 		m.addToEntry("1");
 		m.enterValue();
 		m.enterHistory();
 		assertEquals(m.undoHistory(),"Start new Calculation");
 		
+		// Case 2: Undo History right after an operation.
+		m.addToEntry("2");
+		m.enterValue();
+		m.enterHistory();
+		m.addToEntry("2");
+		m.enterValue();
+		m.enterHistory();
+		m.sum();
+		m.addToEntry("3");
+		
+		
+		assertEquals(m.undoHistory(),"2, 2");
 		// Case 2: Undo history with 2 numbers.
 		m.reset();
 		m.addToEntry("4");
@@ -445,13 +500,11 @@ public class ModelTest {
 		m.addToEntry("5");
 		m.enterValue();
 		m.enterHistory();
-		
 		assertEquals(m.undoHistory(),"4");
-		
-		// Case 3: Undo from screen.
 		m.reset();
+		// Case 3: Undo from screen.
 		m.addToEntry("4");		    
-		assertEquals(m.undoHistory(),"");
+		assertEquals(m.undoHistory(),"Start new Calculation");
 		
 		// Case 3: Undo from operations.
 		m.reset();
@@ -462,7 +515,12 @@ public class ModelTest {
 		m.enterValue();
 		m.enterHistory();
 		m.sum();
+		m.addToEntry("3");
+		m.enterValue();
+		m.enterHistory();
+		m.undoHistory();
 		assertEquals(m.undoHistory(),"4");
+		m.reset();
 		
 		
 		
@@ -473,92 +531,154 @@ public class ModelTest {
 		// Case 4: Undo an expression.
 		       
 				m.expressionHist();
+				m.addToEntry("4");
+				m.enterValue();
 				m.enterHistory();
-				m.expressionVal();
+				m.addToEntry("5");
+				m.enterValue();
+				m.enterHistory();
+				m.sum();
+				m.expressionHist();
+				m.undoHistory();
+				m.undoHistory();
 				assertEquals(m.undoHistory(), "x");
+				m.reset();
 				
 	}
-	
+	// Testing Undo with numbers entries and operations ( no expressions ).
 	@Test
 	public void testUndoValue() {
-		
+		// Case 1: one number stored in stack.
+		m.addToEntry("5");
+		m.enterValue();
+		m.enterHistory();
+		assertEquals(m.undoValue(), "0"); 
+		m.reset();
+		// Case 2: 2 numbers stored in stack.
 		m.addToEntry("5");
 		m.enterValue();
 		m.enterHistory();
 		m.addToEntry("2");
 		m.enterValue();
 		m.enterHistory();
-		m.undoHistory();
 		assertEquals(m.undoValue(), "5"); 
-		
 		m.reset();
-		
-		m.addToEntry("5.1");
-		m.enterValue();
-		m.enterHistory();
-		m.addToEntry("2.1");
-		m.enterValue();
-		m.enterHistory();
-		m.undoHistory();
-		assertEquals(m.undoValue(), "5.1"); 
-		m.reset();
-		
-
+		// Case 3: Number on screen.
 		m.addToEntry("5");
-		m.enterValue();
-		m.enterHistory();
-		m.undoHistory();
 		assertEquals(m.undoValue(), "0"); 
+		
+		// Case 4: multiple numbers on screen.
+		m.addToEntry("5");
+		m.addToEntry("6");
+		m.addToEntry("7");
+		assertEquals(m.undoValue(), "56"); 
 		m.reset();
 		
+		// Case 5: numbers stored in stack with operations.
 		m.addToEntry("5");
 		m.enterValue();
 		m.enterHistory();
-		m.addToEntry("3");
-		m.undoHistory();
-		assertEquals(m.undoValue(), ""); 
+		m.addToEntry("2");
+		m.enterValue();
+		m.enterHistory();
+		m.sum();
+		
+		assertEquals(m.undoValue(), "2"); 
+		m.reset();
+		
+		
 	}
 	
+	// Testing undo with expressions and arithmetic operations.
 	@Test
-	public void testy() {
+	public void testUndoExpressions() {
+		
+		m.addToEntry("1");
+		m.enterValue();
+		m.enterHistory();
+		m.expressionHist();
+		m.multiply();
+		
+		m.undoValue();
+		
+		m.addToEntry("1");
+		m.enterValue();
+		m.enterHistory();
+		m.undoValue();
+		m.expressionHist();
+		m.multiply();
+		
+		m.undoValue();
+		
+		m.addToEntry("1");
+		m.enterValue();
+		m.enterHistory();
+		
+		m.undoValue();
+		
+		m.expressionHist();
+		m.multiply();
+		
+		m.undoValue();
+		m.undoValue();
+		m.undoValue();
+		m.undoValue();
+		m.undoValue();
 		
 		
 		
-		
+		assertEquals(m.undoValue(),"0");
 	}
 	
 	
+	// Testing History of Factorial.
 	@Test
 	public void testFactHistory() {
-		// Case 1: Expression involved, don't update history.
-		m.expressionVal();
-		assertEquals(m.factHistory("!"),"" ); 
+		// Case 1: If factorial precondition is not met, do nothing to history.
+		m.expressionHist();
+		m.factorial();
+		assertEquals(m.factHistory("!"),"x");
 		m.reset();
-		// Case  : After adding a number < 750, check if it updates history.
-		m.addToEntry("50");
-		assertEquals(m.factHistory("!"),"50!=" ); 
-		// Case  : check factorial history with numbers.
-		m.reset();
-		m.addToEntry("5");
+		// Case 2: Testing factorial history from stored numbers in stack.
+		m.addToEntry("3");
 		m.enterValue();
 		m.enterHistory();
-		
 		m.factorial();
+		assertEquals(m.factHistory("!"),"3! =");
+		m.reset();
+		// Case 3: Testing factorial history not from the stack ( on screen ).
+		m.addToEntry("3");
+		m.factorial();
+		assertEquals(m.factHistory("!"),"3! =");
+		m.reset();
 		
 		
-		assertEquals(m.factHistory("!"),"5! =" );
 		
 		
-		// Case 2: 
+		
+		
 
 	}
+	
+	// Testing History that involved trigonometric operations.
 	@Test
 	public void testTrigHistory() {
-		
-		// tests if the function trigHistory shows functions with correct brackets.
-		
-		
-		assertEquals(m.trigHistory("(x"),"(x)=");
+		// Case 1: Stored numbers in the stack.
+		m.addToEntry("0");
+		m.enterValue();
+		m.enterHistory();
+		m.sin();
+		assertEquals(m.trigHistory("SIN("),"SIN(0) =");
+		m.reset();
+		// Case 2: Numbers on screen.
+		m.addToEntry("0");
+		m.sin();
+		assertEquals(m.trigHistory("SIN("),"SIN(0) =");
+		m.reset();
+		// Case 3: expressions.
+		m.expressionHist();
+		m.sin();
+		assertEquals(m.trigHistory("SIN("),"SIN(x) =");
 
 	}
 	
@@ -580,6 +700,44 @@ public class ModelTest {
 
 
 	}
+	
+	// Testing ExpressionHist() method that enters the symbol "x" to all the stacks of expressions.
+	@Test
+	public void testExpressionHist() {
+		// Case 1: New calculation ( all stacks are empty )
+		m.expressionHist();
+		assertEquals(m.expressionsInFix.peek(),"x");
+		assertEquals(m.button_history.peek(),"x");
+		
+		
+		// Case 2: Stacks are filled, testing the functionality of undo function that involves stack, 
+		// Brackets with previous operations and return statement of expressionHist.
+		m.addToEntry("1");
+		m.enterHistory();
+		m.addToEntry("2");
+		m.enterHistory();
+		m.addToEntry("3");
+		m.enterHistory();
+		m.addToEntry("4");
+		m.enterHistory();
+		m.expressionHist();
+		m.sum();
+		m.multiply();
+		m.sum();
+		
+		assertEquals(m.expressionHist(),m.printHistory());
+		
+	}
+	
+	@Test
+	public void def() {
+
+		View gui = new View();
+		gui.setVisible(true);
+		
+		
+	}
+
 	
 
 
