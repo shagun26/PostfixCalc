@@ -51,7 +51,7 @@ public class View extends JFrame
 	private final JPanel panel = new JPanel();
 	private final ButtonAdapter graph = new ButtonAdapter("Graph") {
 	public void pressed() {
-		controller.changeToGraph( controller);
+		controller.changeToGraph();
 	}
 };
 	

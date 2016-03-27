@@ -6,7 +6,7 @@ public class FavController {
 	private  FavView fav_view;
 	private  FavModel fav_model;
 	//private Controller controller;
-	private GraphController grph_controller = null;
+	private GraphController grph_controller;
 	
 	public FavController()
 	{
@@ -17,8 +17,7 @@ public class FavController {
 	
 	public void open(final GraphController cntrl)
 	{
-		if(grph_controller == null)
-			grph_controller = cntrl;		
+		grph_controller = cntrl;		
 		
 		fav_view.setVisible(true);
 	}

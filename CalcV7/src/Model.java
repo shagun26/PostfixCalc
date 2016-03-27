@@ -1130,7 +1130,11 @@ public class Model
 		if(stored_values.empty())
 		{	//Replace missing operand with 0
 			if(expressionsInFix.size() < 2)
-				button_history.push("" +  0);
+			{
+				from_memory = false;
+				sb_input_history.append(0);
+			}
+				
 			
 			System.out.println("Hi " + button_history.peek());
 		}
@@ -1327,21 +1331,19 @@ public class Model
 		{
 			sb.deleteCharAt(sb.length()-1);
 			sb_input_history.deleteCharAt(sb_input_history.length() - 1);
-			System.out.println(sb.length());
+		
 			if(sb.length() > 0)
 				return updateValue();
 			
 			from_memory = true;
-			if(button_history.empty())
-				return "0";
 			
-			if(expressionsInFix.contains(button_history.peek()))
-				return "" + button_history.peek();
-			
-			double result = stored_values.peek();
-			if(ArithmeticOperations.isInt(result, (int) result))
-				return (int) result + "";
-			return  result + "";
+			if(!isExpression() && !(button_history.empty()))
+			{
+				double result = stored_values.peek();
+				if(ArithmeticOperations.isInt(result, (int) result))
+					return (int) result + "";
+				return  result + "";
+			}
 			
 		}
 		//Case 2: Reached the default state by undos
@@ -1394,23 +1396,11 @@ public class Model
 			reset();
 			return "Start new Calculation";
 		}
-		//Undoing an expression
-		if(isExpression())
-		{
-			if(!expressionsInFix_undo.empty())
-			{
-				expressionsInFix = expressionsInFix_undo.pop();
-				expressionsPostFix = expressionsPostFix_undo.pop();
-			}
-			else
-			{
-				expressionsInFix.pop();
-				expressionsPostFix.pop();	
-			}
-		}
-		//Updates to previous states
+		
 		running_history = running_history_undo.pop();
 		button_history = button_history_undo.pop();	
+		expressionsInFix = expressionsInFix_undo.pop();
+		expressionsPostFix = expressionsPostFix_undo.pop();
 		//If the last element of previous state
 		//was an op, '=' required
 		if(isOp(running_history.get(running_history.size() - 1)))
@@ -1447,6 +1437,8 @@ public class Model
 			button_history_undo.push((Stack<String>) button_history.clone());
 			running_history_undo.push((ArrayList<String>) running_history.clone());
 			precedence_undo.push((Stack<String>)precedence.clone());
+			expressionsInFix_undo.push((Stack<String>) expressionsInFix.clone());
+			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 		}
 	}
 	
