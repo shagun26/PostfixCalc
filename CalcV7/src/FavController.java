@@ -30,7 +30,10 @@ public class FavController {
 		
 	}
 	
-
+	public void remove(String expr)
+	{
+		fav_model.deleteExpr(expr);
+	}
 	
 	public void savetoFav(String exprInFix, double[] y)
 	{

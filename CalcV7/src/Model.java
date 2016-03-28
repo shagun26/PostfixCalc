@@ -237,6 +237,7 @@ public class Model
 	@SuppressWarnings("unchecked")
 	public String expressionVal()
 	{
+		from_memory = true;
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
 		//Update previous state of stored_values
