@@ -83,7 +83,7 @@ public class GraphView extends JFrame
 		
 		
 		ButtonAdapter addFav;
-		buttons.add(addFav = new ButtonAdapter("Add to Favorites")
+		buttons.add(addFav = new ButtonAdapter("<html>Add to Favorites<html>")
 		{
 			
 			public void pressed()
@@ -91,6 +91,8 @@ public class GraphView extends JFrame
 				controller.addToFav();
 			}
 		});
+		addFav.setForeground(Color.WHITE);
+		addFav.setBackground(Color.BLACK);
 		fav.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		fav.setFont(new Font("Dialog", Font.BOLD, 16));
 		fav.setForeground(Color.WHITE);
