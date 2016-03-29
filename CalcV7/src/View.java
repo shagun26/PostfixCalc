@@ -439,7 +439,7 @@ public class View extends JFrame
 			}
 		});
 		clear.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		clear.setFont(new Font("Dialog", Font.BOLD, 18));
+		clear.setFont(new Font("Dialog", Font.BOLD, 16));
 		clear.setForeground(Color.WHITE);
 		clear.setBackground(Color.ORANGE);
 		
@@ -452,7 +452,7 @@ public class View extends JFrame
 			}
 		});
 		expression.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		expression.setFont(new Font("Dialog", Font.BOLD, 18));
+		expression.setFont(new Font("Dialog", Font.BOLD, 16));
 		expression.setForeground(Color.WHITE);
 		expression.setBackground(Color.BLACK);
 		panel.setLayout(null);

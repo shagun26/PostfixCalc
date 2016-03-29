@@ -6,9 +6,9 @@ public class FavModel {
 	
 	private HashMap<String, double[]> favs = new HashMap<String, double[]>();
 	
-	public void deleteExpr()
+	public void deleteExpr(String expr)
 	{
-		
+		favs.remove(expr);
 	}
 	
 	public double[] getValue(String key)

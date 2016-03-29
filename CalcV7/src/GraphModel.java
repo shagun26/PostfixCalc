@@ -1,11 +1,10 @@
-import java.util.Arrays;
-import java.util.Iterator;
+
 import java.util.Stack;
 
 
 public class GraphModel 
 {
-	public static final  double[] X = new double[202]; 
+	public static final  double[] X = new double[201]; 
 	private double[] y;
 	private Stack<double[]> valuation = new Stack<double[]>();
 	private ExpressionsParser parser;
@@ -30,6 +29,7 @@ public class GraphModel
 	public double[] getValues(Stack<String> expressionsPostFix)
 	{
 		valuation.clear();
+		System.out.println(expressionsPostFix);
 		for(String next : expressionsPostFix)
 		{
 			if(next.equals("x"))
