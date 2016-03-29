@@ -768,7 +768,9 @@ public class Model
 			}
 			else
 			{
-				expressionsPostFix.pop();
+				if(!expressionsPostFix.empty())
+					expressionsPostFix.pop();
+				
 				expressionsPostFix.push("" + stored_values.peek());
 			}
 			
@@ -787,6 +789,12 @@ public class Model
 			else if(isOp(first) && isOp(second))
 				start = 0;
 			expressionsPostFix.push(operator);
+		}
+		else
+		{
+			expressionsPostFix.pop();
+			expressionsPostFix.pop();
+			expressionsPostFix.push("" + stored_values.peek());
 		}
 		
 		formNewEntry(first, second, operator);
@@ -1161,12 +1169,6 @@ public class Model
 		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION) ||
 				input.equals("-" + Controller.PI) || input.equals("-" + Controller.EXPRESSION))
 			return false;
-		else if(running_history.size() > 1 && 
-				button_history.peek().equals(running_history.get(running_history.size() - 2)))
-			return false;
-		
-		
-		
 		//Otherwise try to parse it
 		try
 		{
