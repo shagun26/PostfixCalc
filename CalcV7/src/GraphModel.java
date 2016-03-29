@@ -10,6 +10,9 @@ public class GraphModel
 	private Stack<double[]> valuation = new Stack<double[]>();
 	private ExpressionsParser parser;
 	
+	/**
+	 * Instantiate a new GraphModel with the default X-coordinates
+	 */
 	public GraphModel()
 	{
 		int j = 0;
@@ -19,7 +22,11 @@ public class GraphModel
 			i = i + 0.1;
 		}
 	}
-	
+	/**
+	 * Evaluate an expression for its Y-coordinates
+	 * @param expressionsPostFix - the expressions list in Posfix form
+	 * @return - the Y-coordinates
+	 */
 	public double[] getValues(Stack<String> expressionsPostFix)
 	{
 		valuation.clear();
@@ -48,44 +55,58 @@ public class GraphModel
 		}
 		return y;
 	}
-	
+	/**
+	 * Perform a division
+	 */
 	public void div() 
 	{
 		parser = new EvaluateDiv();
 		y = parser.evaluate(valuation);
 		
 	}
-
+	/**
+	 * Perform a negation
+	 */
 	public void negate() 
 	{
 		parser = new EvaluateNegate();
 		y = parser.evaluate(valuation);
 	}
-
+	/**
+	 * Add X-coordinates to valuation stack
+	 */
 	public void var()
 	{
 		parser = new EvaluateVar();
 		y = parser.evaluate(valuation);
 	}
-	
+	/**
+	 * Perform an addition
+	 */
 	public void sum()
 	{
 		parser = new EvaluateSum();
 		y = parser.evaluate(valuation);
 	}
-	
+	/**
+	 * Perform a multiplication
+	 */
 	public void mult()
 	{
 		parser = new EvaluateMult();
 		y = parser.evaluate(valuation);
 	}
-	
+	/**
+	 * Perform a sine
+	 */
 	public void sin()
 	{
 		parser = new EvaluateSine();
 		y = parser.evaluate(valuation);
 	}
-	
+	/**
+	 * Perform a cosine
+	 */
 	public void cos()
 	{
 		parser = new EvaluateCos();

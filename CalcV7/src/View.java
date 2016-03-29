@@ -55,7 +55,9 @@ public class View extends JFrame
 	}
 };
 	
-	
+	/**
+	 * Creates a new instance of View
+	 */
 	public View()
 	{
 		super("Numeric Keypad");
@@ -458,17 +460,26 @@ public class View extends JFrame
 		panel.add(operators);
 	}
 	
+	/**
+	 * Update the text shown in the value field
+	 * @param next_value -  the text to be shown in the value field
+	 */
 	public void updateValue(String next_value)
 	{
 		
 		value_display.setText(next_value);
 	}
-	
+	/**
+	 * Update the text shown in the history field
+	 * @param next_result - the text to be shown in the history field
+	 */
 	public void updateHistory(String next_result)
 	{
 		history_display.setText("<html>" + next_result + "</html>");
 	}
-	
+	/**
+	 * Sets the history and value field to their defaults
+	 */
 	public void clearDisplay()
 	{
 		value_display.setText("0");

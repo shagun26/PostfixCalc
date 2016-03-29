@@ -1151,7 +1151,7 @@ public class Model
 		//not an operation
 		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION))
 			return false;
-		else if(button_history.size() > 1 && 
+		else if(running_history.size() > 1 && 
 				button_history.peek().equals(running_history.get(running_history.size() - 2)))
 			return false;
 		//Otherwise try to parse it
@@ -1407,7 +1407,13 @@ public class Model
 			return printHistory() + " " + EQUALS;
 		return printHistory();
 	}
-	
+	/**
+	 * Determines whether the last operation involved expression(s)
+	 * and whether it has already been updated.
+	 * If it has not been updated, necessary updates are made.
+	 * @return - true if updates have already been made 
+	 * 			 for an expression operation. False otherwise
+	 */
 	private boolean exprOp()
 	{
 		//that was already updated, set both boolean
@@ -1427,9 +1433,12 @@ public class Model
 			expressionsInFix_undo.push((Stack<String>) expressionsInFix.clone());
 			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 		}
+		//Not expression
 		return false;
 	}
-	
+	/**
+	 * Updates the previous states of the history lists and expression lists
+	 */
 	private void updatePreviousHistory()
 	{
 		if(!button_history.empty())
