@@ -77,6 +77,7 @@ public class DrawPanel extends JPanel
 	    			g2d.drawLine((int) (xFactor * i), (int) (heightH - y[i] * yFactor), 
 	    					(int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
 	    	//g2d.draw(line);
+	    	
 		}
 	    
 	}
