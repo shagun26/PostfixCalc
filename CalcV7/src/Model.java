@@ -223,7 +223,7 @@ public class Model
 	{
 		//Update previous state of history lists and precedence
 		updatePreviousHistory();
-		
+		expressionsPostFix.push("" + Math.PI);
 		button_history.push(Controller.PI);
 		running_history.add(Controller.PI);
 		return printHistory();
@@ -759,11 +759,19 @@ public class Model
 			
 			//Update precedence list
 			precedence.push(operator);
+			
+			//Update the PostFix expressions list
 			if(opExpression)
-			{	//Update the PostFix expressions list
+			{
 				expressionsPostFix.push(sb_input_history.toString());
 				expressionsPostFix.push(operator);
 			}
+			else
+			{
+				expressionsPostFix.pop();
+				expressionsPostFix.push("" + stored_values.peek());
+			}
+			
 			updateHistDirect();
 			from_memory = !from_memory;
 			return printHistory() + " " + EQUALS;
@@ -773,22 +781,14 @@ public class Model
 		if(opExpression)
 		{	//Update the PostFix expressions list
 			if(!stored_values.empty())
-			{	//If expression follows value and div
-				//Make changes to postfix list
-				if(operator.equals(Controller.DIV) && expressionsInFix.contains(second))
-				{
-					String expr = expressionsPostFix.pop();
-					expressionsPostFix.push("" + stored_values.peek());
-					expressionsPostFix.push(expr);
-				}
-				else
-					expressionsPostFix.push("" + stored_values.peek());
+			{	
 				expressionsInFix.push("" + stored_values.pop());
 			}	
 			else if(isOp(first) && isOp(second))
 				start = 0;
 			expressionsPostFix.push(operator);
 		}
+		
 		formNewEntry(first, second, operator);
 		//Update precedence list
 		precedence.push(operator);
@@ -934,9 +934,10 @@ public class Model
 			return printHistory();
 		}
 			
-	
 		//Update the previous states of the history lists and precedence
 		updatePreviousHistory();
+		//Add the last entered value to PostFix expression list
+		expressionsPostFix.push("" + stored_values.peek());
 		//Pushing the pi symbol	
 		if(pi)
 		{
@@ -947,8 +948,7 @@ public class Model
 		{	//pushing the decimal value
 			button_history.push(sb.toString());
 			running_history.add(sb.toString());
-		}
-			
+		}	
 		sb_input_history.delete(0, sb_input_history.length());
 		sb.delete(0, sb.length());
 		return printHistory();
