@@ -256,18 +256,7 @@ public class Model
 	public String expressionHist()
 	{
 		//Update previous state of history lists and precedence
-		if(!button_history.empty())
-		{
-			button_history_undo.push((Stack<String>) button_history.clone());
-			running_history_undo.push((ArrayList<String>) running_history.clone());
-			precedence_undo.push((Stack<String>)precedence.clone());
-		}
-		
-		if(!expressionsInFix.empty())
-		{	//Update previous state of expression lists
-			expressionsInFix_undo.push((Stack<String>) expressionsInFix.clone());
-			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
-		}
+		updatePreviousHistory();
 		
 		if(expressionsInFix.empty() || !exprUpdated)
 			button_history.push(Controller.EXPRESSION);
@@ -745,8 +734,8 @@ public class Model
 		String second;
 		if(exprOp())
 			return printHistory() + " " + EQUALS;
-		
-		//updatePreviousHistory();
+		else if(!opExpression)
+			updatePreviousHistory();
 		//If not expression, continue as normal
 		second = button_history.pop();
 		if(!from_memory)
@@ -978,8 +967,8 @@ public class Model
 			expressionsPostFix.push(funct);
 			return printHistory() + " " + EQUALS;
 		}
-			
-		//updatePreviousHistory();
+		else if(!opExpression)
+			updatePreviousHistory();
 		
 		if(!from_memory)
 		{
