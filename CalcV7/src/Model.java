@@ -875,8 +875,13 @@ public class Model
 			expressionsPostFix.push(Controller.PLUSMINUS);
 			return printHistory() + " " + EQUALS;
 		}
-				
-		//updatePreviousHistory();
+		else if(!opExpression)
+		{
+			updatePreviousHistory();
+			expressionsPostFix.pop();
+			expressionsPostFix.push("" + stored_values.peek());
+		}
+			
 		
 		String first = button_history.pop();
 		System.out.println(first);
@@ -1174,7 +1179,8 @@ public class Model
 	private boolean checkOpUndo(String first)
 	{
 		if(running_history_undo.empty())
-			return false;
+			return isOp(first);
+			
 		
 		int prev_size = running_history_undo.peek().size();
 		int current_size = running_history.size();
@@ -1400,7 +1406,7 @@ public class Model
 			if(button_history.empty())
 				return "Start new Calculation";
 			
-			if(isOp(running_history.get(running_history.size() - 1)))
+			if(checkOpUndo(running_history.get(running_history.size() - 1)))
 				return printHistory() + " " + EQUALS;
 			return printHistory();
 		}
