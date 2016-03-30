@@ -4,9 +4,9 @@ import java.util.Stack;
 
 public class GraphModel 
 {
-	public static double[] X = new double[201];
-	public static final double[] XOri = new double[201];
-	public static final double[] XPi = new double[201];
+	public static double[] X = new double[1001];
+	public static final double[] XOri = new double[1001];
+	public static final double[] XPi = new double[1001];
 	
 	private double[] y;
 	private Stack<double[]> valuation = new Stack<double[]>();
@@ -19,21 +19,21 @@ public class GraphModel
 	public GraphModel()
 	{
 		int j = 0;
-		for(double i = -3.1415926535897932384626433*2; j < XPi.length;)
+		for(double i = -Math.PI*2; j < XPi.length;)
 		{
 			XPi[j++] = i;
-			i = i + 0.031415927;
+			i = i + Math.PI / ((XPi.length-1)/4);
 		}
 		j = 0;
 		for(double i = -10; j < XOri.length;)
 		{
 			XOri[j++] = i;
-			i = i + 0.1;
+			i = i + (0.1*100) / ((XOri.length-1)/2);
 		}
-		X = XOri;
 	}
 	/**
-	 * Evaluate an expression for its Y-coordinates
+	 * Evaluate an expression for its Y-coordinates, it first checks if Sin or Cos exists within the equation, 
+	 * in which it will calculate for a set of x values from -2pi to +2pi, otherwise it will go from -10 to +10
 	 * @param expressionsPostFix - the expressions list in Posfix form
 	 * @return - the Y-coordinates
 	 */
@@ -46,13 +46,13 @@ public class GraphModel
 			if(next0.equals("SIN(") || next0.equals("COS("))
 			{
 				isSCGraph = true;
-			//	X = XPi;
-			//	break;
+				X = XPi;
+				break;
 			}
 			else
 			{
 				isSCGraph = false;
-				//X = XOri;
+				X = XOri;
 			}
 		}
 				

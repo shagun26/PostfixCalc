@@ -18,6 +18,7 @@ public class DrawPanel extends JPanel
     private double xFactor;
     private double yFactor;
     private double y[];
+	private double yScale;
 
 
 	public DrawPanel(double A[]) 
@@ -25,10 +26,18 @@ public class DrawPanel extends JPanel
 		y = A;
 	}
 	
-	public void setY(double[] input)
+	public void setY(double[] input, double yScale)
 	{
 		y = input;
+		this.yScale = yScale;
+		
 	}
+	
+	public void setYScale(double yScale)
+	{
+		this.yScale = yScale;
+	}
+	
 
 	public void paintComponent (Graphics g)
 	{
@@ -36,11 +45,10 @@ public class DrawPanel extends JPanel
 	    height = getHeight();
 	    widthH = getWidth()/2;
 	    heightH = getHeight()/2;
-	    xFactor = width / (GraphModel.X.length);
-	    yFactor = height / (GraphModel.X.length)*10;
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
+		xFactor = width / (GraphModel.X.length);
+	    yFactor = height / (GraphModel.X.length)* 10 * 5 * 5/yScale;
 		
 
 	    super.paintComponent(g2d);
@@ -75,6 +83,5 @@ public class DrawPanel extends JPanel
 	    	//g2d.draw(line);
 	    	
 		}
-	    
 	}
 }
