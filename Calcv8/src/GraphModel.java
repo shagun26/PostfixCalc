@@ -19,16 +19,16 @@ public class GraphModel
 	public GraphModel()
 	{
 		int j = 0;
-		for(double i = -3.1415926535897932384626433*2; j < XPi.length;)
+		for(double i = -Math.PI*2; j < XPi.length;)
 		{
 			XPi[j++] = i;
-			i = i + 0.031415927/5;
+			i = i + Math.PI / ((XPi.length-1)/4);
 		}
 		j = 0;
 		for(double i = -10; j < XOri.length;)
 		{
 			XOri[j++] = i;
-			i = i + 0.1/5;
+			i = i + (0.1*100) / ((XOri.length-1)/2);
 		}
 	}
 	/**

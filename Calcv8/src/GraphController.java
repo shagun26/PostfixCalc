@@ -41,7 +41,6 @@ public class GraphController
 		grph_view.setVisible(true);
 	}
 	
-	
 	public void drawGraph(String expr, double[] values)
 	{
 		grph_view.updateExpr("y = " + expr);
