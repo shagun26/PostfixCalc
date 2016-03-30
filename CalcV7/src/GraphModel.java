@@ -148,6 +148,7 @@ public class GraphModel
 		y = parser.evaluate(valuation);
 	}
 	
+	
 	private void factorial() {
 		parser = new EvaluateFact();
 		y = parser.evaluate(valuation);

@@ -11,6 +11,7 @@ public class GraphController
 	private Stack<String> expressionsList;
 	private Stack<String> expressionsListPost;
 	private double xScale;
+	private String prevExpr;
 	
 	public void initialize(Controller controller, Stack<String> expressionsPostFix, Stack<String> expressionsInFix)
 	{
@@ -20,23 +21,33 @@ public class GraphController
 		if(favcntrl == null)
 			favcntrl = new FavController();
 		
-		//grph_model.setValuePOST(expressionsPostFix);
-		//grph_model.setValueIN(expressionsInFix);
 		expressionsList = expressionsInFix;
 		expressionsListPost = expressionsPostFix;
-		Ys = grph_model.getValues(expressionsPostFix);
 		xScale = grph_model.xScale();
 		
 		if(grph_view == null)
 			grph_view = new GraphView(this);
 		
 		cntrl = controller;
-		if(!expressionsList.empty())
-			grph_view.updateExpr("y = " + expressionsList.peek());
-		
-		if(!expressionsPostFix.empty())
+
+		if(expressionsList.empty())
+		{
+			Ys = null;
 			grph_view.drawGraph(Ys, xScale);
-		
+			grph_view.updateExpr("");
+			prevExpr = "";
+		}
+		else if(!expressionsList.peek().equals(prevExpr))
+		{
+			Ys = grph_model.getValues(expressionsPostFix);
+			grph_view.updateExpr("y = " + expressionsList.peek());
+			prevExpr = expressionsList.peek();
+			grph_view.drawGraph(Ys, xScale);
+			System.out.println(grph_view.getExpr());
+		}
+			
+			
+
 		grph_view.setVisible(true);
 	}
 	

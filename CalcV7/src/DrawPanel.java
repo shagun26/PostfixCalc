@@ -21,24 +21,39 @@ public class DrawPanel extends JPanel
 	private double yScale;
 	private double numberOfGrids;
 
-
+	
+	public DrawPanel(){};
+	/**
+	 * Instantiate a new DrawPanel with given y-coordinates
+	 * @param A
+	 */
 	public DrawPanel(double A[]) 
 	{
 		y = A;
 	}
-	
-	public void setY(double[] input, double yScale)
+	/**
+	 * Set the y-coordinates and the scale(in y direction)
+	 * for the panel
+	 * @param input - the y-coordinates
+	 * @param scale - the y scale
+	 */
+	public void setY(double[] input, double Scale)
 	{
 		y = input;
-		this.yScale = (y.length - 1)/200/yScale;
+		yScale = (y.length - 1)/200/Scale;
 	}
-	
-	public void setYScale(double yScale)
+	/**
+	 * Set the y scaling for a currently drawn graph
+	 * @param scale - the y scaling
+	 */
+	public void setYScale(double Scale)
 	{
-		this.yScale = (y.length - 1)/200/yScale;
+		yScale = (y.length - 1)/200/Scale;
 	}
 	
-
+	/**
+	 * Draw the Graph and axes
+	 */
 	public void paintComponent (Graphics g)
 	{
 		width = getWidth();
@@ -52,11 +67,6 @@ public class DrawPanel extends JPanel
 		
 
 	    super.paintComponent(g2d);
-	
-//	    System.out.println(xFactor);
-//	    System.out.println(yFactor);
-//	    System.out.println(width);
-//	    System.out.println(height);
 	        
 	    g2d.setColor(Color.lightGray);
 	    //Draw Grid

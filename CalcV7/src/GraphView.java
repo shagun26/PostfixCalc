@@ -44,7 +44,10 @@ public class GraphView extends JFrame
 	private JTextField xScaleLabel;
 
 	
-	
+	/**
+	 * Instantiates a new GraphView with the associated controller
+	 * @param controller - the GraphView's controller
+	 */
 	public GraphView(final GraphController controller)
 	{
 		super("Graph");
@@ -62,7 +65,7 @@ public class GraphView extends JFrame
 		buttons_manager.setVgap(5);
 		buttons_manager.setHgap(5);
 		buttons.setLayout(buttons_manager);
-		bottom = new DrawPanel(y);
+		bottom = new DrawPanel();
 		
 	    ButtonAdapter calc;
 		buttons.add(calc = new ButtonAdapter("Calc")
@@ -154,7 +157,7 @@ public class GraphView extends JFrame
 					yScale *= 2;
 				else
 				yScale += 1; 
-				refreshGraph();
+				rescale();
 			}
 		});
 		IncreaseScaleY.setForeground(Color.WHITE);
@@ -172,7 +175,7 @@ public class GraphView extends JFrame
 					yScale /= 2;
 				else
 					yScale -= 1;
-				refreshGraph();
+				rescale();
 			}
 		});
 		DecreaseScaleY.setForeground(Color.WHITE);
@@ -185,7 +188,7 @@ public class GraphView extends JFrame
 		  	@Override
 			public void actionPerformed(ActionEvent arg0) {
 		  		yScale = Double.parseDouble(yScaleLabel.getText());
-		  		refreshGraph();
+		  		rescale();
 			}
 		};
 		yScaleLabel = new JTextField("" + yScale);
@@ -265,12 +268,19 @@ public class GraphView extends JFrame
 		
 		getContentPane().setLayout(groupLayout);
 	}
-	
+	/**
+	 * Update the label of the shown graph
+	 * @param expr - the expression of the graph
+	 */
 	public void updateExpr(String expr)
 	{
 		expression.setText(expr);
 	}
-	
+	/**
+	 * Draws a new graph with the given y coordinates
+	 * @param y - the y coordinates
+	 * @param SCGraph - set the scaling if trig graph
+	 */
 	public void drawGraph(double[] y, double xScale2)
 	{
 		xScale = xScale2;
@@ -295,7 +305,7 @@ public class GraphView extends JFrame
 		bottom.repaint();
 	}
 	
-	public void refreshGraph()
+	public void rescale()
 	{
 		if((xScale%Math.PI)==0)
 		{
@@ -315,5 +325,10 @@ public class GraphView extends JFrame
 		yScaleLabel.setText("" + yScale);
 		bottom.setYScale(yScale);
 		bottom.repaint();
-	}		
+	}	
+	
+	public String getExpr()
+	{
+		return expression.getText();
+	}
 }

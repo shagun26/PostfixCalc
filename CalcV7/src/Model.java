@@ -88,7 +88,7 @@ public class Model
 	 * Stores a list of expressions in
 	 * PostFix notation
 	 */
-	private Stack<String> expressionsPostFix = new Stack<String>();
+	protected Stack<String> expressionsPostFix = new Stack<String>();
 	/**
 	 * Stores the previous states of expressionsPostFix
 	 */
@@ -156,6 +156,14 @@ public class Model
 		lowest_precedence.add(Controller.MINUS);
 		
 	}
+	/**
+	 * Checks whether the history is empty or not
+	 * @return - true if it is
+	 * 			 false otherwise
+	 */
+	public boolean isHistoryEmpty() {
+		return button_history.empty();
+	}	
 	
 	/**
 	 * Gets the expressions list in InFix notation
@@ -277,6 +285,10 @@ public class Model
 		
 			if(precedence.contains(expressionsPostFix.peek()))
 				precedence.push(precedence.peek());
+			else if(precedence.contains(precedence_undo.peek().peek()))
+			{
+				precedence.push(precedence_undo.peek().peek());
+			}
 			
 			System.out.println(precedence);
 			
@@ -291,23 +303,11 @@ public class Model
 	 */
 	public void addToEntry(String button)
 	{
-		
 		sb.append(button);
 		sb_input_history.append(button);
 		pi = false;
 		from_memory = false;
 		opExpression = false;
-		
-		
-	}
-	
-	/**
-	 * Checks whether button_history is empty or not
-	 * @return true when button_history is empty. False otherwise
-	 */
-	public boolean isHistoryEmpty()
-	{
-		return(button_history.empty());
 	}
 	
 	/**
@@ -400,8 +400,6 @@ public class Model
 		operandHistory(Controller.PLUS);
 		return button_history.peek();
 	}
-	
-	
 	/**
 	 * Carries out the subtraction of two operands
 	 * and returns the result
@@ -588,24 +586,21 @@ public class Model
 	@SuppressWarnings("unchecked")
 	public String factorial()
 	{
-		single_code = new FactorialOperation();
-		opExpression = isExpression();
-		if(opExpression)
-		{	//Precondition not met
-			error = true;
-			return "NOT DEFINED";
-		}
-		
+		single_code = new FactorialOperation();	
 		if(from_memory)
 		{
+			opExpression = isExpression();
+			if(opExpression)
+			{	//Precondition not met
+				error = true;
+				return "NOT DEFINED";
+			}
 			single_code.zeroCheckSingle(stored_values, button_history);
 			double input = stored_values.peek();
 			String value = single_code.execute(input);
-			
+			//Precondition not met
 			if(value.equals("NOT DEFINED"))
-			{	//Precondition not met
 				error = true;
-			}
 			else
 			{	//Update previous state of stored_values
 				if(!running_history.isEmpty())
@@ -834,8 +829,9 @@ public class Model
 			//prev_history.push(operator);
 			//Update precedence list
 			precedence.push(operator);
-			System.out.println(precedence.toString());
 			from_memory = !from_memory;
+			//Update the PostFix expression list
+			expressionsPostFix.push("" + stored_values.peek());
 			return printHistory() + " " + EQUALS;
 		}
 		
@@ -847,7 +843,6 @@ public class Model
 			
 		//Update precedence list
 		precedence.push(operator);
-		System.out.println(precedence.toString());
 		sb_input_history.delete(0, sb_input_history.length());
 		// Add updated history to the stack
 		button_history.push(sb_completed_operations.toString());
@@ -861,6 +856,10 @@ public class Model
 		}
 		//replace them with updated computation
 		running_history.add(button_history.peek());
+		//Update the Postfix expression list
+		if(!expressionsPostFix.empty())
+			expressionsPostFix.pop();
+		expressionsPostFix.push(stored_values.peek() + "");
 		//print updated history
 		return printHistory() + " " + EQUALS;
 	}
@@ -886,13 +885,10 @@ public class Model
 			expressionsPostFix.push("" + stored_values.peek());
 		}
 			
-		
 		String first = button_history.pop();
-		System.out.println(first);
 		if(isOp(first))
 		{	
-			if(first.charAt(0) == '-' && first.charAt(1) == '(' 
-					&& first.charAt(first.length() - 1) == ')')
+			if(isNegateOp(first))
 			{	sb_completed_operations.append(first);
 				sb_completed_operations.deleteCharAt(0);
 				sb_completed_operations.deleteCharAt(0);
@@ -978,14 +974,8 @@ public class Model
 			return printHistory() + " " + EQUALS;
 		}
 		else if(!opExpression)
-		{
 			updatePreviousHistory();
-			if(!expressionsPostFix.empty())
-				expressionsPostFix.pop();
-			expressionsPostFix.push("" + stored_values.peek());
-		}
 			
-		
 		if(!from_memory)
 		{
 			//set the string
@@ -1000,6 +990,7 @@ public class Model
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 			from_memory = !from_memory;
+			expressionsPostFix.push("" + stored_values.peek());
 			return printHistory() + " " + EQUALS;
 			
 		}
@@ -1022,6 +1013,13 @@ public class Model
 		{
 			expressionsInFix.pop();
 			expressionsInFix.push(button_history.peek());
+			
+		}
+		else
+		{
+			if(!expressionsPostFix.empty())
+				expressionsPostFix.pop();
+			expressionsPostFix.push(stored_values.peek() + "");
 		}
 			
 		//replace them with updated computation
@@ -1214,6 +1212,11 @@ public class Model
 	{
 		if(precedence.empty() || !isOp(last_entry))
 			return false;
+		else if(isNegateOp(last_entry))
+		{
+			precedence.pop();
+			return false;
+		}
 		
 		//If last op was trig
 		//No brackets needed
@@ -1436,6 +1439,9 @@ public class Model
 		
 		running_history = running_history_undo.pop();
 		button_history = button_history_undo.pop();	
+		if(button_history.size() > running_history.size())
+			button_history.pop();
+		
 		expressionsInFix = expressionsInFix_undo.pop();
 		expressionsPostFix = expressionsPostFix_undo.pop();
 		//If the last element of previous state
@@ -1477,6 +1483,13 @@ public class Model
 			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 		}
 	}
+	
+	private boolean isNegateOp(String input)
+	{
+		return input.charAt(0) == '-' && input.charAt(1) == '(' 
+				&& input.charAt(input.length() - 1) == ')';
+	}
+
 	
 }
 
