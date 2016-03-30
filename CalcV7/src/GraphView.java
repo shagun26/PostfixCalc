@@ -229,7 +229,7 @@ public class GraphView extends JFrame
 	{
 			N_Y.setText("-" + (int) yScale);
 			P_Y.setText("" + (int) yScale);
-			yScaleLabel.setText("" +  (int) yScale);
+			yScaleLabel.setText("" +  (int) yScale);			
 			bottom.repaint();
 			bottom.setYScale(yScale);
 	}		
