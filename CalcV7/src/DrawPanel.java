@@ -19,6 +19,7 @@ public class DrawPanel extends JPanel
     private double yFactor;
     private double y[];
 	private double yScale;
+	private double numberOfGrids;
 
 
 	public DrawPanel(double A[]) 
@@ -29,13 +30,12 @@ public class DrawPanel extends JPanel
 	public void setY(double[] input, double yScale)
 	{
 		y = input;
-		this.yScale = yScale;
-		
+		this.yScale = (y.length - 1)/200/yScale;
 	}
 	
 	public void setYScale(double yScale)
 	{
-		this.yScale = yScale;
+		this.yScale = (y.length - 1)/200/yScale;
 	}
 	
 
@@ -48,7 +48,7 @@ public class DrawPanel extends JPanel
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		xFactor = width / (GraphModel.X.length);
-	    yFactor = height / (GraphModel.X.length)* 10 * 5 * 5/yScale;
+	    yFactor = height / (GraphModel.X.length)* 50 * yScale;
 		
 
 	    super.paintComponent(g2d);
@@ -57,31 +57,33 @@ public class DrawPanel extends JPanel
 //	    System.out.println(yFactor);
 //	    System.out.println(width);
 //	    System.out.println(height);
-	    
-	    //Draw X and Y Axis
-	    g2d.drawLine(0, (int)(heightH), (int) width, (int) (heightH));
-	    g2d.drawLine((int)widthH, 0, (int) widthH, (int) height);
-	    
+	        
 	    g2d.setColor(Color.lightGray);
 	    //Draw Grid
-	    g2d.drawLine(0, (int)(heightH)/2, (int) width, (int) (heightH)/2);
-	    g2d.drawLine((int)widthH/2, 0, (int) widthH/2, (int) height);
-	    g2d.drawLine(0, (int)(heightH)*3/2, (int) width, (int) (heightH)*3/2);
-	    g2d.drawLine((int)widthH*3/2, 0, (int) widthH*3/2, (int) height);
+	    //Change the number of Grids to change the amount of grids displayed.
+	    numberOfGrids = 10;
+	    for(int i = 1; i <= numberOfGrids*2; i++)
+	    {
+	    	g2d.drawLine(0, (int)(heightH/numberOfGrids*i), (int) width, (int)(heightH/numberOfGrids*i));
+	    	g2d.drawLine((int)(widthH/numberOfGrids*i), 0, (int)(widthH/numberOfGrids*i), (int) height);
+	    }
+	       
+	  //Draw X and Y Axis
+	    g2d.setColor(Color.BLACK);
+	    g2d.drawLine(0, (int)(heightH), (int) width, (int) (heightH));
+	    g2d.drawLine((int)widthH, 0, (int) widthH, (int) height);
 	    
 	    g2d.setColor(Color.RED);
 
 	    if(y == null)
 	    	return;
 	    
-	    //Evaluate Graph
-	    for(int i = 0; i < y.length - 1; i++)
+	    //Evaluate Graph   
+	    for(int i = 0; i < (y.length - 1); i++)
 		{
 	    	if(!(Math.abs(y[i] - y[i + 1]) > 10000))
-	    			g2d.drawLine((int) (xFactor * i), (int) (heightH - y[i] * yFactor), 
-	    					(int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
-	    	//g2d.draw(line);
-	    	
+	    			g2d.drawLine((int) (xFactor * i), 	  (int) (heightH - y[i] * yFactor), 
+	    						 (int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
 		}
 	}
 }
