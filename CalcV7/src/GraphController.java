@@ -9,6 +9,7 @@ public class GraphController
 	private static FavController favcntrl = null;
 	private double[] Ys = new double[GraphModel.X.length];
 	private Stack<String> expressionsList;
+	private String prevExpr;
 	
 	public void initialize(Controller controller, Stack<String> expressionsPostFix, Stack<String> expressionsInFix)
 	{
@@ -18,21 +19,31 @@ public class GraphController
 		if(favcntrl == null)
 			favcntrl = new FavController();
 		
-		//grph_model.setValuePOST(expressionsPostFix);
-		//grph_model.setValueIN(expressionsInFix);
 		expressionsList = expressionsInFix;
-		Ys = grph_model.getValues(expressionsPostFix);
 		
 		if(grph_view == null)
 			grph_view = new GraphView(this);
 		
 		cntrl = controller;
-		if(!expressionsList.empty())
-			grph_view.updateExpr("y = " + expressionsList.peek());
-		
-		if(!expressionsPostFix.empty())
+
+		if(expressionsList.empty())
+		{
+			Ys = null;
 			grph_view.drawGraph(Ys, grph_model.getisSCGraph());
-		
+			grph_view.updateExpr("");
+			prevExpr = "";
+		}
+		else if(!expressionsList.peek().equals(prevExpr))
+		{
+			Ys = grph_model.getValues(expressionsPostFix);
+			grph_view.updateExpr("y = " + expressionsList.peek());
+			prevExpr = expressionsList.peek();
+			grph_view.drawGraph(Ys, grph_model.getisSCGraph());
+			System.out.println(grph_view.getExpr());
+		}
+			
+			
+
 		grph_view.setVisible(true);
 	}
 	

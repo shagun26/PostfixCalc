@@ -20,6 +20,8 @@ public class DrawPanel extends JPanel
     private double y[];
 	private double yScale;
 
+	
+	public DrawPanel(){};
 	/**
 	 * Instantiate a new DrawPanel with given y-coordinates
 	 * @param A

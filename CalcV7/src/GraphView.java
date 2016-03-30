@@ -59,7 +59,7 @@ public class GraphView extends JFrame
 		buttons_manager.setVgap(5);
 		buttons_manager.setHgap(5);
 		buttons.setLayout(buttons_manager);
-		bottom = new DrawPanel(y);
+		bottom = new DrawPanel();
 		
 	    ButtonAdapter calc;
 		buttons.add(calc = new ButtonAdapter("Calc")
@@ -245,5 +245,10 @@ public class GraphView extends JFrame
 			yScaleLabel.setText("" +  (int) yScale);			
 			bottom.repaint();
 			bottom.setYScale(yScale);
-	}		
+	}	
+	
+	public String getExpr()
+	{
+		return expression.getText();
+	}
 }
