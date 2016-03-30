@@ -781,9 +781,12 @@ public class Model
 		}
 		else
 		{
-			expressionsPostFix.pop();
 			if(!expressionsPostFix.empty())
 				expressionsPostFix.pop();
+			
+			if(!expressionsPostFix.empty())
+				expressionsPostFix.pop();
+			
 			expressionsPostFix.push("" + stored_values.peek());
 		}
 		
@@ -1178,7 +1181,7 @@ public class Model
 	
 	private boolean checkOpUndo(String first)
 	{
-		if(running_history_undo.empty())
+		if(running_history_undo.size() < 2)
 			return isOp(first);
 			
 		
