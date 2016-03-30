@@ -4,20 +4,30 @@ import java.util.Stack;
 
 public class GraphModel 
 {
-	public static final  double[] X = new double[201]; 
+	public static double[] X = new double[201];
+	public static final double[] XOri = new double[201];
+	public static final double[] XPi = new double[201];
+	
 	private double[] y;
 	private Stack<double[]> valuation = new Stack<double[]>();
 	private ExpressionsParser parser;
+	private boolean isSCGraph = false;
 	
 	/**
-	 * Instantiate a new GraphModel with the default X-coordinates
+	 * Instantiate a new GraphModel with the default X-coordinates and XPi-coordinates
 	 */
 	public GraphModel()
 	{
 		int j = 0;
-		for(double i = -10; j < X.length;)
+		for(double i = -3.1415926535897932384626433*2; j < XPi.length;)
 		{
-			X[j++] = i;
+			XPi[j++] = i;
+			i = i + 0.031415927;
+		}
+		j = 0;
+		for(double i = -10; j < XOri.length;)
+		{
+			XOri[j++] = i;
 			i = i + 0.1;
 		}
 	}
@@ -30,12 +40,29 @@ public class GraphModel
 	{
 		valuation.clear();
 		System.out.println(expressionsPostFix);
+		for(String next0 : expressionsPostFix)
+		{
+			if(next0.equals("SIN(") || next0.equals("COS("))
+			{
+				isSCGraph = true;
+				X = XPi;
+				break;
+			}
+			else
+			{
+				isSCGraph = false;
+				X = XOri;
+			}
+		}
+				
 		for(String next : expressionsPostFix)
 		{
 			if(next.equals("x"))
 				var();
 			else if(next.equals("+"))
 				sum();
+			else if(next.equals("-"))
+				sub();
 			else if(next.equals("*"))
 				mult();
 			else if(next.equals("/"))
@@ -89,6 +116,14 @@ public class GraphModel
 		y = parser.evaluate(valuation);
 	}
 	/**
+	 * Perform an subtraction
+	 */
+	public void sub()
+	{
+		parser = new EvaluateSub();
+		y = parser.evaluate(valuation);
+	}
+	/**
 	 * Perform a multiplication
 	 */
 	public void mult()
@@ -112,7 +147,9 @@ public class GraphModel
 		parser = new EvaluateCos();
 		y = parser.evaluate(valuation);
 	}
+	public boolean getisSCGraph() {
+		return isSCGraph;
+	}
 
-	
 	
 }

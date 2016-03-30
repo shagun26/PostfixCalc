@@ -4,17 +4,30 @@ import java.util.Stack;
 
 public class Model
 {
+	private int start = 0;
+	/**
+	 * Used to enter correct routine for binary operations
+	 * (Section 11.2)
+	 */
+	private  BinaryOperations bin_code = null;
 	
-	private  BinaryOperations bin_code;
-	private  SingleOperations single_code;
+	/**
+	 * Used to enter correct routine for single operations
+	 * (Section 11.2)
+	 */
+	private  SingleOperations single_code = null;
 	
 	/**
 	 * Stores a history of entered values and operations.
 	 * (Section 3.3 in Design Document)
 	 */
-	private Stack<String> button_history = new Stack<String>();
+	protected Stack<String> button_history = new Stack<String>();
 	
-	private Stack<Stack<String>> button_history_undo = new Stack<Stack<String>>();
+	
+	/**
+	 * Stores the previous states of button_history
+	 */
+	protected Stack<Stack<String>> button_history_undo = new Stack<Stack<String>>();
 	
 	private static final String EQUALS = "=";
 	
@@ -23,8 +36,10 @@ public class Model
 	 * (Section 3.3 in Design Document)
 	 */
 	private Stack<Double> stored_values = new Stack<Double>();
-	
-	private Stack<Stack<Double>> stored_values_undo = new Stack<Stack<Double>>();
+	/**
+	 * Stores the previous states of stored_values
+	 */
+	protected Stack<Stack<Double>> stored_values_undo = new Stack<Stack<Double>>();
 	
 	/**
 	 * A like-for-like copy of button_history.
@@ -32,8 +47,10 @@ public class Model
 	 * (Section 3.3 in Design Document)
 	 */
 	private ArrayList<String> running_history = new ArrayList<String>();
-	
-	private Stack<ArrayList<String>> running_history_undo = new Stack<ArrayList<String>>();
+	/**
+	 * Stores the previous states of running_history
+	 */
+	protected Stack<ArrayList<String>> running_history_undo = new Stack<ArrayList<String>>();
 	
 	
 	/**
@@ -43,38 +60,45 @@ public class Model
 	 */
 	
 	private Stack<String> precedence= new Stack<String>();
-	
-	
-	
+	/**
+	 * Stores the previous states of precedence
+	 */
+	protected Stack<Stack<String>> precedence_undo = new Stack<Stack<String>>();
+
 	/**
 	 * A reference to high precedence operators not including 
 	 * factorial, sin and cos.
 	 */
 	private ArrayList<String> high_precedence = new ArrayList<String>();
-	
 	/**
 	 * A reference to low precedence operators
 	 */
 	private ArrayList<String> lowest_precedence = new ArrayList<String>();
 	
 	/**
-	 * 
+	 * Stores a list of expressions in
+	 * InFix notation
 	 */
-	private ArrayList<String> highest_precedence = new ArrayList<String>();
-	
+	protected Stack<String> expressionsInFix = new Stack<String>();
 	/**
-	 * Stores a list of expressions
+	 * Stores the previous states of expressionsInFix
 	 */
-	private Stack<String> expressionsInFix = new Stack<String>();
-	
+	protected Stack<Stack<String>> expressionsInFix_undo = new Stack<Stack<String>>();
+	/**
+	 * Stores a list of expressions in
+	 * PostFix notation
+	 */
 	private Stack<String> expressionsPostFix = new Stack<String>();
-	
+	/**
+	 * Stores the previous states of expressionsPostFix
+	 */
+	protected Stack<Stack<String>> expressionsPostFix_undo = new Stack<Stack<String>>();
 	
 	/**
 	 * Used to trace character presses.
 	 * (Section 3.3 in Design Document)
 	 */
-	private StringBuilder sb = new StringBuilder();
+	protected StringBuilder sb = new StringBuilder();
 	
 	/**
 	 * Same functionality as sb except used for
@@ -96,8 +120,14 @@ public class Model
 	 * stored_values were used in an operation or otherwise
 	 * (Section 3.3 in Design Document)
 	 */
-	private boolean from_memory = false;
+	private boolean from_memory = true;
+	/**
+	 * Indicates whether pi was entered into the system
+	 */
 	private boolean pi = false;
+	/**
+	 * Indicates whether an error has occured
+	 */
 	private boolean error = false;
 	
 	/**
@@ -125,22 +155,24 @@ public class Model
 		lowest_precedence.add(Controller.PLUS);
 		lowest_precedence.add(Controller.MINUS);
 		
-		
-		highest_precedence.add(Controller.FACT);
-		
 	}
 	
+	/**
+	 * Gets the expressions list in InFix notation
+	 * @return - the expressions list in InFix notation
+	 */
 	public Stack<String> getInFixExpressionList()
 	{
 		return expressionsInFix;
 	}
-	
+	/**
+	 * Gets the expressions list in PostFix notation
+	 * @return - the expressions list in PostFix notation
+	 */
 	public Stack<String> getPostExpressionList()
 	{
 		return expressionsPostFix;
 	}
-	
-	
 	/**
 	 * Returns the String representation of running_history as 
 	 * specified in the Requirements Document
@@ -149,11 +181,6 @@ public class Model
 	public String printHistory()
 	{
 		int size = running_history.size();
-		/*if(size == 1)
-		{
-			return arraylist.get(0);
-		}
-		return printHistory(arraylist, size - 1) + ", " + arraylist.get(size - 1);*/
 		if(size == 0)
 			return "";
 		
@@ -162,6 +189,7 @@ public class Model
 		{
 			result.append(running_history.get(i) + ", ");
 		}
+		//Add last element
 		result.append(running_history.get(size - 1));
 		return result.toString();
 		
@@ -172,33 +200,32 @@ public class Model
 	 * Enters the Java representation of PI into stored_values
 	 * @return the Java value of Pi as a String
 	 */
+	@SuppressWarnings("unchecked")
 	public String valuePi()
 	{
 		pi = true;
+		from_memory = true;
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
+		//Update previous state of stored_values
+		if(!button_history.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		stored_values.push(Math.PI);
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
 		return "" + Math.PI;
-		
 	}
 	
 	/**
 	 * Enters the symbol of PI into button_history and running_history
 	 * @return The updated history String
 	 */
+	@SuppressWarnings("unchecked")
 	public String historyPi()
 	{
-		
-		if(!button_history.empty())
-		{
-			button_history_undo.push((Stack<String>) button_history.clone());
-			running_history_undo.push((ArrayList<String>) running_history.clone());
-		}
-		
+		//Update previous state of history lists and precedence
+		updatePreviousHistory();
+		expressionsPostFix.push("" + Math.PI);
 		button_history.push(Controller.PI);
 		running_history.add(Controller.PI);
-		
 		return printHistory();
 	}
 	
@@ -207,9 +234,16 @@ public class Model
 	 * in the value field
 	 * @return - the expression symbol
 	 */
+	@SuppressWarnings("unchecked")
 	public String expressionVal()
 	{
-		opExpression = true;
+		from_memory = true;
+		sb.delete(0, sb.length());
+		sb_input_history.delete(0, sb_input_history.length());
+		from_memory = true;
+		//Update previous state of stored_values
+		if(!button_history.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		return Controller.EXPRESSION;
 	}
 	
@@ -218,19 +252,36 @@ public class Model
 	 * Returns the updated history
 	 * @return - the updated history
 	 */
+	@SuppressWarnings("unchecked")
 	public String expressionHist()
 	{
+		//Update previous state of history lists and precedence
+		updatePreviousHistory();
 		
-		if(!button_history.empty())
+		if(expressionsInFix.empty() || !exprUpdated)
+			button_history.push(Controller.EXPRESSION);
+		else 
+			button_history.push(expressionsInFix.peek());
+			
+		expressionsInFix.push(button_history.peek());
+		running_history.add(button_history.peek());
+		
+		if(expressionsPostFix.empty() || expressionsInFix.peek().equals(Controller.EXPRESSION))
+			expressionsPostFix.push(Controller.EXPRESSION);
+		else
 		{
-			button_history_undo.push((Stack<String>) button_history.clone());
-			running_history_undo.push((ArrayList<String>) running_history.clone());
-		}
+			int size = expressionsPostFix.size();
+			//Copy elements
+			while(start < size)
+				expressionsPostFix.push(expressionsPostFix.get(start++));
 		
-		button_history.push(Controller.EXPRESSION);
-		running_history.add(Controller.EXPRESSION);
-		expressionsInFix.push(Controller.EXPRESSION);
-		expressionsPostFix.push(Controller.EXPRESSION);
+			if(precedence.contains(expressionsPostFix.peek()))
+				precedence.push(precedence.peek());
+			
+			System.out.println(precedence);
+			
+		}System.out.println(expressionsPostFix);
+		System.out.println(start);
 		return printHistory();
 	}
 	
@@ -240,22 +291,14 @@ public class Model
 	 */
 	public void addToEntry(String button)
 	{
-		/*if(button.equals("" + PI))
-		{
-			sb.delete(0, sb.length());
-			
-			//Set pi true for other functions
-			pi = true;
-			
-		}
-		else
-		{
-			//Set pi false for other functions
-			pi = false;
-		}*/
+		
 		sb.append(button);
 		sb_input_history.append(button);
 		pi = false;
+		from_memory = false;
+		opExpression = false;
+		
+		
 	}
 	
 	/**
@@ -287,8 +330,11 @@ public class Model
 		button_history.clear();
 		button_history_undo.clear();
 		precedence.clear();
+		precedence_undo.clear();
 		expressionsInFix.clear();
+		expressionsInFix_undo.clear();
 		expressionsPostFix.clear();
+		expressionsPostFix_undo.clear();
 		
 		opExpression = false;
 		exprUpdated = false;
@@ -298,7 +344,10 @@ public class Model
 		sb_input_history.delete(0, sb_input_history.length());
 		sb_completed_operations.delete(0, sb_completed_operations.length());
 		running_history.clear();
+		running_history_undo.clear();
 		sb.delete(0, sb.length());
+	
+		start = 0;
 	}
 	
 	/**
@@ -307,67 +356,49 @@ public class Model
 	 * (Section 3.4 in Design Document)
 	 * @return The value of the addition as a String
 	 */
+	@SuppressWarnings("unchecked")
 	public String sum()
 	{
 		//Determine whether an expression is involved
-		opExpression = isExpression();
-		
+		opExpression = isExpressionBin();
 		bin_code = new SumOperation();
-		
-		if(sb.toString().equals(""))
+		//Update previous state of stored_values
+		if(!button_history.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		System.out.println("GG " + stored_values_undo);
+		if(from_memory)
 		{	
-			from_memory = true;
-			
+			System.out.println(stored_values_undo);
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
-				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
-				stored_values.push(value);
-				sb.delete(0, sb.length());
-				return "" + value;	
+				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				System.out.println(stored_values_undo);
+				stored_values.push(Double.parseDouble(value));
+				System.out.println(stored_values_undo);
+				return value;	
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				zeroCheckExpr();
-				operandHistory(Controller.PLUS);
-				return button_history.peek() ;
-			}
-			
+			zeroCheckExpr();
+			operandHistory(Controller.PLUS);
+			return button_history.peek() ;
 		}
-		else
+		//If not expression, continue as normal
+		if(!opExpression)
 		{
-			from_memory = false;
-			//If not expression, continue as normal
-			if(!opExpression)
-			{
-				bin_code.zeroCheckSingle(stored_values, button_history);
-				double history = Double.parseDouble(sb.toString());
-				sb.delete(0, sb.length());
-				
-				double value = bin_code.calculate(history, stored_values.pop());
-				stored_values.push(value);
-				
-				if(isInt(history, (int) history))
-				{
-					sb_input_history.delete(0, sb_input_history.length());
-					sb_input_history.append((int) history);
-				}
-				
-				return "" + value;
-			}
-			//Otherwise update the history
-			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				operandHistory(Controller.PLUS);
-				return button_history.peek() ;
-			}
-			
+			bin_code.zeroCheckSingle(stored_values, button_history);
+			String value = bin_code.execute(Double.parseDouble(sb.toString()), stored_values.pop());
+			sb.delete(0, sb.length());
+			stored_values.push(Double.parseDouble(value));
+			return "" + value;
 		}
+		//Otherwise update the history
+		//and return top element (new expression)
+		sb.delete(0, sb.length());
+		operandHistory(Controller.PLUS);
+		return button_history.peek();
 	}
 	
 	
@@ -377,68 +408,45 @@ public class Model
 	 * (Section 3.4 in the Design Document)
 	 * @return The value of the subtraction as a String
 	 */
+	@SuppressWarnings("unchecked")
 	public String subtract()
 	{
 		//Determine whether an expression is involved
-		opExpression = isExpression();
+		opExpression = isExpressionBin();
 		bin_code = new MinusOperation();
-		
-		if(sb.toString().equals(""))
+		//Update previous state of stored_values
+		if(!button_history.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		if(from_memory)
 		{	
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
-				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
-				stored_values.push(value);
-				//double value = subStoredValues();
-				sb.delete(0, sb.length());
-				return "" + value;	
+				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;	
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				zeroCheckExpr();
-				operandHistory(Controller.MINUS);
-				return button_history.peek();
-			}
-			
+			zeroCheckExpr();
+			operandHistory(Controller.MINUS);
+			return button_history.peek() ;
 		}
-		else
+		//If not expression, continue as normal
+		if(!opExpression)
 		{
-			from_memory = false;
-			//If not expression, continue as normal
-			if(!opExpression)
-			{
-				//double value = subStoredWithHistory();
-				bin_code.zeroCheckSingle(stored_values, button_history);
-				double history = Double.parseDouble(sb.toString());
-				sb.delete(0, sb.length());
-				
-				double value = bin_code.calculate(history, stored_values.pop());
-				stored_values.push(value);
-				
-				if(isInt(history, (int) history))
-				{
-					sb_input_history.delete(0, sb_input_history.length());
-					sb_input_history.append((int) history);
-				}
-				
-				
-				return "" + value;	
-			}
-			//Otherwise update the history
-			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				operandHistory(Controller.MINUS);
-				return button_history.peek();
-			}
-			
+			bin_code.zeroCheckSingle(stored_values, button_history);
+			String value = bin_code.execute(Double.parseDouble(sb.toString()), stored_values.pop());
+			sb.delete(0, sb.length());
+			stored_values.push(Double.parseDouble(value));
+			return "" + value;
 		}
+		//Otherwise update the history
+		//and return top element (new expression)
+		sb.delete(0, sb.length());
+		operandHistory(Controller.MINUS);
+		return button_history.peek();
 	}
 	
 	/**
@@ -447,66 +455,45 @@ public class Model
 	 * (Section 3.4 in the Design Document)
 	 * @return The value of the product as a String
 	 */
+	@SuppressWarnings("unchecked")
 	public String multiply()
 	{
 		//Determine whether an expression is involved
-		opExpression = isExpression();
+		opExpression = isExpressionBin();
 		bin_code = new MultOperation();
-		
-		if(sb.toString().equals(""))
+		//Update previous state of stored_values
+		if(!button_history.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		if(from_memory)
 		{	
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
-				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
-				stored_values.push(value);
-				sb.delete(0, sb.length());
-				return "" + value;	
+				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;	
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				zeroCheckExpr();
-				operandHistory(Controller.MULT);
-				return button_history.peek();
-			}
-			
+			zeroCheckExpr();
+			operandHistory(Controller.MULT);
+			return button_history.peek() ;
 		}
-		else
-		{
-			from_memory = false;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckSingle(stored_values, button_history);
-				double history = Double.parseDouble(sb.toString());
+				String value = bin_code.execute(Double.parseDouble(sb.toString()), stored_values.pop());
 				sb.delete(0, sb.length());
-				
-				double value = bin_code.calculate(history, stored_values.pop());
-				stored_values.push(value);
-				
-				if(isInt(history, (int) history))
-				{
-					sb_input_history.delete(0, sb_input_history.length());
-					sb_input_history.append((int) history);
-				}
-				
-				
-				return "" + value;	
+				stored_values.push(Double.parseDouble(value));
+				return "" + value;
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				operandHistory(Controller.MULT);
-				return button_history.peek();
-			}
-			
-		}
+			sb.delete(0, sb.length());
+			operandHistory(Controller.MULT);
+			return button_history.peek();
 	}
 	
 	/**
@@ -515,99 +502,73 @@ public class Model
 	 * (Section 3.4 in the Design Document)
 	 * @return The value of the division as a String
 	 */
+	@SuppressWarnings("unchecked")
 	public String divide()
 	{
 		//Determine whether an expression is involved
-		opExpression = isExpression();
+		opExpression = isExpressionBin();
 		bin_code = new DivideOperation();
-		
-		if(sb.toString().equals(""))
+		//Update previous state of stored_values
+		if(!button_history.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		if(from_memory)
 		{	
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
-				double value = bin_code.calculate(stored_values.pop(), stored_values.pop());
-				stored_values.push(value);
-				sb.delete(0, sb.length());
-				return "" + value;	
+				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;	
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				zeroCheckExpr();
-				operandHistory(Controller.DIV);
-				return button_history.peek();
-			}
-			
+			zeroCheckExpr();
+			operandHistory(Controller.DIV);
+			return button_history.peek() ;
 		}
-		else
-		{
-			from_memory = false;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckSingle(stored_values, button_history);
-				double history = Double.parseDouble(sb.toString());
+				String value = bin_code.execute(Double.parseDouble(sb.toString()), stored_values.pop());
 				sb.delete(0, sb.length());
-				
-				double value = bin_code.calculate(history, stored_values.pop());
-				stored_values.push(value);
-				
-				if(isInt(history, (int) history))
-				{
-					sb_input_history.delete(0, sb_input_history.length());
-					sb_input_history.append((int) history);
-				}
-				
-				
-				return "" + value;	
+				stored_values.push(Double.parseDouble(value));
+				return "" + value;
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				operandHistory(Controller.DIV);
-				return button_history.peek();
-			}
-			
-		}
+			sb.delete(0, sb.length());
+			operandHistory(Controller.DIV);
+			return button_history.peek();
 	}
-	
+	/**
+	 * s either the top element of stored_values
+	 * or the element currently constructed
+	 * @return - A string representation of the negated element
+	 */
 	public String negate()
 	{
-		if(sb.toString().equals(""))
-		{
-			from_memory = true;
-			double value = negateStoredValues();
-			sb.delete(0, sb.length());
-			sb_input_history.delete(0, sb_input_history.length());
-			
-			int alt = (int) value;
-			
-			if(isInt(Math.abs(value), Math.abs(alt)))
-			{
-				sb.append("" + (int) value);
-				sb_input_history.append("" + (int) value);
+		opExpression = isExpression();
+		single_code = new NegateOperation();
+		if(from_memory)
+		{	
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+			if(!opExpression)
+			{	
+				single_code.zeroCheckSingle(stored_values, button_history);
+				String value = single_code.execute(stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;
 			}
-			else
-			{
-				sb.append("" + value);
-				sb_input_history.append("" + value);
-				
-			}
-				
-			
-			return sb.toString();
+			negateHistory();
+			return button_history.peek();
 		}
 		else
 		{
 			//If negation during number entry,
 			//the value shown to the user must be updated
-			from_memory = false;
+			//from_memory = false;
 			negateStoredWithHistory();
 			return sb.toString();
 		}
@@ -618,71 +579,58 @@ public class Model
 	 * Carries out the factorial of one operand
 	 * and returns the result
 	 * (Section 3.4 in the Design Document)
-	 * @return The value of the factorial as a String
+	 * @precondition - The operand must be an integer only and must
+	 * be smaller than 171
+	 * @postcondition - The operation is carried out
+	 * @return The value of the factorial as a String or
+	 * NOT DEFINED if the precondition is not met
 	 */
+	@SuppressWarnings("unchecked")
 	public String factorial()
 	{
 		single_code = new FactorialOperation();
 		opExpression = isExpression();
-		
 		if(opExpression)
-		{
+		{	//Precondition not met
 			error = true;
 			return "NOT DEFINED";
 		}
-			
 		
-		if(sb.toString().equals(""))
+		if(from_memory)
 		{
-			from_memory = true;
-			System.out.println("Fact from stored_values");
-			double input = stored_values.pop();
+			single_code.zeroCheckSingle(stored_values, button_history);
+			double input = stored_values.peek();
+			String value = single_code.execute(input);
 			
-			if(!isInt(input, (int)(input) )||  input < 0)
-			{
-				stored_values.push(input);
+			if(value.equals("NOT DEFINED"))
+			{	//Precondition not met
 				error = true;
-				return "NOT DEFINED";
 			}
-			
-			double value = single_code.calculate(input);
-			
-			if(Double.isInfinite(value))
-			{
-				stored_values.push(input);
-				error = true;
-				return "NOT DEFINED";
+			else
+			{	//Update previous state of stored_values
+				if(!running_history.isEmpty())
+					stored_values_undo.push((Stack<Double>) stored_values.clone());
+				stored_values.pop();
+				stored_values.push(Double.parseDouble(value));
 			}
-			
-			stored_values.push(value);
-			return "" + value;
+			return value;
+		}
+		double input = Double.parseDouble(sb.toString());
+		String value = single_code.execute(input);
+		sb.delete(0, sb.length());
+		
+		if(value.equals("NOT DEFINED"))
+		{
+			sb_input_history.delete(0, sb_input_history.length());
+			error = true;
 		}
 		else
-		{
-			from_memory = false;
-			double input = Double.parseDouble(sb.toString());
-			sb.delete(0, sb.length());
-			if(!isInt(input, (int)(input) )|| input < 0)
-			{
-				//stored_values.push(input);
-				error = true;
-				return "NOT DEFINED";
-			}
-		
-			double value = single_code.calculate(input);
-			
-			if(Double.isInfinite(value))
-			{
-				//stored_values.push(input);
-				error = true;
-				return "NOT DEFINED";
-			}
-			
-			stored_values.push(value);
-			return "" + value;
-			
+		{	//Update previous state of stored_values
+			if(!stored_values.empty())
+				stored_values_undo.push((Stack<Double>) stored_values.clone());
+			stored_values.push(Double.parseDouble(value));
 		}
-		
+		return value;	
 	}
 	
 	/**
@@ -691,55 +639,40 @@ public class Model
 	 * (Section 3.4 in the Design Document)
 	 * @return The value of the sin as a String
 	 */
+	@SuppressWarnings("unchecked")
 	public String sin()
 	{
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		single_code = new SinOperation();
-		
-		if(sb.toString().equals(""))
+	
+		if(from_memory)
 		{
-			from_memory = true;
+			if(!button_history.empty())
+				stored_values_undo.push((Stack<Double>) stored_values.clone());
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				single_code.zeroCheckSingle(stored_values, button_history);
-				double value = single_code.calculate(stored_values.pop());
-				stored_values.push(value);
-				sb.delete(0, sb.length());
-				return "" + value;
-				
+				String value = single_code.execute(stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				trigHistory(Controller.SIN);
-				return button_history.peek();
-			}
-			
-			
-		}
-		else
-		{
-			from_memory = false;
-			double history = Double.parseDouble(sb.toString());
 			sb.delete(0, sb.length());
-			
-			double value = single_code.calculate(history);
-			
-			if(isInt(history, (int) history))
-			{
-				sb_input_history.delete(0, sb_input_history.length());
-				sb_input_history.append((int) history);
-			}
-			
-			stored_values.push(value);
-			
-			return "" + value;
+			trigHistory(Controller.SIN);
+			return button_history.peek();
 		}
-
+		//Update previous state of stored_values
+		if(!stored_values.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		
+		double history = Double.parseDouble(sb.toString());
+		sb.delete(0, sb.length());
+		String value = single_code.execute(history);
+		stored_values.push(Double.parseDouble(value));
+		return "" + value;
 	}
 
 	/**
@@ -748,53 +681,40 @@ public class Model
 	 * (Section 3.4 in the Design Document)
 	 * @return The value of the cosine as a String
 	 */
+	@SuppressWarnings("unchecked")
 	public String cos()
 	{
 		//Determine whether an expression is involved
 		opExpression = isExpression();
 		single_code = new CosOperation();
-		
-		if(sb.toString().equals(""))
+				
+		if(from_memory)
 		{
-			from_memory = true;
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
+				if(!button_history.empty())
+					stored_values_undo.push((Stack<Double>) stored_values.clone());
 				single_code.zeroCheckSingle(stored_values, button_history);
-				double value = single_code.calculate(stored_values.pop());
-				stored_values.push(value);
-				sb.delete(0, sb.length());
-				return "" + value;
+				String value = single_code.execute(stored_values.pop());
+				stored_values.push(Double.parseDouble(value));
+				return value;
 			}
 			//Otherwise update the history
 			//and return top element (new expression)
-			else
-			{
-				sb.delete(0, sb.length());
-				trigHistory(Controller.COS);
-				return button_history.peek();
-			}
-			
-		}
-		else
-		{
-			from_memory = false;
-			double history = Double.parseDouble(sb.toString());
 			sb.delete(0, sb.length());
-			
-			double value = single_code.calculate(history);
-			
-			if(isInt(history, (int) history))
-			{
-				sb_input_history.delete(0, sb_input_history.length());
-				sb_input_history.append((int) history);
-			}
-			
-			stored_values.push(value);
-			
-			return "" + value;
+			trigHistory(Controller.COS);
+			return button_history.peek();		
 		}
-
+		//Update previous state of stored_values
+		if(!stored_values.empty())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		
+		double history = Double.parseDouble(sb.toString());
+		sb.delete(0, sb.length());
+		String value = single_code.execute(history);
+		stored_values.push(Double.parseDouble(value));
+		return "" + value;
 	}
 	
 	/**
@@ -802,118 +722,74 @@ public class Model
 	 * after a Binary Operation. Returns the updated
 	 * history string
 	 * @param operator - The operator of the binary operation
-	 * @return The updated history string
+	 * @precondition - error is false
+	 * @postcondition - The stacks are updated accordingly
+	 * @return The updated history string or the unchanged history
+	 * string if the precondition is not met
 	 */
+	@SuppressWarnings("unchecked")
 	public String operandHistory(String operator)
 	{
 		String first;
 		String second;
-		
-		//If call made with an expression
-		//that was already updated, set both boolean
-		//variables to false and return without any changes made
-		if(opExpression && exprUpdated)
-		{
-			opExpression = false;
-			exprUpdated = false;
+		if(exprOp())
 			return printHistory() + " " + EQUALS;
-		}
-		//Else if expression has not been updated,
-		//set boolean variable true to indicate that it will be
-		//after this call
-		else if(opExpression && !exprUpdated)
-		{
-			exprUpdated = true;
-		}
-		
+		else if(!opExpression)
+			updatePreviousHistory();
 		//If not expression, continue as normal
-		
-		//Add last action
-		//prev_history.push(button_history.peek());
-		
-		
 		second = button_history.pop();
-		
 		if(!from_memory)
 		{
-			//If the stack is empty or operation is completed using a button press, 
-			//use the button press to update to the stack
+			//Necessary check for parentheses
 			if(!checkBrackets(second, operator))
-			{
 				sb_completed_operations.append(second + " " + operator + " " + sb_input_history.toString());
-			}
 			else
-			{
 				sb_completed_operations.append("(" + second + ")" + " " + operator + " " +  sb_input_history.toString());
-			}
 			
 			//Update precedence list
 			precedence.push(operator);
 			
-			System.out.println(precedence.toString());
-			
+			//Update the PostFix expressions list
 			if(opExpression)
 			{
 				expressionsPostFix.push(sb_input_history.toString());
 				expressionsPostFix.push(operator);
 			}
-			
-			System.out.println(expressionsPostFix.toString());
-			updateHistDirect();
-			//prev_history.push(operator);
-			
-			return printHistory() + EQUALS;
-		}
-		
-		//Else, use the last two entries in the stack and anything else as necessary
-		
-		first = button_history.pop();
-		
-		if(opExpression)
-		{
-			if(!stored_values.empty())
-				expressionsPostFix.push("" + stored_values.pop());
-			
-			expressionsPostFix.push(operator);
-			System.out.println(expressionsPostFix.toString());
-		}
-		
-		
-		//If the last element needs brackets
-		if(checkBrackets(second, operator))	
-		{
-			System.out.println("second is true");
-			//And so does the one before
-			//Put them
-			if(checkBrackets(first, operator))
-				sb_completed_operations.append("(" + first +  ") " + operator + " " + "(" + second + ")");
-			//Otherwise just on the last element
 			else
 			{
-				sb_completed_operations.append(first +  " " + operator + " " + "(" + second + ")");
-			}
+				if(!expressionsPostFix.empty())
+					expressionsPostFix.pop();
 				
+				expressionsPostFix.push("" + stored_values.peek());
+			}
+			
+			updateHistDirect();
+			from_memory = !from_memory;
+			return printHistory() + " " + EQUALS;
 		}
-		//If only the one before needs brackets
-		else if(checkBrackets(first, operator))
-		{
-			sb_completed_operations.append("(" + first +  ") " + operator + " " + second);
+		//Else, use the last two entries in the stack and anything else as necessary
+		first = button_history.pop();
+		if(opExpression)
+		{	//Update the PostFix expressions list
+			if(!stored_values.empty())
+			{	
+				expressionsInFix.push("" + stored_values.pop());
+			}	
+			else if(isOp(first) && isOp(second))
+				start = 0;
+			expressionsPostFix.push(operator);
 		}
-		//No brackets at all
 		else
 		{
-			sb_completed_operations.append(first + " " + operator + " " /*+ sb_input_history.toString() + " "*/ + second);
+			expressionsPostFix.pop();
+			expressionsPostFix.pop();
+			expressionsPostFix.push("" + stored_values.peek());
 		}
 		
+		formNewEntry(first, second, operator);
 		//Update precedence list
 		precedence.push(operator);
-		
-		System.out.println(precedence.toString());
 		updateHistMem();
-		
-		//prev_history.push(operator);
-		
-		//print updated history
 		return printHistory() + " " +  EQUALS;
 	}
 	
@@ -922,125 +798,157 @@ public class Model
 	 * after a factorial. Returns the updated
 	 * history string
 	 * @param operator - The operator of the factorial operation
-	 * @return The updated history string
+	 * @precondition - error is false
+	 * @postcondition - The stacks are updated accordingly
+	 * @return The updated history string or the unchanged history
+	 * string if the precondition is not met
 	 */
+	@SuppressWarnings("unchecked")
 	public String factHistory(String operator)
-	{
-		//Add last action
-		//prev_history.push(button_history.peek());
-		
-		if(opExpression || error)
+	{	//Preconditions for factorial not met
+		if(error)
 		{
 			error = false;
 			return printHistory();
 		}
-			
+		//Update the previous state of the history lists and precedence
+		updatePreviousHistory();
 		
 		if(!from_memory)
 		{
 			//set the string
 			sb_completed_operations.append(sb_input_history.toString() + operator);
-			
 			//Reset button-press string for next use
 			sb_input_history.delete(0, sb_input_history.length());
-			
 			//Add updated history to the stack (First and only element)
+			//running_history_undo.push((ArrayList<String>) running_history.clone());
 			button_history.push(sb_completed_operations.toString());
-			
 			// Reset completed operations string_builder for next entry
 			sb_completed_operations.delete(0, sb_completed_operations.length());
-			
-		
 			//replace them with updated computation
 			running_history.add(button_history.peek());
 			//prev_history.push(operator);
-			
 			//Update precedence list
 			precedence.push(operator);
 			System.out.println(precedence.toString());
-			
-			return printHistory() + EQUALS;
-			
+			from_memory = !from_memory;
+			return printHistory() + " " + EQUALS;
 		}
-		else 
+		
+		String first = button_history.pop();
+		if(!checkBrackets(first, operator))
+			sb_completed_operations.append(first + operator);
+		else
+			sb_completed_operations.append("(" + first + ")" + operator);
+			
+		//Update precedence list
+		precedence.push(operator);
+		System.out.println(precedence.toString());
+		sb_input_history.delete(0, sb_input_history.length());
+		// Add updated history to the stack
+		button_history.push(sb_completed_operations.toString());
+		// Reset completed operations string_builder for next use.
+		// This prevents duplication of previous entries
+		sb_completed_operations.delete(0, sb_completed_operations.length());
+		//remove last two elements in running_history	
+		if(!(running_history.isEmpty()))
 		{
-			String first = button_history.pop();
-			
-			if(!checkBrackets(first, operator))
-				sb_completed_operations.append(first + operator);
-			else
-				sb_completed_operations.append("(" + first + ")" + operator);
-			
-			//Update precedence list
-			precedence.push(operator);
-			System.out.println(precedence.toString());
-			
-			sb_input_history.delete(0, sb_input_history.length());
-			// Add updated history to the stack
-			button_history.push(sb_completed_operations.toString());
-			
-			// Reset completed operations string_builder for next use.
-			// This prevents duplication of previous entries
-			sb_completed_operations.delete(0, sb_completed_operations.length());
+			running_history.remove(running_history.size() - 1);
+		}
+		//replace them with updated computation
+		running_history.add(button_history.peek());
+		//print updated history
+		return printHistory() + " " + EQUALS;
+	}
+	
+	public String negateHistory()
+	{
+		if(!from_memory)
+			return printHistory();
 		
-			//remove last two elements in running_history
-			
-			if(!(running_history.isEmpty()))
-			{
-					running_history.remove(running_history.size() - 1);
-			}
-			
-			
-			//replace them with updated computation
-			running_history.add(button_history.peek());
-		
-			//prev_history.push(operator);
-			
-			//print updated history
+		//If call made with an expression
+		//that was already updated, set both boolean
+		//variables to false and return without any changes made
+		if(exprOp())
+		{
+			expressionsPostFix.push(Controller.PLUSMINUS);
 			return printHistory() + " " + EQUALS;
 		}
 				
+		//updatePreviousHistory();
 		
-	}
+		String first = button_history.pop();
+		System.out.println(first);
+		if(isOp(first))
+		{	
+			if(first.charAt(0) == '-' && first.charAt(1) == '(' 
+					&& first.charAt(first.length() - 1) == ')')
+			{	sb_completed_operations.append(first);
+				sb_completed_operations.deleteCharAt(0);
+				sb_completed_operations.deleteCharAt(0);
+				sb_completed_operations.deleteCharAt(sb_completed_operations.length() - 1);
+			}
+			else
+				sb_completed_operations.append("-(" + first + ")");
+		}	
+		else
+		{
+			if(first.charAt(0) != '-')
+				sb_completed_operations.append("-" + first);
+			else
+			{	
+				sb_completed_operations.append(first);
+				sb_completed_operations.deleteCharAt(0);
+			}
+				
+		}
 	
+		button_history.push(sb_completed_operations.toString());
+		if(!running_history.isEmpty())
+			running_history.remove(running_history.size() - 1);
+		running_history.add(button_history.peek());
+		if(opExpression)
+			expressionsInFix.push(button_history.peek());
+		sb_completed_operations.delete(0, sb_completed_operations.length());
+		return printHistory() + " " + EQUALS;
+	}
+				
 	/**
 	 * Adds the 'Entered' number into running_history 
 	 * and button_history. Returns the updated history string.
-	 * @return The update history string
+	 * @precondition - the entry is a number
+	 * @postcondition - the entry is pushed onto the history stacks
+	 * @return The updated history string or the unchanged history
+	 * string if the precondition is not met
 	 */
+	@SuppressWarnings("unchecked")
 	public String enterHistory()
-	{
-			
-			//Update prev_history
-			if(button_history.empty())
-			{
-				//If machine started fresh, push default start message
-			//	prev_history.push(START);
-			}
-			else
-			{
-				//Else, push last entry
-			//	prev_history.push(button_history.peek());
-			//	prev_history.push(ENTER);
-				running_history_undo.push((ArrayList<String>)running_history.clone());
-				button_history_undo.push((Stack<String>) button_history.clone());
-			}
-			
-			
-			if(pi)
-			{
-				button_history.push(sb_input_history.toString());
-				running_history.add(sb_input_history.toString());
-			}
-			else
-			{
-				button_history.push(sb.toString());
-				running_history.add(sb.toString());
-			}
-			
-			sb_input_history.delete(0, sb_input_history.length());
-			sb.delete(0, sb.length());
+	{	//Precondition not met
+		if(error || exprUpdated)
+		{
+			exprUpdated = false;
+			error = false;
 			return printHistory();
+		}
+			
+		//Update the previous states of the history lists and precedence
+		updatePreviousHistory();
+		//Add the last entered value to PostFix expression list
+		expressionsPostFix.push("" + stored_values.peek());
+		//Pushing the pi symbol	
+		if(pi)
+		{
+			button_history.push(sb_input_history.toString());
+			running_history.add(sb_input_history.toString());
+		}
+		else
+		{	//pushing the decimal value
+			button_history.push(sb.toString());
+			running_history.add(sb.toString());
+		}	
+		sb_input_history.delete(0, sb_input_history.length());
+		sb.delete(0, sb.length());
+		return printHistory();
 		
 	}
 	
@@ -1051,214 +959,162 @@ public class Model
 	 * @param funct - The trigonometric function carried out
 	 * @return The updated history string
 	 */
+	@SuppressWarnings("unchecked")
 	public String trigHistory(String funct)
 	{
-		
-		//If call made with an expression
-		//that was already updated, set both boolean
-		//variables to false and return without any changes made
-		if(opExpression && exprUpdated)
+		if(exprOp())
 		{
-			opExpression = false;
-			exprUpdated = false;
+			expressionsPostFix.push(funct);
 			return printHistory() + " " + EQUALS;
 		}
-		//Else if expression has not been updated,
-		//set boolean variable true to indicate that it will be
-		//after this call
-		else if(opExpression && !exprUpdated)
-		{
-			exprUpdated = true;
-			expressionsPostFix.push(funct);
-			System.out.println(expressionsPostFix.toString());
-		}
+		else if(!opExpression)
+			updatePreviousHistory();
 		
 		if(!from_memory)
 		{
 			//set the string
 			sb_completed_operations.append(funct + sb_input_history.toString() + ")");
-			
 			//Reset button-press string for next use
 			sb_input_history.delete(0, sb_input_history.length());
-			
 			//Add updated history to the stack (First and only element)
 			button_history.push(sb_completed_operations.toString());
-			
 			// Reset completed operations string_builder for next entry
 			sb_completed_operations.delete(0, sb_completed_operations.length());
 			precedence.push(funct);
-			
-			
 			//replace them with updated computation
 			running_history.add(button_history.peek());
-			//prev_history.push(funct);
-			
-			
-			
-			System.out.println(precedence.toString());
-			
-			return printHistory() + EQUALS;
-			
-		}
-		else 
-		{
-			String first = button_history.pop();
-			
-			
-			sb_completed_operations.append(funct + first + ")");
-			
-			
-			if(isOp(first))
-				precedence.pop();
-			
-			precedence.push(funct);
-			
-			System.out.println(precedence.toString());
-			
-			sb_input_history.delete(0, sb_input_history.length());
-			// Add updated history to the stack
-			button_history.push(sb_completed_operations.toString());
-			
-			// Reset completed operations string_builder for next use.
-			// This prevents duplication of previous entries
-			sb_completed_operations.delete(0, sb_completed_operations.length());
-		
-			//remove last element in running_history
-			
-			if(!(running_history.isEmpty()))
-			{
-				running_history.remove(running_history.size() - 1);
-			}
-			
-			if(!(expressionsInFix.isEmpty()))
-			{
-				expressionsInFix.pop();
-			}
-			
-			
-			//replace them with updated computation
-			running_history.add(button_history.peek());
-			
-			
-			
-			expressionsInFix.push(button_history.peek());
-			
-			
-			//prev_history.push(funct);
-			
-			//print updated history
+			from_memory = !from_memory;
 			return printHistory() + " " + EQUALS;
+			
 		}
+		String first = button_history.pop();
+		sb_completed_operations.append(funct + first + ")");
+		if(isOp(first))
+			precedence.pop();
+		precedence.push(funct);	
+		sb_input_history.delete(0, sb_input_history.length());
+		// Add updated history to the stack
+		button_history.push(sb_completed_operations.toString());
+		// Reset completed operations string_builder for next use.
+		// This prevents duplication of previous entries
+		sb_completed_operations.delete(0, sb_completed_operations.length());
+		//remove last element in running_history
+		if(!running_history.isEmpty())
+			running_history.remove(running_history.size() - 1);
 		
-		
+		if(opExpression)
+		{
+			expressionsInFix.pop();
+			expressionsInFix.push(button_history.peek());
+		}
+			
+		//replace them with updated computation
+		running_history.add(button_history.peek());
+		System.out.println(expressionsInFix.toString());
+		//print updated history
+		return printHistory() + " " + EQUALS;
 	}
 	
 	/**
 	 * Enters a value into stored_values. Returns the entered value.
-	 * @return The entered value as a String
+	 * @precondition - the entry is a parsable number
+	 * @postcondition - the entry is pushed onto stored_values
+	 * @return The entered value as a String or INVALID
+	 * if the precondition is not met
 	 */
+	@SuppressWarnings("unchecked")
 	public String enterValue()
 	{
+		from_memory = true;
+		//Enter from value field
 		if(sb.toString().equals(""))
-		{
-			if(stored_values.empty() && (!opExpression))
+		{	//Enter from default state
+			if(stored_values.empty() && (!isExpression()))
 			{
-				System.out.println("Empty");
+				stored_values.push((double) 0);
 				sb.append(0);
-				sb_input_history.append(0);
+				return "0";
 			}
-			else if(opExpression)
+			//Entering an expression
+			else if(isExpression())
 			{
-				sb.append(button_history.peek());
+				exprUpdated = true;
+				expressionVal();
+				expressionHist();
+				System.out.println("Haha");
 				return button_history.peek();
 			}
-			else
-			{
-				double push = stored_values.peek();
-				if((Math.abs(push) - Math.abs((int) push)) < 0.00000000001)
-				{
-					sb.append((int) push);
-					sb_input_history.append((int) push);
-					pi = false;
-				}
-				else
-				{	
-					if(push == Math.PI)
-					{
-						sb_input_history.append(Controller.PI);
-						pi = true;
-					}
-					else
-					{
-						pi = false;
-						sb_input_history.append(push);
-					}
-						
-					
-					sb.append(push);
-					
-				}
-					
-			}
-			
+			//Entering from value field
+			prepareForEnter();
 		}
-		/*if(pi)
+		//Error checking
+		double pushed;
+		try
 		{
-			//If pi was pressed, push pi onto stack and return
-			// its value
-			stored_values.push(Math.PI);
-			placeholder = "" + Math.PI;
-		}*/
-		//else
-		//{
-			//Otherwise parse the number
-		stored_values.push(Double.parseDouble(sb.toString()));
-		stored_values_undo.push((Stack<Double>) stored_values.clone());
-		System.out.println(stored_values_undo.peek().toString());
-		sb.delete(0, sb.length());
-		double result = stored_values.peek();
-		if(isInt(Math.abs(result), Math.abs((int) result)))
-		{
-			sb.append("" + (int) result);
-			return "" + (int) result;
+			pushed = Double.parseDouble(sb.toString());
 		}
-			//}
-		sb.append("" + result);
-		//sb.delete(0, sb.length());
-		return "" + result;
+		catch (NumberFormatException e)
+		{	//element not a parsable number
+			error = true;
+			System.out.println(sb.toString() + "Hi");
+			sb.delete(0, sb.length());
+			sb_input_history.delete(0, sb_input_history.length());
+			return "INVALID";
+		}
+		
+		error = false;
+		//Update tracking of previous stored_value states
+		if(!stored_values.empty() || isExpression())
+			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		
+		stored_values.push(pushed);
+		if(ArithmeticOperations.isInt(Math.abs(pushed), Math.abs((int) pushed)))
+		{
+			sb.delete(0, sb.length());
+			sb.append("" + (int) pushed);
+		}	
+		return sb.toString();
 	}
 	
-	
-	
-	private double negateStoredValues()
+	/**
+	 * Sets sb and sb_input_history to the element in the value field.
+	 * This allows for entering directly from value field
+	 */
+	private void prepareForEnter()
 	{
-		//System.out.println("wee");
-		double first_number = stored_values.peek();
-		//System.out.println(second_number);
-		double result = first_number * (-1);
-		
-		
-		if(Math.abs(result) == Math.PI)
+		double push = stored_values.peek();
+		//Set sb_input_history as int
+		if(ArithmeticOperations.isInt(push, (int) push))
+		{
+			sb_input_history.append((int) push);
+			//pi = false;
+		}
+		//Set sb_input_history as pi symbol for history
+		if(Math.abs(push) == Math.PI)
+		{
+			sb_input_history.append(button_history.peek());
 			pi = true;
+		}
+		//Set sb_input_history as double
 		else
+		{
 			pi = false;
-		//stored_values.push(result);
-
-		
-		return result;
+			sb_input_history.append(push);
+		}	
+		sb.append(push);	
 	}
-
+	/**
+	 * Negates the char sequence being constructed
+	 */
 	private void negateStoredWithHistory()
 	{
 		double history = Double.parseDouble(sb.toString());
 		double result = history * (-1);
-		
 		//Reset sb for update
 		sb.delete(0, sb.length());
 		sb_input_history.delete(0, sb_input_history.length());
-		
 		//If result is int, append the casted value 
-		if(result - (int) result == 0)
+		if(ArithmeticOperations.isInt(result, (int) result))
 		{
 			sb.append("" + (int) result);
 			sb_input_history.append("" + (int) result);
@@ -1269,37 +1125,26 @@ public class Model
 			sb.append("" + result);
 			sb_input_history.append("" +  result);
 		}
-			
-
-		//stored_values.push(result);
 	}
-	
-	
 	/**
-	 * Replaces missing operand with 0 for direct operations
-	 * (Case 2 in section ...)
+	 * Replaces missing operand with 0 for expression operation
+	 * 
 	 */
 	private void zeroCheckExpr()
 	{
 		//If no values in system
 		if(stored_values.empty())
-		{
+		{	//Replace missing operand with 0
 			if(expressionsInFix.size() < 2)
 			{
-				button_history.push("" +  0);
-				stored_values.push((double) 0);
-				System.out.println("One expr");
+				from_memory = false;
+				sb_input_history.append(0);
 			}
+				
 			
-			
+			System.out.println("Hi " + button_history.peek());
 		}
-		else if(opExpression)
-		{
-			expressionsInFix.push("" + stored_values.peek());
-		}
-		
 	}
-	
 	/**
 	 * Checks whether an inputed string is an operation
 	 * or not
@@ -1308,20 +1153,36 @@ public class Model
 	 */
 	private boolean isOp(String input)
 	{
-		//If input was pi
+		//If input was pi or x
 		//not an operation
-		if(pi || input.equals(Controller.EXPRESSION))
+		if(input.equals(Controller.PI) || input.equals(Controller.EXPRESSION) ||
+				input.equals("-" + Controller.PI) || input.equals("-" + Controller.EXPRESSION))
 			return false;
-		
+		//Otherwise try to parse it
 		try
 		{
 			Double.parseDouble(input);
 		}
 		catch (NumberFormatException e)
-		{
+		{	//Could not parse therefore op
 			return true;
 		}
+		return false;
+	}
+	
+	private boolean checkOpUndo(String first)
+	{
+		if(running_history_undo.empty())
+			return false;
 		
+		int prev_size = running_history_undo.peek().size();
+		int current_size = running_history.size();
+		if(prev_size >= current_size)
+		{
+			if(prev_size == current_size)
+				return first.equals(running_history.get(current_size - 1));
+			return true;
+		}
 		return false;
 	}
 	
@@ -1330,96 +1191,70 @@ public class Model
 	 * (Refer to section 6.3 in Design Document for more details)
 	 * @param last_entry - An operation string or number string
 	 * @param operator - The operator of the recent operation
-	 * @return true if paranthesis are required. False otherwise
+	 * @return true if parentheses are required. False otherwise
 	 */
 	private boolean checkBrackets(String last_entry, String operator)
 	{
-		
-		if(precedence.empty())
-		{
+		if(precedence.empty() || !isOp(last_entry))
 			return false;
-		}
 		
 		//If last op was trig
 		//No brackets needed
-		if(precedence.peek().equals(Controller.COS) || precedence.peek().equals(Controller.SIN))
+		if(precedence.peek().equals(Controller.COS) || precedence.peek().equals(Controller.SIN)
+				|| precedence.peek().equals(operator))
 		{
-			precedence.pop();
-			return false;
-		}
-		
-		//Check if last_entry was an operation
-		//or a number.
-		if(!isOp(last_entry))
-			return false;
-		else
-		{
+			String prev = precedence.pop();
 			//If the two last operands are the same,
 			//no need for brackets UNLESS it is DIV
 			// via stored_values
-			if(precedence.peek().equals(operator))
-			{
-				if(operator.equals(Controller.DIV) && from_memory)
-				{
-					precedence.pop();
-					return true;
-				}
-					
-				precedence.pop();
-				return false;
-			}
-			//If Fact
-			//Brackets needed
-			if(highest_precedence.contains(operator))
-			{
+			if(operator.equals(Controller.DIV) && prev.equals(Controller.DIV) &&  from_memory)
+				return true;
+		}
+		//If Fact
+		//Brackets needed
+		else if(operator.equals(Controller.FACT))
+		{
 				precedence.pop();
 				return true;
-			}
-			
-			
-			
-			
-			//If the last operand is low precedence,
-			//no brackets needed
-			if(lowest_precedence.contains(operator))
-			{
-				precedence.pop();
-				return false;
-			}
-			
-			//If both operands are high precedence, or one is highest
-			//and other is high,
-			//additional checks needed
-			if(high_precedence.contains(precedence.peek()) || highest_precedence.contains(precedence.peek()))
-			{
-				//If multiplication was first,
-				//brackets needed
-				if(operator == Controller.DIV && precedence.peek() == Controller.MULT)
-				{
-					precedence.pop();
-					return true;
-				}
-					
-				
-				//Otherwise, they are not
-				precedence.pop();
-				//System.out.println("Mult Second");
-				
-				return false;
-				
-			}
-			
-			
-			//Low precedence followed by High.
-			//Thus brackets needed.
-			precedence.pop();
-			System.out.println("Brackets");
-			
-			return true;
-		
-		
+		}	
+		//If both operands are high precedence
+		//additional checks needed
+		else if(high_precedence.contains(operator) || lowest_precedence.contains(operator))
+		{
+			//If multiplication was first,
+			//brackets needed
+			String prev = precedence.pop();
+			if((operator.equals(Controller.DIV) && prev.equals(Controller.MULT)) || 
+					high_precedence.contains(operator) && lowest_precedence.contains(prev))
+				return true;		
+		}		
+		return false;
+	}
+	/**
+	 * Constructs sb_completed_operations to the appropriate format
+	 * for Binary Operations (Section 10.7 and 12.4 in Design Document)	
+	 * @param first - the first operand
+	 * @param second - the second operand
+	 * @param operator - the operator
+	 */
+	private void formNewEntry(String first, String second, String operator)
+	{
+		//If the last element needs brackets
+		if(checkBrackets(second, operator))	
+		{	//And so does the one before
+			//Put them
+			if(checkBrackets(first, operator))
+				sb_completed_operations.append("(" + first +  ") " + operator + " " + "(" + second + ")");
+			//Otherwise just on the last element
+			else
+				sb_completed_operations.append(first +  " " + operator + " " + "(" + second + ")");			
 		}
-		
+		//If only the one before needs brackets
+		else if(checkBrackets(first, operator))
+			sb_completed_operations.append("(" + first +  ") " + operator + " " + second);
+		//No brackets at all
+		else
+			sb_completed_operations.append(first + " " + operator + " " /*+ sb_input_history.toString() + " "*/ + second);
 	}
 	
 	/**
@@ -1430,10 +1265,8 @@ public class Model
 	{
 		//Reset button-press string for next use
 		sb_input_history.delete(0, sb_input_history.length());
-		
 		//Add updated history to the stack (First and only element)
 		button_history.push(sb_completed_operations.toString());
-		
 		//If op involved an expression
 		//replace last element with new expression op
 		if(opExpression)
@@ -1441,18 +1274,13 @@ public class Model
 			expressionsInFix.pop();
 			expressionsInFix.push(button_history.peek());
 		}
-		
 		// Reset completed operations string_builder for next entry
 		sb_completed_operations.delete(0, sb_completed_operations.length());
-		
 		if(!running_history.isEmpty())
 		{
 			running_history.remove(running_history.size() - 1);
 		}
-			
-		
 		running_history.add(button_history.peek());
-		
 	}
 	
 	/**
@@ -1461,30 +1289,19 @@ public class Model
 	 */
 	private void updateHistMem()
 	{
-		
 		// Add updated history to the stack
 		button_history.push(sb_completed_operations.toString());
-		
 		//If op inolved an expression
 		//replace last two in list with latest one
 		if(opExpression)
 		{
-			for(int i = 0; i < 2; i++)
-			{
-				if(!(expressionsInFix.isEmpty()))
-				{
-					expressionsInFix.pop();
-				}
-				
-			}
-			
+			expressionsInFix.pop();
+			expressionsInFix.pop();
 			expressionsInFix.push(button_history.peek());
 		}
-		System.out.println(expressionsInFix.toString());
 		// Reset completed operations string_builder for next use.
 		// This prevents duplication of previous entries
 		sb_completed_operations.delete(0, sb_completed_operations.length());
-		
 		//remove last two elements in running_history
 		for(int i = 0; i < 2 && i > -1; i++)
 		{
@@ -1492,27 +1309,10 @@ public class Model
 			{
 				running_history.remove(running_history.size() - 1);
 			}
-			
 		}
 		//replace them with updated computation
 		running_history.add(button_history.peek());
 	}
-	
-	/**
-	 * Checks if there is a discrepancy between an integer value and 
-	 * double value
-	 * @param double_val - the double-precision floating point representaion of the value
-	 * @param int_val - the integer representation  of the value
-	 * @return - true if there is no discrepancy. False otherwise
-	 */
-	private boolean isInt(double double_val, int int_val)
-	{
-		if(double_val - int_val < Double.MIN_VALUE)
-			return true;
-		return false;
-	}
-	
-	
 	/**
 	 * Checks if either of the last two elements in history are
 	 * expressions are not
@@ -1522,62 +1322,145 @@ public class Model
 	{
 		if(button_history.empty() || expressionsInFix.isEmpty())
 			return false;
-		else if(expressionsInFix.contains(button_history.peek()) || 
-				expressionsInFix.contains(running_history.get(running_history.size() - 2)))
-		{
+		else if(expressionsInFix.contains(button_history.peek()))
 			return true;
-		}
 		return false;
-		
 	}
 	
+	private boolean isExpressionBin()
+	{
+		if(button_history.empty() || expressionsInFix.isEmpty())
+			return false;
+		else if(expressionsInFix.contains(button_history.peek()) || 
+				expressionsInFix.contains(running_history.get(running_history.size() - 2)) && from_memory)
+			return true;
+		return false;
+	}
 	
+	/**
+	 * Changes stored_values to its previous state. Returns
+	 * the element that was in the value field during
+	 * the previous state
+	 * @return - the element that was in the value field during the 
+	 * previous state
+	 */
 	public String undoValue()
 	{
+		//Case 1 : Undoing a character entry OR negate
 		if(!sb.toString().equals(""))
 		{
 			sb.deleteCharAt(sb.length()-1);
 			sb_input_history.deleteCharAt(sb_input_history.length() - 1);
-			return updateValue();
+		
+			if(sb.length() > 0)
+				return updateValue();
+			
+			from_memory = true;
+			
+			if(!isExpression() && !(button_history.empty()))
+			{
+				double result = stored_values.peek();
+				if(ArithmeticOperations.isInt(result, (int) result))
+					return (int) result + "";
+				return  result + "";
+			}
+			
 		}
-		
-		stored_values_undo.pop();
-		
+		//Case 2: Reached the default state by undos
 		if(stored_values_undo.empty())
 		{
-			stored_values.pop();
-			System.out.println(stored_values);
+			if(!stored_values.empty())
+				stored_values.pop();
 			return "" + 0;
 		}
-			
-		
-		stored_values =  stored_values_undo.peek();
+		Stack<Double> popped = stored_values_undo.pop();
+		stored_values = popped;
+		//Case 3 - Undoing something expression-related
+		if(isExpression())
+			return "" + button_history.peek();
+		//Case 4 - Undoing with no expressions involved
 		double result = stored_values.peek();
-		
-		if(isInt(result, (int) result))
-		{
+		if(ArithmeticOperations.isInt(result, (int) result))
 			return (int) result + "";
-		}
-		
 		return  result + "";
 	}
-	 
+	
+	/**
+	 * Changes the history stacks, precedence stack and expressions stack
+	 * to their previous state. Returns the history string of the previous
+	 * state 
+	 * @return - the history string of the previous state
+	 */
 	public String undoHistory()
-	{
-		if(sb.toString().equals(""))
+	{	
+		//If character undo, no changes needed
+		if(sb.length() == 1)
 		{
-			if(running_history_undo.empty() && button_history_undo.empty())
-			{
-				running_history.remove(0);
-				button_history.pop();
-				return "Start New Calculation";
-			}
-				
+			if(button_history.empty())
+				return "Start new Calculation";
 			
-			running_history = running_history_undo.pop();
-			button_history = button_history_undo.pop();	
+			if(isOp(running_history.get(running_history.size() - 1)))
+				return printHistory() + " " + EQUALS;
+			return printHistory();
+		}
+		else if(sb.length() > 1)
+			return printHistory();
+		
+		//Change precedence to its previous state
+		if(!precedence_undo.empty())
+			precedence = precedence_undo.pop();
+		
+		//Calculator has reached default state
+		if(stored_values_undo.empty())
+		{
+			reset();
+			return "Start new Calculation";
 		}
 		
+		running_history = running_history_undo.pop();
+		button_history = button_history_undo.pop();	
+		expressionsInFix = expressionsInFix_undo.pop();
+		expressionsPostFix = expressionsPostFix_undo.pop();
+		//If the last element of previous state
+		//was an op, '=' required
+		if(checkOpUndo(running_history.get(running_history.size() - 1)))
+			return printHistory() + " " + EQUALS;
 		return printHistory();
 	}
+	
+	private boolean exprOp()
+	{
+		//that was already updated, set both boolean
+		//variables to false and return without any changes made
+		if(opExpression && exprUpdated)
+		{
+			exprUpdated = false;
+			return true;
+		}
+		//Else if expression has not been updated,
+		//set boolean variable true to indicate that it will be
+		//after this call
+		if(opExpression)
+		{
+			exprUpdated = true;
+			//Update the previous states of expressions list 
+			updatePreviousHistory();
+		}
+		return false;
+	}
+	
+	private void updatePreviousHistory()
+	{
+		if(!button_history.empty())
+		{
+			button_history_undo.push((Stack<String>) button_history.clone());
+			running_history_undo.push((ArrayList<String>) running_history.clone());
+			precedence_undo.push((Stack<String>)precedence.clone());
+			expressionsInFix_undo.push((Stack<String>) expressionsInFix.clone());
+			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
+		}
+	}
+	
 }
+
+

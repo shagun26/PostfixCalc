@@ -26,10 +26,12 @@ public class GraphView extends JFrame
 	private GridLayout top_manager = new GridLayout(1, 2);
 	
 	private JPanel top = new JPanel();
-	private  DrawPanel  bottom;
+	private DrawPanel  bottom;
 	private JPanel buttons = new JPanel();
 	
 	private JLabel expression = new JLabel();
+	private JLabel N_X;
+	private JLabel P_X;
 	
 
 	
@@ -128,6 +130,23 @@ public class GraphView extends JFrame
 					.addComponent(bottom, GroupLayout.PREFERRED_SIZE, 489, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
+		bottom.setLayout(null);
+		
+		N_X = new JLabel("-5");
+		N_X.setBounds(152, 247, 13, 15);
+		bottom.add(N_X);
+		
+		P_X = new JLabel("5");
+		P_X.setBounds(453, 247, 13, 15);
+		bottom.add(P_X);
+		
+		JLabel P_Y = new JLabel("5");
+		P_Y.setBounds(302, 124, 13, 15);
+		bottom.add(P_Y);
+		
+		JLabel N_Y = new JLabel("-5");
+		N_Y.setBounds(302, 367, 13, 15);
+		bottom.add(N_Y);
 		getContentPane().setLayout(groupLayout);
 		
 		
@@ -138,8 +157,18 @@ public class GraphView extends JFrame
 		expression.setText(expr);
 	}
 	
-	public void drawGraph(double[] y)
+	public void drawGraph(double[] y, boolean SCGraph)
 	{
+			if (SCGraph == true)
+			{
+				N_X.setText("\u03C0");
+				P_X.setText("\u03C0");
+			}
+			else
+			{
+				N_X.setText("-5");
+				P_X.setText("5");
+			}
 			bottom.setY(y);
 			bottom.repaint();
 	}		

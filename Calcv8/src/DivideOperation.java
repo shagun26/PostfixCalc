@@ -3,10 +3,17 @@ public class DivideOperation extends BinaryOperations
 {
 
 	@Override
-	public double calculate(double first, double second)
+	public String execute(double first, double second)
 	{
-		// TODO Auto-generated method stub
-		return second / first;
+		double result = second / first;
+		
+		if(isInt(result, (int) result))
+		{
+			return "" + (int) result;
+		}
+		
+		return "" + result;
+		
 	}
 
 }

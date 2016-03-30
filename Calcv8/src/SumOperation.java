@@ -1,16 +1,20 @@
+import java.util.Stack;
+
 
 public class SumOperation extends BinaryOperations
 {
 
+	
 	@Override
-	public double calculate(double first, double second)
+	public String execute(double first, double second)
 	{
-		// TODO Auto-generated method stub
-		
 		double result = first + second;
-		return result;
 		
-		
+		if(isInt(result, (int) result))
+		{
+			return "" + (int) result;
+		}
+		return "" +  result;
 		
 	}
 
