@@ -881,7 +881,8 @@ public class Model
 		else if(!opExpression)
 		{
 			updatePreviousHistory();
-			expressionsPostFix.pop();
+			if(!expressionsPostFix.empty())
+				expressionsPostFix.pop();
 			expressionsPostFix.push("" + stored_values.peek());
 		}
 			
@@ -977,7 +978,13 @@ public class Model
 			return printHistory() + " " + EQUALS;
 		}
 		else if(!opExpression)
+		{
 			updatePreviousHistory();
+			if(!expressionsPostFix.empty())
+				expressionsPostFix.pop();
+			expressionsPostFix.push("" + stored_values.peek());
+		}
+			
 		
 		if(!from_memory)
 		{
