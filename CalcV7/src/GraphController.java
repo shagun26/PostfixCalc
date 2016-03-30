@@ -31,7 +31,7 @@ public class GraphController
 			grph_view.updateExpr("y = " + expressionsList.peek());
 		
 		if(!expressionsPostFix.empty())
-			grph_view.drawGraph(Ys);
+			grph_view.drawGraph(Ys, grph_model.getisSCGraph());
 		
 		grph_view.setVisible(true);
 	}
@@ -44,7 +44,7 @@ public class GraphController
 	public void drawGraph(String expr, double[] values)
 	{
 		grph_view.updateExpr("y = " + expr);
-		grph_view.drawGraph(values);
+		grph_view.drawGraph(values, grph_model.getisSCGraph());
 		grph_view.setVisible(true);
 	}
 	

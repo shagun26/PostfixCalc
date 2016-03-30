@@ -40,6 +40,8 @@ public class DrawPanel extends JPanel
 	    yFactor = height / (GraphModel.X.length)*10;
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		
 
 	    super.paintComponent(g2d);
 	
@@ -59,14 +61,8 @@ public class DrawPanel extends JPanel
 	    g2d.drawLine(0, (int)(heightH)*3/2, (int) width, (int) (heightH)*3/2);
 	    g2d.drawLine((int)widthH*3/2, 0, (int) widthH*3/2, (int) height);
 	    
-	    //THIS IS MISSION CRITICAL
-	    //DON'T CHANGE!
-	    //DON'T YOU DARE!
-	    //RED IS LOVE. RED IS LIFE
 	    g2d.setColor(Color.RED);
-	    
-	    
-	   
+
 	    if(y == null)
 	    	return;
 	    
