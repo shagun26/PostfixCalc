@@ -552,20 +552,17 @@ public class ModelTest {
 	assertEquals(m.valuePi(), pi + "");
 	// case 2: testing history when it's empty.
 	m.valuePi();
-	String piSymbol = "π";
+	String piSymbol = Controller.PI;
 	assertEquals(m.historyPi(),  piSymbol);
 	
 	m.reset();
 	// case 3: testing history when it's not empty by adding 1.
-	String historyNotEmpty = "1, π";
+	String historyNotEmpty = "1, " + Controller.PI;
 	m.addToEntry("1");
 	m.enterValue();
 	m.enterHistory();
 	m.valuePi();
 	assertEquals(m.historyPi(),  historyNotEmpty);
-
-	
-
 	}
 	
 	@Test
@@ -816,11 +813,11 @@ public class ModelTest {
 		m.reset();
 		m.valuePi();
 		m.historyPi();
-		assertEquals(m.enterHistory(),"π, ");
+		//Have to do this, set up for enterHist
+		m.enterValue();
+		assertEquals(m.enterHistory(), Controller.PI + ", " + Controller.PI);
 		
 		// other cases tested through other related methods.
-
-
 	}
 	
 	// Testing ExpressionHist() method that enters the symbol "x" to all the stacks of expressions.
@@ -866,7 +863,7 @@ public class ModelTest {
 		double[] expected = new double[g.X.length];
 		for(int i = 0; i < expected.length; i++)
 		{
-			expected[i] = g.X[i] + 3;
+			expected[i] = GraphModel.XOri[i] + 3;
 		}
 		assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
 		m.reset();
@@ -941,7 +938,7 @@ public class ModelTest {
 				
 				for(int i = 0; i < expected.length; i++)
 				{
-					expected[i] =  Math.cos(g.X[i]);
+					expected[i] =  Math.cos(GraphModel.XPi[i]);
 					
 				}
 				
