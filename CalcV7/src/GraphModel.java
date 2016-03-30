@@ -36,6 +36,8 @@ public class GraphModel
 				var();
 			else if(next.equals("+"))
 				sum();
+			else if(next.equals("-"))
+				sub();
 			else if(next.equals("*"))
 				mult();
 			else if(next.equals("/"))
@@ -89,6 +91,14 @@ public class GraphModel
 		y = parser.evaluate(valuation);
 	}
 	/**
+	 * Perform an subtraction
+	 */
+	public void sub()
+	{
+		parser = new EvaluateSub();
+		y = parser.evaluate(valuation);
+	}
+	/**
 	 * Perform a multiplication
 	 */
 	public void mult()
@@ -113,6 +123,5 @@ public class GraphModel
 		y = parser.evaluate(valuation);
 	}
 
-	
 	
 }

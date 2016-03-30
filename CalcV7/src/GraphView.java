@@ -128,6 +128,23 @@ public class GraphView extends JFrame
 					.addComponent(bottom, GroupLayout.PREFERRED_SIZE, 489, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
+		bottom.setLayout(null);
+		
+		JLabel label = new JLabel("-5");
+		label.setBounds(152, 247, 13, 15);
+		bottom.add(label);
+		
+		JLabel label_1 = new JLabel("5");
+		label_1.setBounds(453, 247, 13, 15);
+		bottom.add(label_1);
+		
+		JLabel label_2 = new JLabel("5");
+		label_2.setBounds(302, 124, 13, 15);
+		bottom.add(label_2);
+		
+		JLabel label_3 = new JLabel("-5");
+		label_3.setBounds(302, 367, 13, 15);
+		bottom.add(label_3);
 		getContentPane().setLayout(groupLayout);
 		
 		

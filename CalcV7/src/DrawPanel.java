@@ -36,8 +36,8 @@ public class DrawPanel extends JPanel
 	    height = getHeight();
 	    widthH = getWidth()/2;
 	    heightH = getHeight()/2;
-	    xFactor = width / (GraphModel.X.length-1);
-	    yFactor = height / (GraphModel.X.length-1)*16;
+	    xFactor = width / (GraphModel.X.length);
+	    yFactor = height / (GraphModel.X.length)*10;
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
