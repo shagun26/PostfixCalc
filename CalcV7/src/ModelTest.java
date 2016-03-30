@@ -11,6 +11,9 @@ public class ModelTest {
 	private Model m;
 	private View v;
 	private Controller c;
+	private GraphModel g;
+	private GraphView gv;
+	private FavView fv;
 
 	// Initiating a tester Model object
 	@Before
@@ -18,11 +21,27 @@ public class ModelTest {
 		m = new Model();
 		v = new View();
 	 	c = new Controller(v);
+	 	g = new GraphModel();
 	}
-
+	
+	@Test
+	public void testAuto0Supplier() {
+		// Case 0: Operations with no values.
+				assertEquals(m.sum(),"0");
+				m.reset();
+	    // Case 1: Operations with 1 value only.
+				m.addToEntry("3");
+				m.enterValue();
+				m.enterHistory();
+				assertEquals(m.sum(), "3");
+	}
+	
 	// Testing summation with 5 cases.
+	
 	@Test
 	public void testSum() {
+		
+		
 		// Case 1: Testing addition from stored values in the stack.
 		m.addToEntry("1");
 		m.enterValue();
@@ -63,7 +82,15 @@ public class ModelTest {
 		m.enterValue();
 		m.sb.delete(0, m.sb.length());
 		assertEquals(m.sum(),"8");
-		
+		m.reset();
+		// Case 6: adding real numbers.
+		m.addToEntry("3.1");
+		m.enterValue();
+		m.enterHistory();
+		m.addToEntry("2.1");
+		m.enterValue();
+		m.enterHistory();
+		assertEquals(m.sum(),"5.2");
 	}
 
 
@@ -107,6 +134,18 @@ public class ModelTest {
 				m.enterValue();
 				m.sb.delete(0, m.sb.length());
 				assertEquals(m.subtract(),"0");
+				
+				// Case 6: Subtracting real numbers.
+				m.reset();
+				m.addToEntry("3.2");
+				m.enterValue();
+				m.enterHistory();
+				m.addToEntry("2.1");
+				m.enterValue();
+				m.enterHistory();
+				assertEquals(m.subtract(),"1.1");
+				
+				
 	}
 	
 	// Testing Division with 5 cases.
@@ -150,6 +189,16 @@ public class ModelTest {
 		m.enterValue();
 		m.sb.delete(0, m.sb.length());
 		assertEquals(m.divide(),"1");
+		
+		// Case 6: dividing real numbers.
+		        m.reset();
+				m.addToEntry("3.1");
+				m.enterValue();
+				m.enterHistory();
+				m.addToEntry("2.1");
+				m.enterValue();
+				m.enterHistory();
+				assertEquals(m.divide(),"1.4761904761904763");
 
 	}
 	
@@ -194,6 +243,18 @@ public class ModelTest {
 				m.enterValue();
 				m.sb.delete(0, m.sb.length());
 				assertEquals(m.multiply(),"16");
+				
+				// Case 6: Multiplying real numbers.
+				m.reset();
+				m.addToEntry("2.2");
+				m.enterValue();
+				m.enterHistory();
+				m.addToEntry("2.2");
+				m.enterValue();
+				m.enterHistory();
+				assertEquals(m.multiply(),"4.840000000000001");
+				
+				
 	}
 	
 	// Testing Negation with 3 cases.
@@ -227,6 +288,8 @@ public class ModelTest {
 			
 			assertEquals(m.negate(),"-x");
 			
+			
+			
 
 		}
 		
@@ -234,10 +297,8 @@ public class ModelTest {
 		@Test 
 		public void testNegateHistory() {
 			// Case 1: An expression from Positive to negative and vise versa.
-			m.expressionHist();
-			assertEquals(m.negateHistory(),"-x =");
-			assertEquals(m.negateHistory(),"x =");
-			// Case2: Testing if neageHistory can negate bulk operations.
+			
+			 // Case2: Testing if neageHistory can negate bulk operations.
 			m.addToEntry("5");
 			m.enterValue();
 			m.enterHistory();
@@ -248,8 +309,35 @@ public class ModelTest {
 			m.expressionHist();
 			m.multiply();
 			m.negateHistory();
-			assertEquals(m.negateHistory(),"x, 5, -(3 * x) =");
 			
+			assertEquals(m.negateHistory(),"5, -(3 * x) =");
+			m.reset();
+			
+			// Case 3: Testing double negate with numbers.
+			m.addToEntry("5");
+			m.enterValue();
+			m.enterHistory();
+			m.addToEntry("3");
+			m.enterValue();
+			m.enterHistory();
+			m.sum();
+			m.operandHistory("+");
+			m.addToEntry("2");
+			m.enterValue();
+			m.enterHistory();
+			m.multiply();
+			m.operandHistory("*");
+			assertEquals(m.negateHistory(),"-((5 + 3) * 2) =");
+			assertEquals(m.negateHistory(),"(5 + 3) * 2 =");
+		    m.reset();
+		    
+		    // Case: double negation with numbers only.
+		    m.addToEntry("5");
+			m.enterValue();
+			m.enterHistory();
+			assertEquals(m.negateHistory(),"-5 =");
+			assertEquals(m.negateHistory(),"5 =");
+			 
 		}
 
 	// Testing factorial 
@@ -344,6 +432,9 @@ public class ModelTest {
 		m.reset();
 		m.addToEntry("1.5");
 		assertEquals(m.sin(), "0.9974949866040544");
+		m.reset();
+		
+		// Case 4: S
 		
 		
 	}
@@ -391,23 +482,36 @@ public class ModelTest {
 	@Test
 	public void testEnterValue() {
 		
-		// Case 1: value on screen.
-
-		String valueOnScreen = "1"; 
-
-		m.sb.append("1");
-
-		assertEquals(m.enterValue(), valueOnScreen); 
-		
-		// Case 2: no value on screen, and empty storedValues. 
-		// we are testing if the calcualtor appends 0.
+		// Case 0: everything is empty.
+		assertEquals(m.enterValue(),"0");
 		m.reset();
-		m.addToEntry("5");
-		assertEquals(m.enterValue(), "5");
+		// Case 1: value on screen.
+        m.addToEntry("1");
+		assertEquals(m.enterValue(), "1"); 
 		
-		// case 3: expression involved
+		// Case 2: Testing double values on screen.
+		m.enterHistory();
+		assertEquals(m.enterValue(), "1");
 		
+		// case 3: Testing PI with enterValue.
+		m.reset();
+		m.valuePi();
+		m.historyPi();
+		assertEquals(m.enterValue(),"" + Math.PI);
+		m.reset();
+		// Case 4: with expressions
+		m.expressionHist();
+		assertEquals(m.enterValue(),"x");
+		m.sum();
+		m.operandHistory("+");
+		assertEquals(m.enterValue(),"x + x");
+		
+		// Case 5: catching an error.
+		m.addToEntry(",,");
+		
+		assertEquals(m.enterValue(),"INVALID");
 	}
+	
 
 	// Testing enterValue function
 	@Test
@@ -455,6 +559,7 @@ public class ModelTest {
 	// case 3: testing history when it's not empty by adding 1.
 	String historyNotEmpty = "1, π";
 	m.addToEntry("1");
+	m.enterValue();
 	m.enterHistory();
 	m.valuePi();
 	assertEquals(m.historyPi(),  historyNotEmpty);
@@ -462,6 +567,7 @@ public class ModelTest {
 	
 
 	}
+	
 	@Test
 	public void testExpressionVal() {
 		// test if x appears on screen.
@@ -634,6 +740,10 @@ public class ModelTest {
 	// Testing History of Factorial.
 	@Test
 	public void testFactHistory() {
+		// Case 0: Testing factorial with no input.
+		m.factorial();
+		assertEquals(m.factHistory("!"), "0! =");
+		m.reset();
 		// Case 1: If factorial precondition is not met, do nothing to history.
 		m.expressionHist();
 		m.factorial();
@@ -652,6 +762,18 @@ public class ModelTest {
 		assertEquals(m.factHistory("!"),"3! =");
 		m.reset();
 		
+		// Case 4: Multiple operations followed by factorial.
+		
+		m.addToEntry("3");
+		m.enterValue();
+		m.enterHistory();
+		m.addToEntry("2");
+		m.enterValue();
+		m.enterHistory();
+		m.sum();
+		m.operandHistory("+");
+		m.factorial();
+		assertEquals(m.factHistory("!"),"(3 + 2)! =");
 		
 		
 		
@@ -713,12 +835,16 @@ public class ModelTest {
 		// Case 2: Stacks are filled, testing the functionality of undo function that involves stack, 
 		// Brackets with previous operations and return statement of expressionHist.
 		m.addToEntry("1");
+		m.enterValue();
 		m.enterHistory();
 		m.addToEntry("2");
+		m.enterValue();
 		m.enterHistory();
 		m.addToEntry("3");
+		m.enterValue();
 		m.enterHistory();
 		m.addToEntry("4");
+		m.enterValue();
 		m.enterHistory();
 		m.expressionHist();
 		m.sum();
@@ -728,12 +854,152 @@ public class ModelTest {
 		assertEquals(m.expressionHist(),m.printHistory());
 		
 	}
+	
+	@Test
+	public void testGetValuesSum() {
+		
+		m.expressionHist();
+		m.addToEntry("3");
+		m.enterValue();
+		m.enterHistory();
+		m.sum();
+		double[] expected = new double[g.X.length];
+		for(int i = 0; i < expected.length; i++)
+		{
+			expected[i] = g.X[i] + 3;
+		}
+		assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
+		m.reset();
+		
+		
+	}
+	
+	@Test
+	public void testGetValuesDivide() {
+		m.expressionHist();
+		m.addToEntry("3");
+		m.enterValue();
+		m.enterHistory();
+		m.divide();
+		double[] expected = new double[g.X.length];
+		for(int i = 0; i < expected.length; i++)
+		{
+			expected[i] = g.X[i] / 3;
+		}
+		assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
+		m.reset();
+		
+		
+	}
+	@Test
+	public void testGetValuesMultiply() {
+		// Case 2: subtract
+				
+				m.expressionHist();
+				m.addToEntry("3");
+				m.enterValue();
+				m.enterHistory();
+				m.multiply();
+				double[] expected = new double[g.X.length];
+				
+				for(int i = 0; i < expected.length; i++)
+				{
+					expected[i] = g.X[i] * 3;
+				}
+				assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
+				
+	}
+	
+	@Test
+	public void testGetValuesSin() {
+		// Case 2: subtract
+				
+				m.expressionHist();
+				m.sin();
+				m.trigHistory("SIN(");
+				double[] expected = new double[g.X.length];
+				
+				for(int i = 0; i < expected.length; i++)
+				{
+					expected[i] =  Math.sin(g.X[i]);
+					
+				}
+				
+				
+				assertArrayEquals(expected,g.getValues(m.expressionsPostFix),0);
+				
+	}
+	
+	@Test
+	public void testGetValuesCos() {
+		// Case 2: subtract
+				
+				m.expressionHist();
+				m.cos();
+				m.trigHistory("COS(");
+				double[] expected = new double[g.X.length];
+				
+				for(int i = 0; i < expected.length; i++)
+				{
+					expected[i] =  Math.cos(g.X[i]);
+					
+				}
+				
+				
+				assertArrayEquals(expected,g.getValues(m.expressionsPostFix),0);
+				
+	}
+	
+	@Test
+	public void testGetValuesNegate() {
+		// Case 2: subtract
+				
+				m.expressionHist();
+				m.negate();
+				m.negateHistory();
+				double[] expected = new double[g.X.length];
+				
+				for(int i = 0; i < expected.length; i++)
+				{
+					expected[i] =  g.X[i] * -1;
+					
+				}
+				
+				
+				assertArrayEquals(expected,g.getValues(m.expressionsPostFix),0);
+				
+	}
+	
+	/*
+	@Test
+	public void testGetValuesSubtract() {
+		// Case 2: subtract
+				
+				m.expressionHist();
+				m.addToEntry("3");
+				m.enterValue();
+				m.enterHistory();
+				m.subtract();
+				double[] expected = new double[g.X.length];
+				
+				for(int i = 0; i < expected.length; i++)
+				{
+					expected[i] = g.X[i] - 3;
+				}
+				assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
+				
+	}
+	*/
+	
 	// comment this section if you want to edit and test.
 	@Test
 	public void def() {
 
-		View gui = new View();
-		gui.setVisible(true);
+		 View gui = new View();
+		 gui.setVisible(true);
+		GraphView Gvi = new GraphView(new GraphController());
+		FavView fvi = new FavView(new FavController());
+		
 		
 		
 	}

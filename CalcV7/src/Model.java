@@ -88,7 +88,7 @@ public class Model
 	 * Stores a list of expressions in
 	 * PostFix notation
 	 */
-	private Stack<String> expressionsPostFix = new Stack<String>();
+	protected Stack<String> expressionsPostFix = new Stack<String>();
 	/**
 	 * Stores the previous states of expressionsPostFix
 	 */
