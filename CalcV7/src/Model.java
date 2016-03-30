@@ -1436,6 +1436,9 @@ public class Model
 		
 		running_history = running_history_undo.pop();
 		button_history = button_history_undo.pop();	
+		if(button_history.size() > running_history.size())
+			button_history.pop();
+		
 		expressionsInFix = expressionsInFix_undo.pop();
 		expressionsPostFix = expressionsPostFix_undo.pop();
 		//If the last element of previous state
