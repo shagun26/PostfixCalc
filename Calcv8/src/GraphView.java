@@ -174,20 +174,19 @@ public class GraphView extends JFrame
 		DecreaseScale.setBounds(256, 48, 44, 25);
 		top.add(DecreaseScale);
 		
-		yScaleLabel = new JLabel();
+		yScaleLabel = new JLabel("" + yScale);
 		yScaleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		yScaleLabel.setHorizontalTextPosition(SwingConstants.LEFT);
 		yScaleLabel.setForeground(Color.WHITE);
 		yScaleLabel.setBounds(256, 24, 44, 25);
 		top.add(yScaleLabel);
-		yScaleLabel.setText("" + yScale);
 		
 		bottom.setLayout(null);
 		
 		N_X = new JLabel();
 		P_X = new JLabel();
-		N_Y = new JLabel("-" + yScale);
-		P_Y = new JLabel("" + yScale);
+		N_Y = new JLabel();
+		P_Y = new JLabel();
 		
 		N_X.setBounds(152, 247, 13, 15);
 		P_X.setBounds(453, 247, 13, 15);
