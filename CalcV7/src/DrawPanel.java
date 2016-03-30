@@ -20,25 +20,38 @@ public class DrawPanel extends JPanel
     private double y[];
 	private double yScale;
 
-
+	/**
+	 * Instantiate a new DrawPanel with given y-coordinates
+	 * @param A
+	 */
 	public DrawPanel(double A[]) 
 	{
 		y = A;
 	}
-	
-	public void setY(double[] input, double yScale)
+	/**
+	 * Set the y-coordinates and the scale(in y direction)
+	 * for the panel
+	 * @param input - the y-coordinates
+	 * @param scale - the y scale
+	 */
+	public void setY(double[] input, double scale)
 	{
 		y = input;
-		this.yScale = yScale;
+		yScale = scale;
 		
 	}
-	
-	public void setYScale(double yScale)
+	/**
+	 * Set the y scaling for a currently drawn graph
+	 * @param scale - the y scaling
+	 */
+	public void setYScale(double scale)
 	{
-		this.yScale = yScale;
+		yScale = scale;
 	}
 	
-
+	/**
+	 * Draw the Graph and axes
+	 */
 	public void paintComponent (Graphics g)
 	{
 		width = getWidth();
@@ -52,11 +65,6 @@ public class DrawPanel extends JPanel
 		
 
 	    super.paintComponent(g2d);
-	
-//	    System.out.println(xFactor);
-//	    System.out.println(yFactor);
-//	    System.out.println(width);
-//	    System.out.println(height);
 	    
 	    //Draw X and Y Axis
 	    g2d.drawLine(0, (int)(heightH), (int) width, (int) (heightH));
@@ -79,9 +87,7 @@ public class DrawPanel extends JPanel
 		{
 	    	if(!(Math.abs(y[i] - y[i + 1]) > 10000))
 	    			g2d.drawLine((int) (xFactor * i), (int) (heightH - y[i] * yFactor), 
-	    					(int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
-	    	//g2d.draw(line);
-	    	
+	    					(int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));	
 		}
 	}
 }

@@ -149,6 +149,7 @@ public class GraphModel
 		parser = new EvaluateCos();
 		y = parser.evaluate(valuation);
 	}
+	
 	public boolean getisSCGraph() {
 		return isSCGraph;
 	}

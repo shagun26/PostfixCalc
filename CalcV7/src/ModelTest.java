@@ -903,8 +903,7 @@ public class ModelTest {
 				{
 					expected[i] = g.X[i] * 3;
 				}
-				assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
-				
+				assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);	
 	}
 	
 	@Test

@@ -38,7 +38,10 @@ public class GraphView extends JFrame
 	private static JLabel yScaleLabel;
 
 	
-	
+	/**
+	 * Instantiates a new GraphView with the associated controller
+	 * @param controller - the GraphView's controller
+	 */
 	public GraphView(final GraphController controller)
 	{
 		super("Graph");
@@ -148,7 +151,7 @@ public class GraphView extends JFrame
 					yScale *= 2;
 				else
 				yScale += 1; 
-				drawGraph();
+				rescale();
 			}
 		});
 		IncreaseScale.setForeground(Color.WHITE);
@@ -166,7 +169,7 @@ public class GraphView extends JFrame
 					yScale /= 2;
 				else
 					yScale -= 1;
-				drawGraph();
+				rescale();
 			}
 		});
 		DecreaseScale.setForeground(Color.WHITE);
@@ -199,12 +202,19 @@ public class GraphView extends JFrame
 		
 		getContentPane().setLayout(groupLayout);
 	}
-	
+	/**
+	 * Update the label of the shown graph
+	 * @param expr - the expression of the graph
+	 */
 	public void updateExpr(String expr)
 	{
 		expression.setText(expr);
 	}
-	
+	/**
+	 * Draws a new graph with the given y coordinates
+	 * @param y - the y coordinates
+	 * @param SCGraph - set the scaling if trig graph
+	 */
 	public void drawGraph(double[] y, boolean SCGraph)
 	{
 		yScale = 5;	
@@ -224,8 +234,11 @@ public class GraphView extends JFrame
 			bottom.setY(y, yScale);
 			bottom.repaint();
 	}
-	
-	public void drawGraph()
+	/**
+	 * Re-scales the currently drawn graph
+	 * in the y-direction
+	 */
+	public void rescale()
 	{
 			N_Y.setText("-" + (int) yScale);
 			P_Y.setText("" + (int) yScale);
