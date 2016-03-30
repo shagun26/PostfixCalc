@@ -207,6 +207,10 @@ public class Controller
 		window.updateHistory(model.undoHistory());
 		window.updateValue(model.undoValue());
 		System.out.println(model.expressionsInFix_undo);
+		System.out.println(model.running_history_undo);
+		System.out.println(model.button_history_undo);
+		System.out.println(model.button_history);
+		System.out.println(model.running_history);
 	}
 	
 

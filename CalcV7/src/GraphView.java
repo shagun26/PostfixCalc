@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Cursor;
+import javax.swing.JButton;
 
 
 public class GraphView extends JFrame 
@@ -23,32 +24,35 @@ public class GraphView extends JFrame
 	private static final int DISPLAY_HEIGHT = 50;
 	private double y[];
 	private GridLayout buttons_manager = new GridLayout(0, 3);
-	private GridLayout top_manager = new GridLayout(1, 2);
 	
 	private JPanel top = new JPanel();
 	private DrawPanel  bottom;
 	private JPanel buttons = new JPanel();
 	
 	private JLabel expression = new JLabel();
-	private JLabel N_X;
-	private JLabel P_X;
-	
+	private static double yScale = 5;
+	private static JLabel N_Y;
+	private static JLabel P_Y;
+	private static JLabel N_X;
+	private static JLabel P_X;
+	private static JLabel yScaleLabel;
 
 	
 	
 	public GraphView(final GraphController controller)
 	{
 		super("Graph");
+		setResizable(false);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		top.setBackground(Color.DARK_GRAY);
 		
 		top.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-		top.setLayout(top_manager);
+		buttons.setLocation(300, 0);
 		buttons.setBackground(Color.DARK_GRAY);
 		
-		buttons.setSize(20, 20);
+		buttons.setSize(300, 73);
 		buttons_manager.setVgap(5);
 		buttons_manager.setHgap(5);
 		buttons.setLayout(buttons_manager);
@@ -93,6 +97,7 @@ public class GraphView extends JFrame
 				controller.addToFav();
 			}
 		});
+		addFav.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		addFav.setForeground(Color.WHITE);
 		addFav.setBackground(Color.BLACK);
 		fav.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -102,6 +107,8 @@ public class GraphView extends JFrame
 		
 		
 		buttons.setVisible(true);
+		top.setLayout(null);
+		expression.setBounds(0, 0, 262, 73);
 		expression.setForeground(Color.WHITE);
 		expression.setFont(new Font("Dialog", Font.BOLD, 24));
 		expression.setHorizontalAlignment(SwingConstants.CENTER);
@@ -130,26 +137,68 @@ public class GraphView extends JFrame
 					.addComponent(bottom, GroupLayout.PREFERRED_SIZE, 489, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
+		
+		ButtonAdapter IncreaseScale;
+		buttons.add(IncreaseScale = new ButtonAdapter("↑")
+		{
+			
+			public void pressed()
+			{
+				if (yScale <= 1)
+					yScale *= 2;
+				else
+				yScale += 1; 
+				drawGraph();
+			}
+		});
+		IncreaseScale.setForeground(Color.WHITE);
+		IncreaseScale.setBackground(Color.BLACK);
+		IncreaseScale.setBounds(256, 0, 44, 25);
+		top.add(IncreaseScale);
+		
+		ButtonAdapter DecreaseScale;
+		buttons.add(DecreaseScale = new ButtonAdapter("↓")
+		{
+			
+			public void pressed()
+			{
+				if (yScale <= 1)
+					yScale /= 2;
+				else
+					yScale -= 1;
+				drawGraph();
+			}
+		});
+		DecreaseScale.setForeground(Color.WHITE);
+		DecreaseScale.setBackground(Color.BLACK);
+		DecreaseScale.setBounds(256, 48, 44, 25);
+		top.add(DecreaseScale);
+		
+		yScaleLabel = new JLabel("" + yScale);
+		yScaleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		yScaleLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+		yScaleLabel.setForeground(Color.WHITE);
+		yScaleLabel.setBounds(256, 24, 44, 25);
+		top.add(yScaleLabel);
+		
 		bottom.setLayout(null);
 		
-		N_X = new JLabel("-5");
+		N_X = new JLabel();
+		P_X = new JLabel();
+		N_Y = new JLabel();
+		P_Y = new JLabel();
+		
 		N_X.setBounds(152, 247, 13, 15);
-		bottom.add(N_X);
-		
-		P_X = new JLabel("5");
 		P_X.setBounds(453, 247, 13, 15);
+		P_Y.setBounds(302, 124, 50, 15);
+		N_Y.setBounds(302, 367, 50, 15);
+		
+		bottom.add(N_X);
 		bottom.add(P_X);
-		
-		JLabel P_Y = new JLabel("5");
-		P_Y.setBounds(302, 124, 13, 15);
 		bottom.add(P_Y);
-		
-		JLabel N_Y = new JLabel("-5");
-		N_Y.setBounds(302, 367, 13, 15);
 		bottom.add(N_Y);
+		
 		getContentPane().setLayout(groupLayout);
-		
-		
 	}
 	
 	public void updateExpr(String expr)
@@ -159,7 +208,8 @@ public class GraphView extends JFrame
 	
 	public void drawGraph(double[] y, boolean SCGraph)
 	{
-			if (SCGraph == true)
+		yScale = 5;	
+		if (SCGraph == true)
 			{
 				N_X.setText("\u03C0");
 				P_X.setText("\u03C0");
@@ -169,7 +219,19 @@ public class GraphView extends JFrame
 				N_X.setText("-5");
 				P_X.setText("5");
 			}
-			bottom.setY(y);
+			N_Y.setText("-" + yScale);
+			P_Y.setText("" + yScale);
+			yScaleLabel.setText("" + yScale);
+			bottom.setY(y, yScale);
 			bottom.repaint();
+	}
+	
+	public void drawGraph()
+	{
+			N_Y.setText("-" + yScale);
+			P_Y.setText("" + yScale);
+			yScaleLabel.setText("" + yScale);
+			bottom.repaint();
+			bottom.setYScale(yScale);
 	}		
 }

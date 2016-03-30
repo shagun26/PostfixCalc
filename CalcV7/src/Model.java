@@ -46,7 +46,7 @@ public class Model
 	 * Used to print the history.
 	 * (Section 3.3 in Design Document)
 	 */
-	private ArrayList<String> running_history = new ArrayList<String>();
+	protected ArrayList<String> running_history = new ArrayList<String>();
 	/**
 	 * Stores the previous states of running_history
 	 */
