@@ -30,7 +30,7 @@ public class GraphModel
 			XOri[j++] = i;
 			i = i + 0.1;
 		}
-		X = XOri;
+		//X = XOri;
 	}
 	/**
 	 * Evaluate an expression for its Y-coordinates
@@ -46,13 +46,13 @@ public class GraphModel
 			if(next0.equals("SIN(") || next0.equals("COS("))
 			{
 				isSCGraph = true;
-			//	X = XPi;
-			//	break;
+				X = XPi;
+				break;
 			}
 			else
 			{
 				isSCGraph = false;
-				//X = XOri;
+				X = XOri;
 			}
 		}
 				
