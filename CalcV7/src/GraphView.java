@@ -187,8 +187,7 @@ public class GraphView extends JFrame
 		P_X = new JLabel();
 		N_Y = new JLabel();
 		P_Y = new JLabel();
-		
-		N_X.setBounds(152, 247, 13, 15);
+		N_X.setBounds(152, 247, 50, 15);
 		P_X.setBounds(453, 247, 13, 15);
 		P_Y.setBounds(302, 124, 50, 15);
 		N_Y.setBounds(302, 367, 50, 15);
@@ -211,7 +210,7 @@ public class GraphView extends JFrame
 		yScale = 5;	
 		if (SCGraph == true)
 			{
-				N_X.setText("\u03C0");
+				N_X.setText("-\u03C0");
 				P_X.setText("\u03C0");
 			}
 			else
@@ -219,18 +218,18 @@ public class GraphView extends JFrame
 				N_X.setText("-5");
 				P_X.setText("5");
 			}
-			N_Y.setText("-" + yScale);
-			P_Y.setText("" + yScale);
-			yScaleLabel.setText("" + yScale);
+			N_Y.setText("-" + (int) yScale);
+			P_Y.setText("" + (int) yScale);
+			yScaleLabel.setText("" + (int) yScale);
 			bottom.setY(y, yScale);
 			bottom.repaint();
 	}
 	
 	public void drawGraph()
 	{
-			N_Y.setText("-" + yScale);
-			P_Y.setText("" + yScale);
-			yScaleLabel.setText("" + yScale);
+			N_Y.setText("-" + (int) yScale);
+			P_Y.setText("" + (int) yScale);
+			yScaleLabel.setText("" +  (int) yScale);
 			bottom.repaint();
 			bottom.setYScale(yScale);
 	}		
