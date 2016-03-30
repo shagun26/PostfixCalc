@@ -2,24 +2,15 @@ import java.awt.GridLayout;
 
 
 
-//import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Font;
-//import javax.swing.JSplitPane;
-//import java.awt.FlowLayout;
-//import javax.swing.BoxLayout;
-//import com.jgoodies.forms.layout.FormLayout;
-//import com.jgoodies.forms.layout.ColumnSpec;
-//import com.jgoodies.forms.layout.RowSpec;
-//import java.awt.BorderLayout;
-//import javax.swing.GroupLayout;
-//import javax.swing.GroupLayout.Alignment;
 import javax.swing.SwingConstants;
 import java.awt.Color;
-import javax.swing.UIManager;
-//import java.awt.Button;
+import javax.swing.border.BevelBorder;
+import java.awt.Point;
+import java.awt.Cursor;
 
 
 @SuppressWarnings("serial")
@@ -27,10 +18,6 @@ public class View extends JFrame
 {
 	private static final int WINDOW_WIDTH = 600;
 	private static final int WINDOW_HEIGHT = 600;
-	//private static final int KEYPAD_WIDTH = 200;
-	//private static final int KEYPAD_HEIGHT = 200;
-	//private static final int OPERATOR_HEIGHT = 100;
-	//private static final int OPERATOR_WIDTH = 100;
 	private static final int DISPLAY_HEIGHT = 300;
 	private static final int DISPLAY_WIDTH = 300;
 	
@@ -62,16 +49,21 @@ public class View extends JFrame
 	
 	private Controller controller;
 	private final JPanel panel = new JPanel();
-	private final ButtonAdapter buttonAdapter = new ButtonAdapter("Graph") {
+	private final ButtonAdapter graph = new ButtonAdapter("Graph") {
 	public void pressed() {
-		controller.changeToGraph( controller);
+		controller.changeToGraph();
 	}
 };
 	
-	
+	/**
+	 * Creates a new instance of View
+	 */
 	public View()
 	{
 		super("Numeric Keypad");
+		setLocation(new Point(800, 200));
+		setResizable(false);
+		setTitle("PostFix Calculator");
 		getContentPane().setBackground(Color.WHITE);
 		setForeground(Color.WHITE);
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -79,7 +71,7 @@ public class View extends JFrame
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		controller = new Controller(this);
-		display.setBackground(UIManager.getColor("Button.background"));
+		display.setBackground(Color.DARK_GRAY);
 		
 		display.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 		display.setVisible(true);
@@ -87,11 +79,20 @@ public class View extends JFrame
 		
 		getContentPane().add(display);
 		display.setLayout(null);
+		history_display.setOpaque(true);
+		history_display.setHorizontalAlignment(SwingConstants.CENTER);
+		history_display.setForeground(Color.WHITE);
+		history_display.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		history_display.setBackground(new Color(143, 188, 143));
 		history_display.setFont(new Font("Dialog", Font.BOLD, 30));
-		history_display.setBounds(12, 12, 576, 131);
+		history_display.setBounds(26, 26, 535, 100);
 		display.add(history_display);
-		value_display.setBounds(12, 143, 576, 78);
-		value_display.setHorizontalAlignment(SwingConstants.TRAILING);
+		value_display.setBackground(new Color(143, 188, 143));
+		value_display.setOpaque(true);
+		value_display.setForeground(Color.WHITE);
+		value_display.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		value_display.setBounds(26, 134, 535, 78);
+		value_display.setHorizontalAlignment(SwingConstants.RIGHT);
 		value_display.setFont(new Font("Dialog", Font.BOLD, 30));
 		display.add(value_display);
 		
@@ -99,11 +100,18 @@ public class View extends JFrame
 		
 		value_display.setText("0");
 		history_display.setText("Start new Calculation");
-		buttonAdapter.setBounds(504, 233, 84, 63);
+		graph.setFont(new Font("Dialog", Font.BOLD, 14));
+		graph.setForeground(Color.WHITE);
+		graph.setBackground(Color.BLACK);
+		graph.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		graph.setBounds(504, 230, 84, 63);
 		
-		display.add(buttonAdapter);
+		display.add(graph);
+		panel.setBackground(Color.DARK_GRAY);
 		
 		getContentPane().add(panel);
+		keypad.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		keypad.setBackground(Color.DARK_GRAY);
 		keypad.setLocation(12, 12);
 		
 		keypad.setSize(302, 269);
@@ -111,105 +119,163 @@ public class View extends JFrame
 		keypad_layout_manager.setHgap(5);
 		keypad.setLayout(keypad_layout_manager);
 		
-		
-		keypad.add(new ButtonAdapter(SEVEN)
+		ButtonAdapter seven;
+		keypad.add(seven = new ButtonAdapter(SEVEN)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(SEVEN);
 			}
 		});
+		seven.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		seven.setFont(new Font("Dialog", Font.BOLD, 18));
+		seven.setForeground(Color.WHITE);
+		seven.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(EIGHT)
+		ButtonAdapter eight;
+		keypad.add(eight = new ButtonAdapter(EIGHT)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(EIGHT);
 			}
 		});
+		eight.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		eight.setFont(new Font("Dialog", Font.BOLD, 18));
+		eight.setForeground(Color.WHITE);
+		eight.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(NINE)
+		ButtonAdapter nine;
+		keypad.add(nine = new ButtonAdapter(NINE)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(NINE);
 			}
 		});
+		nine.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		nine.setFont(new Font("Dialog", Font.BOLD, 18));
+		nine.setForeground(Color.WHITE);
+		nine.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(FOUR)
+		ButtonAdapter four;
+		keypad.add(four = new ButtonAdapter(FOUR)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(FOUR);
 			}
 		});
+		four.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		four.setFont(new Font("Dialog", Font.BOLD, 18));
+		four.setForeground(Color.WHITE);
+		four.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(FIVE)
+		ButtonAdapter five;
+		keypad.add(five = new ButtonAdapter(FIVE)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(FIVE);
 			}
 		});
+		five.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		five.setFont(new Font("Dialog", Font.BOLD, 18));
+		five.setForeground(Color.WHITE);
+		five.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(SIX)
+		ButtonAdapter six;
+		keypad.add(six = new ButtonAdapter(SIX)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(SIX);
 			}
 		});
+		six.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		six.setFont(new Font("Dialog", Font.BOLD, 18));
+		six.setForeground(Color.WHITE);
+		six.setBackground(Color.BLACK);
 		
-		
-		
-		keypad.add(new ButtonAdapter(ONE)
+		ButtonAdapter one;
+		keypad.add(one = new ButtonAdapter(ONE)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(ONE);
 			}
 		});
+		one.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		one.setFont(new Font("Dialog", Font.BOLD, 18));
+		one.setForeground(Color.WHITE);
+		one.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(TWO)
+		ButtonAdapter two;
+		keypad.add(two = new ButtonAdapter(TWO)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(TWO);
 			}
 		});
+		two.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		two.setFont(new Font("Dialog", Font.BOLD, 18));
+		two.setForeground(Color.WHITE);
+		two.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(THREE)
+		ButtonAdapter three;
+		keypad.add(three = new ButtonAdapter(THREE)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(THREE);
 			}
 		});
+		three.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		three.setFont(new Font("Dialog", Font.BOLD, 18));
+		three.setForeground(Color.WHITE);
+		three.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(Controller.CLEAR)
-		{
-			public void pressed()
-			{
-				controller.clear();
-			}
-		});
-		
-		
-		keypad.add(new ButtonAdapter(ZERO)
+		ButtonAdapter zero;
+		keypad.add(zero = new ButtonAdapter(ZERO)
 		{
 			public void pressed()
 			{
 				controller.addToEntry(ZERO);
 			}
 		});
+		zero.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		zero.setFont(new Font("Dialog", Font.BOLD, 18));
+		zero.setForeground(Color.WHITE);
+		zero.setBackground(Color.BLACK);
 		
-		keypad.add(new ButtonAdapter(Controller.ENTER)
+		ButtonAdapter decimal_point;
+		keypad.add(decimal_point = new ButtonAdapter(DECIMAL_POINT)
+		{
+			public void pressed()
+			{
+				controller.addToEntry(DECIMAL_POINT);
+			}
+		});
+		decimal_point.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		decimal_point.setFont(new Font("Dialog", Font.BOLD, 18));
+		decimal_point.setForeground(Color.WHITE);
+		decimal_point.setBackground(Color.BLACK);
+		
+		ButtonAdapter enter;
+		keypad.add(enter = new ButtonAdapter(Controller.ENTER)
 		{
 			public void pressed()
 			{
 				controller.enter();
 			}
 		});
+		enter.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		enter.setFont(new Font("Dialog", Font.BOLD, 18));
+		enter.setForeground(Color.WHITE);
+		enter.setBackground(Color.ORANGE);
+		
+		operators.setBackground(Color.DARK_GRAY);
 		operators.setLocation(326, 12);
 		
 		operators.setSize(262, 269);
@@ -217,8 +283,8 @@ public class View extends JFrame
 		operator_layout_manager.setHgap(5);
 		operators.setLayout(operator_layout_manager);
 		
-		
-		operators.add(new ButtonAdapter(Controller.PLUS)
+		ButtonAdapter plus;
+		operators.add(plus = new ButtonAdapter(Controller.PLUS)
 		{
 			public void pressed()
 			{
@@ -227,10 +293,13 @@ public class View extends JFrame
 			}
 			
 		});
+		plus.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		plus.setFont(new Font("Dialog", Font.BOLD, 18));
+		plus.setForeground(Color.WHITE);
+		plus.setBackground(Color.RED);
 		
-		
-		
-		operators.add(new ButtonAdapter(Controller.MINUS)
+		ButtonAdapter minus;
+		operators.add(minus = new ButtonAdapter(Controller.MINUS)
 		{
 			public void pressed()
 			{
@@ -239,22 +308,29 @@ public class View extends JFrame
 			}
 			
 		});
+		minus.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		minus.setFont(new Font("Dialog", Font.BOLD, 18));
+		minus.setForeground(Color.WHITE);
+		minus.setBackground(Color.RED);
 		
 		
-		
-		operators.add(new ButtonAdapter(Controller.MULT)
+		ButtonAdapter fact;
+		operators.add(fact = new ButtonAdapter(Controller.FACT)
 		{
 			public void pressed()
 			{
-				controller.multiply();
-				controller.historyOperation(Controller.MULT);
+				controller.factorial();
+				controller.factHistoryOperation(Controller.FACT);
 			}
 			
 		});
+		fact.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		fact.setFont(new Font("Dialog", Font.BOLD, 18));
+		fact.setForeground(Color.WHITE);
+		fact.setBackground(Color.BLACK);
 		
-		
-		
-		operators.add(new ButtonAdapter(Controller.DIV)
+		ButtonAdapter div;
+		operators.add(div = new ButtonAdapter(Controller.DIV)
 		{
 			public void pressed()
 			{
@@ -263,18 +339,28 @@ public class View extends JFrame
 			}
 			
 		});
+		div.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		div.setFont(new Font("Dialog", Font.BOLD, 18));
+		div.setForeground(Color.WHITE);
+		div.setBackground(Color.RED);
 		
-		operators.add(new ButtonAdapter(Controller.FACT)
+		ButtonAdapter mult;
+		operators.add(mult = new ButtonAdapter(Controller.MULT)
 		{
 			public void pressed()
 			{
-				controller.factorial();
-				controller.factHistoryOperation(Controller.FACT);
+				controller.multiply();
+				controller.historyOperation(Controller.MULT);
 			}
 					
 		});
+		mult.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		mult.setFont(new Font("Dialog", Font.BOLD, 18));
+		mult.setForeground(Color.WHITE);
+		mult.setBackground(Color.RED);
 		
-		operators.add(new ButtonAdapter(Controller.PLUSMINUS)
+		ButtonAdapter plusminus;
+		operators.add(plusminus = new ButtonAdapter(Controller.PLUSMINUS)
 		{
 			public void pressed()
 			{
@@ -282,8 +368,13 @@ public class View extends JFrame
 			}
 			
 		});
+		plusminus.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		plusminus.setFont(new Font("Dialog", Font.BOLD, 18));
+		plusminus.setForeground(Color.WHITE);
+		plusminus.setBackground(Color.BLACK);
 		
-		operators.add(new ButtonAdapter("cos")
+		ButtonAdapter cos;
+		operators.add(cos = new ButtonAdapter("cos")
 		{
 			public void pressed()
 			{
@@ -292,8 +383,13 @@ public class View extends JFrame
 			}
 			
 		});
+		cos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		cos.setFont(new Font("Dialog", Font.BOLD, 18));
+		cos.setForeground(Color.WHITE);
+		cos.setBackground(Color.BLACK);
 		
-		operators.add(new ButtonAdapter("sin")
+		ButtonAdapter sin;
+		operators.add(sin = new ButtonAdapter("sin")
 		{
 			public void pressed()
 			{
@@ -302,26 +398,13 @@ public class View extends JFrame
 			}
 			
 		});
+		sin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		sin.setFont(new Font("Dialog", Font.BOLD, 18));
+		sin.setForeground(Color.WHITE);
+		sin.setBackground(Color.BLACK);
 		
-		
-		operators.add(new ButtonAdapter(DECIMAL_POINT)
-		{
-			public void pressed()
-			{
-				controller.addToEntry(DECIMAL_POINT);
-			}
-		});
-		
-		operators.add(new ButtonAdapter(Controller.UNDO)
-		{
-			public void pressed()
-			{
-				controller.undo();
-			}
-		});
-		
-		
-		operators.add(new ButtonAdapter(Controller.PI)
+		ButtonAdapter pi;
+		operators.add(pi = new ButtonAdapter(Controller.PI)
 		{
 			public void pressed()
 			{
@@ -329,33 +412,74 @@ public class View extends JFrame
 				controller.pi();
 			}
 		});
+		pi.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		pi.setFont(new Font("Dialog", Font.BOLD, 18));
+		pi.setForeground(Color.WHITE);
+		pi.setBackground(Color.BLACK);
 		
-		operators.add(new ButtonAdapter(Controller.EXPRESSION)
+		ButtonAdapter undo;
+		operators.add(undo = new ButtonAdapter(Controller.UNDO)
+		{
+			public void pressed()
+			{
+				controller.undo();
+			}
+		});
+		undo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		undo.setFont(new Font("Dialog", Font.BOLD, 16));
+		undo.setForeground(Color.WHITE);
+		undo.setBackground(Color.ORANGE);
+
+		ButtonAdapter clear;
+		operators.add(clear = new ButtonAdapter(Controller.CLEAR)
+		{
+			public void pressed()
+			{
+				controller.clear();
+			}
+		});
+		clear.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		clear.setFont(new Font("Dialog", Font.BOLD, 16));
+		clear.setForeground(Color.WHITE);
+		clear.setBackground(Color.ORANGE);
+		
+		ButtonAdapter expression;
+		operators.add(expression = new ButtonAdapter(Controller.EXPRESSION)
 		{
 			public void pressed()
 			{
 				controller.expression();
 			}
-			
-			
-			
 		});
+		expression.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		expression.setFont(new Font("Dialog", Font.BOLD, 16));
+		expression.setForeground(Color.WHITE);
+		expression.setBackground(Color.BLACK);
 		panel.setLayout(null);
 		panel.add(keypad);
 		panel.add(operators);
 	}
 	
+	/**
+	 * Update the text shown in the value field
+	 * @param next_value -  the text to be shown in the value field
+	 */
 	public void updateValue(String next_value)
 	{
 		
 		value_display.setText(next_value);
 	}
-	
+	/**
+	 * Update the text shown in the history field
+	 * @param next_result - the text to be shown in the history field
+	 */
 	public void updateHistory(String next_result)
 	{
-		history_display.setText(next_result);
+		history_display.setText("<html>" + next_result + "</html>");
 	}
-	
+	/**
+	 * Sets the history and value field to their defaults
+	 */
 	public void clearDisplay()
 	{
 		value_display.setText("0");

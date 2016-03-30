@@ -5,23 +5,18 @@ public class EvaluateNegate extends ExpressionsParser
 {
 
 	@Override
-	public double[] evaluate(Stack<Double> valuation, double[] y) 
+	public double[] evaluate(Stack<double[]> valuation) 
 	{
 		// TODO Auto-generated method stub
-		double num1 = valuation.pop();
+		double[] num1 = valuation.pop();
+		double[] y = new double[GraphModel.X.length];
 		
-		if(num1 == (double) 'x')
+		for(int i = 0; i < y.length; i++)
 		{
-			for(int i = 0; i < 10; i++)
-			{
-				y[i] =y[i] * -1;
-			}
-			valuation.push((double) 'x');
+				y[i] = num1[i] * -1;
 		}
-		else
-		{
-			valuation.push(num1 * -1);
-		}
+		valuation.push(y);
+		
 		
 		return y;
 	}
