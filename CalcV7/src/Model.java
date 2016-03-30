@@ -782,7 +782,8 @@ public class Model
 		else
 		{
 			expressionsPostFix.pop();
-			expressionsPostFix.pop();
+			if(!expressionsPostFix.empty())
+				expressionsPostFix.pop();
 			expressionsPostFix.push("" + stored_values.peek());
 		}
 		
