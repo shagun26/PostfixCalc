@@ -9,6 +9,8 @@ public class GraphController
 	private static FavController favcntrl = null;
 	private double[] Ys = new double[GraphModel.X.length];
 	private Stack<String> expressionsList;
+	private Stack<String> expressionsListPost;
+	private double xScale;
 	private String prevExpr;
 	
 	/**
@@ -26,6 +28,11 @@ public class GraphController
 		if(favcntrl == null)
 			favcntrl = new FavController();
 		
+
+		expressionsList = expressionsInFix;
+		expressionsListPost = expressionsPostFix;
+		xScale = grph_model.xScale();
+		
 		if(grph_view == null)
 			grph_view = new GraphView(this);
 		
@@ -36,7 +43,7 @@ public class GraphController
 		if(expressionsList.empty())
 		{
 			Ys = null;
-			grph_view.drawGraph(Ys, grph_model.getisSCGraph());
+			grph_view.drawGraph(Ys, grph_model.xScale());
 			grph_view.updateExpr("");
 			prevExpr = "";
 		}
@@ -47,7 +54,7 @@ public class GraphController
 			Ys = grph_model.getValues(expressionsPostFix);
 			grph_view.updateExpr("y = " + expressionsList.peek());
 			prevExpr = expressionsList.peek();
-			grph_view.drawGraph(Ys, grph_model.getisSCGraph());
+			grph_view.drawGraph(Ys, grph_model.xScale());
 			System.out.println(grph_view.getExpr());
 		}
 		grph_view.setVisible(true);
@@ -68,7 +75,7 @@ public class GraphController
 	public void drawGraph(String expr, double[] values)
 	{
 		grph_view.updateExpr("y = " + expr);
-		grph_view.drawGraph(values, grph_model.getisSCGraph());
+		grph_view.drawGraph(values, grph_model.xScale());
 		grph_view.setVisible(true);
 	}
 	/**

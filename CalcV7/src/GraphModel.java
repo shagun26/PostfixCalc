@@ -5,13 +5,11 @@ import java.util.Stack;
 public class GraphModel 
 {
 	public static double[] X = new double[1001];
-	public static final double[] XOri = new double[1001];
-	public static final double[] XPi = new double[1001];
 	
 	private double[] y;
 	private Stack<double[]> valuation = new Stack<double[]>();
 	private ExpressionsParser parser;
-	private boolean isSCGraph = false;
+	private double xScale = 10;
 	
 	/**
 	 * Instantiate a new GraphModel with the default X-coordinates and XPi-coordinates
@@ -19,18 +17,11 @@ public class GraphModel
 	public GraphModel()
 	{
 		int j = 0;
-		for(double i = -Math.PI*2; j < XPi.length;)
+		for(double i = -xScale; j < X.length;)
 		{
-			XPi[j++] = i;
-			i = i + Math.PI / ((XPi.length-1)/4);
+			X[j++] = i;
+			i = i + (xScale) / ((X.length-1)/2);
 		}
-		j = 0;
-		for(double i = -10; j < XOri.length;)
-		{
-			XOri[j++] = i;
-			i = i + (0.1*100) / ((XOri.length-1)/2);
-		}
-		//X = XOri;
 	}
 	/**
 	 * Evaluate an expression for its Y-coordinates, it first checks if Sin or Cos exists within the equation, 
@@ -40,23 +31,27 @@ public class GraphModel
 	 */
 	public double[] getValues(Stack<String> expressionsPostFix)
 	{
-		valuation.clear();
 		System.out.println(expressionsPostFix);
+		
 		for(String next0 : expressionsPostFix)
 		{
 			if(next0.equals("SIN(") || next0.equals("COS("))
 			{
-				isSCGraph = true;
-				X = XPi;
+				xScale = Math.PI*2;
+				newGraph(xScale);
 				break;
 			}
-			else
-			{
-				isSCGraph = false;
-				X = XOri;
-			}
 		}
+		
+		return calculateValues(expressionsPostFix);
 				
+	}
+	
+	public double[] calculateValues(Stack<String> expressionsPostFix)
+	{
+		
+		valuation.clear();
+		
 		for(String next : expressionsPostFix)
 		{
 			if(next.equals("x"))
@@ -84,6 +79,7 @@ public class GraphModel
 		}
 		return y;
 	}
+	
 	/**
 	 * Perform a division
 	 */
@@ -150,8 +146,20 @@ public class GraphModel
 		y = parser.evaluate(valuation);
 	}
 	
-	public boolean getisSCGraph() {
-		return isSCGraph;
+	public double xScale()
+	{
+		return xScale/2;
+	}
+	
+	public void newGraph(double XScale)
+	{
+		int j = 0;
+		for(double i = -XScale; j < X.length;)
+		{
+			X[j++] = i;
+			i = i + (XScale) / ((X.length-1)/2);
+		}
+	
 	}
 
 	

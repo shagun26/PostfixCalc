@@ -863,7 +863,7 @@ public class ModelTest {
 		double[] expected = new double[g.X.length];
 		for(int i = 0; i < expected.length; i++)
 		{
-			expected[i] = GraphModel.XOri[i] + 3;
+			expected[i] = GraphModel.X[i] + 3;
 		}
 		assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
 		m.reset();
@@ -914,7 +914,8 @@ public class ModelTest {
 				m.sin();
 				m.trigHistory("SIN(");
 				double[] expected = new double[g.X.length];
-				
+				//Have to do this for Sin and COs
+				double[] actual = g.getValues(m.expressionsPostFix);
 				for(int i = 0; i < expected.length; i++)
 				{
 					expected[i] =  Math.sin(g.X[i]);
@@ -922,7 +923,7 @@ public class ModelTest {
 				}
 				
 				
-				assertArrayEquals(expected,g.getValues(m.expressionsPostFix),0);
+				assertArrayEquals(expected,actual,0);
 				
 	}
 	
@@ -934,15 +935,15 @@ public class ModelTest {
 				m.cos();
 				m.trigHistory("COS(");
 				double[] expected = new double[g.X.length];
-				
+				//Have to do this for Sin and COs
+				double[] actual = g.getValues(m.expressionsPostFix);
 				for(int i = 0; i < expected.length; i++)
 				{
-					expected[i] =  Math.cos(GraphModel.XPi[i]);
+					expected[i] =  Math.cos(GraphModel.X[i]);
 					
 				}
-				
-				
-				assertArrayEquals(expected,g.getValues(m.expressionsPostFix),0);
+			
+				assertArrayEquals(expected,actual,0);
 				
 	}
 	
@@ -966,7 +967,7 @@ public class ModelTest {
 				
 	}
 	
-	/*
+	
 	@Test
 	public void testGetValuesSubtract() {
 		// Case 2: subtract
@@ -985,7 +986,7 @@ public class ModelTest {
 				assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
 				
 	}
-	*/
+	
 	
 	// comment this section if you want to edit and test.
 	@Test

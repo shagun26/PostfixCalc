@@ -6,7 +6,6 @@ public class EvaluateDiv extends ExpressionsParser
 
 	@Override
 	public double[] evaluate(Stack<double[]> valuation) {
-		// TODO Auto-generated method stub
 		double[] y = new double[GraphModel.X.length];
 		double[] num1 = valuation.pop();
 		double[] num2 = valuation.pop();
