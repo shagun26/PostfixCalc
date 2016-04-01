@@ -7,6 +7,8 @@ import java.awt.geom.Line2D;
 //import javafx.scene.shape.Shape;
 
 
+
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class DrawPanel extends JPanel
@@ -20,16 +22,11 @@ public class DrawPanel extends JPanel
     private double y[];
 	private double yScale;
 	private double numberOfGrids;
-
+	private Graphics2D g2d;
 	
-	public DrawPanel(){};
-	/**
-	 * Instantiate a new DrawPanel with given y-coordinates
-	 * @param A
-	 */
-	public DrawPanel(double A[]) 
+	public DrawPanel()
 	{
-		y = A;
+		repaint();
 	}
 	/**
 	 * Set the y-coordinates and the scale(in y direction)
@@ -58,6 +55,7 @@ public class DrawPanel extends JPanel
 	 */
 	public void paintComponent (Graphics g)
 	{
+		
 		width = getWidth();
 	    height = getHeight();
 	    widthH = getWidth()/2;
@@ -72,12 +70,23 @@ public class DrawPanel extends JPanel
 	        
 	    g2d.setColor(Color.lightGray);
 	    //Draw Grid
-	    //Change the number of Grids to change the amount of grids displayed.
 	    numberOfGrids = 10;
 	    for(int i = 1; i <= numberOfGrids*2; i++)
 	    {
+	    	//Draw Horizontal grid
 	    	g2d.drawLine(0, (int)(heightH/numberOfGrids*i), (int) width, (int)(heightH/numberOfGrids*i));
+	    	JLabel yLabel = new JLabel();
+	    	yLabel.setBounds((int) width / 2 + 2, (int)(heightH/numberOfGrids*i), 50, 15);
+	    	yLabel.setText("" + (10 - i));
+	    	add(yLabel);
+	    	//Draw vertical grid
 	    	g2d.drawLine((int)(widthH/numberOfGrids*i), 0, (int)(widthH/numberOfGrids*i), (int) height);
+	    	JLabel xLabel = new JLabel();
+	    	xLabel.setBounds((int)(widthH/numberOfGrids*i), (int) height / 2 + 2, 50, 15);
+	    	if((i - 10) != 0)
+	    	{	xLabel.setText("" + (i - 10));
+	    		add(xLabel);
+	    	}
 	    }
 	       
 	  //Draw X and Y Axis
@@ -85,7 +94,7 @@ public class DrawPanel extends JPanel
 	    g2d.drawLine(0, (int)(heightH), (int) width, (int) (heightH));
 	    g2d.drawLine((int)widthH, 0, (int) widthH, (int) height);
 	    
-	    g2d.setColor(Color.RED);
+	   g2d.setColor(Color.RED);
 
 	    if(y == null)
 	    	return;
@@ -98,4 +107,6 @@ public class DrawPanel extends JPanel
 	    						 (int) (xFactor * (i+1)), (int) (heightH - y[i+1] * yFactor));
 		}
 	}
+	
+	
 }

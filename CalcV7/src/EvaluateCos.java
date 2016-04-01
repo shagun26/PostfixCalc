@@ -9,19 +9,13 @@ public class EvaluateCos extends ExpressionsParser {
 		double[] num1 = valuation.pop();
 		double[] y = new double[GraphModel.X.length];
 		
-		if(num1.length > 1)
+		
+		for(int i = 0; i < y.length; i++)
 		{
-			for(int i = 0; i < y.length; i++)
-			{
 				y[i] = Math.cos(num1[i]);
-			}
-			valuation.push(y);
 		}
-		else
-		{
-			double[] result = {Math.cos(num1[0])};
-			valuation.push(result);
-		}
+		valuation.push(y);
+		
 		
 		return y;
 	}

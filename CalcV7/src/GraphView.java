@@ -26,7 +26,7 @@ public class GraphView extends JFrame
 	private static final int GRAPH_WIDTH = 550;
 	private static final int DISPLAY_WIDTH = 50;
 	private static final int DISPLAY_HEIGHT = 50;
-	private double y[];
+	//private double y[];
 	private GridLayout buttons_manager = new GridLayout(0, 3);
 	
 	private JPanel top = new JPanel();
@@ -36,12 +36,7 @@ public class GraphView extends JFrame
 	private JLabel expression = new JLabel();
 	private static double yScale = 5;
 	private static double xScale;
-	private static JLabel N_Y;
-	private static JLabel P_Y;
-	private static JLabel N_X;
-	private static JLabel P_X;
-	private static JTextField yScaleLabel;
-	private JTextField xScaleLabel;
+	//private JTextField xScaleLabel;
 
 	
 	/**
@@ -147,125 +142,9 @@ public class GraphView extends JFrame
 					.addContainerGap())
 		);
 		
-		ButtonAdapter IncreaseScaleY;
-		buttons.add(IncreaseScaleY = new ButtonAdapter("↑")
-		{
-			
-			public void pressed()
-			{
-				if (yScale <= 1)
-					yScale *= 2;
-				else
-				yScale += 1; 
-				rescale();
-			}
-		});
-		IncreaseScaleY.setForeground(Color.WHITE);
-		IncreaseScaleY.setBackground(Color.BLACK);
-		IncreaseScaleY.setBounds(400, 40, 44, 25);
-		top.add(IncreaseScaleY);
 		
-		ButtonAdapter DecreaseScaleY;
-		buttons.add(DecreaseScaleY = new ButtonAdapter("↓")
-		{
-			
-			public void pressed()
-			{
-				if (yScale <= 1)
-					yScale /= 2;
-				else
-					yScale -= 1;
-				rescale();
-			}
-		});
-		DecreaseScaleY.setForeground(Color.WHITE);
-		DecreaseScaleY.setBackground(Color.BLACK);
-		DecreaseScaleY.setBounds(300, 40, 44, 25);
-		top.add(DecreaseScaleY);
-		
-		AbstractAction EnterKeyY = new AbstractAction()
-		{
-		  	@Override
-			public void actionPerformed(ActionEvent arg0) {
-		  		yScale = Double.parseDouble(yScaleLabel.getText());
-		  		rescale();
-			}
-		};
-		yScaleLabel = new JTextField("" + yScale);
-		yScaleLabel.setBackground(Color.BLACK);
-		yScaleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		yScaleLabel.setForeground(Color.WHITE);
-		yScaleLabel.setBounds(350, 40, 44, 25);
-		yScaleLabel.addActionListener(EnterKeyY);
-		top.add(yScaleLabel);
-		
-		ButtonAdapter IncreaseScaleX = new ButtonAdapter("↑") {
-			public void pressed() 
-			{
-				if (xScale <= 1 || xScale == Math.PI/2)
-					xScale *= 2;
-				else if (xScale % Math.PI==0)
-					xScale += Math.PI;
-				else
-				xScale += 1; 
-				//controller.newGraphSet(xScale);
-			}
-		};
-		IncreaseScaleX.setForeground(Color.WHITE);
-		IncreaseScaleX.setBackground(Color.BLACK);
-		IncreaseScaleX.setBounds(550, 40, 44, 25);
-		top.add(IncreaseScaleX);
-		
-		ButtonAdapter DecreaseScaleX = new ButtonAdapter("↓") {
-			public void pressed() 
-			{
-				if (xScale <= 1 || xScale == Math.PI || xScale == Math.PI/2)
-					xScale /= 2;
-				else if(xScale % Math.PI==0)
-					xScale -= Math.PI;
-				else
-				xScale -= 1; 
-				//controller.newGraphSet(xScale);
-			}
-		};
-		DecreaseScaleX.setForeground(Color.WHITE);
-		DecreaseScaleX.setBackground(Color.BLACK);
-		DecreaseScaleX.setBounds(450, 40, 44, 25);
-		top.add(DecreaseScaleX);
-		
-		AbstractAction EnterKeyX = new AbstractAction()
-		{
-		  	@Override
-			public void actionPerformed(ActionEvent arg0) {
-		  		xScale = Double.parseDouble(xScaleLabel.getText());
-		  		//controller.newGraphSet(xScale);
-			}
-		};
-		xScaleLabel = new JTextField("" + xScale);
-		xScaleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		xScaleLabel.setForeground(Color.WHITE);
-		xScaleLabel.setBackground(Color.BLACK);
-		xScaleLabel.setBounds(500, 40, 44, 25);
-		xScaleLabel.addActionListener(EnterKeyX);
-		top.add(xScaleLabel);
 		
 		bottom.setLayout(null);
-		
-		N_X = new JLabel();
-		P_X = new JLabel();
-		N_Y = new JLabel();
-		P_Y = new JLabel();
-		
-		N_X.setBounds(152, 247, 50, 15);
-		P_X.setBounds(453, 247, 50, 15);
-		P_Y.setBounds(302, 124, 50, 15);
-		N_Y.setBounds(302, 367, 50, 15);
-		
-		bottom.add(N_X);
-		bottom.add(P_X);
-		bottom.add(P_Y);
-		bottom.add(N_Y);
-		
 		getContentPane().setLayout(groupLayout);
 	}
 	/**
@@ -285,47 +164,10 @@ public class GraphView extends JFrame
 	{
 		xScale = xScale2;
 		System.out.println(xScale%Math.PI);
-		if(xScale%Math.PI==0)
-		{
-			N_X.setText("-" +(int)(xScale/Math.PI)+"\u03C0" );
-			P_X.setText((int)(xScale/Math.PI)+"\u03C0");
-			xScaleLabel.setText((int)(xScale/Math.PI)+"\u03C0");
-		}
-		else
-		{
-			N_X.setText("" + (-1*xScale));
-			P_X.setText("" + xScale);
-			xScaleLabel.setText("" + xScale);
-		}
-		
-		N_Y.setText("" + (-1*yScale));
-		P_Y.setText("" + yScale);
-		yScaleLabel.setText("" + yScale);
 		bottom.setY(y, yScale);
 		bottom.repaint();
 	}
 	
-	public void rescale()
-	{
-		if((xScale%Math.PI)==0)
-		{
-			N_X.setText("-" +(int)(xScale/Math.PI)+"\u03C0" );
-			P_X.setText((int)(xScale/Math.PI)+"\u03C0");
-			xScaleLabel.setText((int)(xScale/Math.PI)+"\u03C0");
-		}
-		else
-		{
-			N_X.setText("" + (-1*xScale));
-			P_X.setText("" + xScale);
-			xScaleLabel.setText("" + xScale);
-		}
-		
-		N_Y.setText("" + (-1*yScale));
-		P_Y.setText("" + yScale);
-		yScaleLabel.setText("" + yScale);
-		bottom.setYScale(yScale);
-		bottom.repaint();
-	}	
 	
 	public String getExpr()
 	{

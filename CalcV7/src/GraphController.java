@@ -11,7 +11,7 @@ public class GraphController
 	private Stack<String> expressionsList;
 	private Stack<String> expressionsListPost;
 	private double xScale;
-	private String prevExpr;
+	private String prevExpr = "";
 	
 	/**
 	 * Initialize the Graphing component of the calculator
@@ -31,7 +31,7 @@ public class GraphController
 
 		expressionsList = expressionsInFix;
 		expressionsListPost = expressionsPostFix;
-		xScale = grph_model.xScale();
+		xScale = grph_model.getXScale();
 		
 		if(grph_view == null)
 			grph_view = new GraphView(this);
@@ -40,24 +40,54 @@ public class GraphController
 	
 		cntrl = controller;
 		//If list is empty, reset to default
-		if(expressionsList.empty())
-		{
-			Ys = null;
-			grph_view.drawGraph(Ys, grph_model.xScale());
-			grph_view.updateExpr("");
-			prevExpr = "";
-		}
+		if(expressionsListPost.empty())
+			defaultState();
 		//If expression different, get y-values and
 		//draw the graph
-		else if(!expressionsList.peek().equals(prevExpr))
-		{
-			Ys = grph_model.getValues(expressionsPostFix);
-			grph_view.updateExpr("y = " + expressionsList.peek());
-			prevExpr = expressionsList.peek();
-			grph_view.drawGraph(Ys, grph_model.xScale());
-			System.out.println(grph_view.getExpr());
-		}
+		else if(expressionsList.empty())
+			postFixcheck();
+		else
+			inFixcheck();
+		
 		grph_view.setVisible(true);
+	}
+	
+	private void inFixcheck()
+	{
+		if(prevExpr.equals(expressionsList.peek()))
+			return;
+		
+		Ys = grph_model.getValues(expressionsListPost);
+		grph_view.updateExpr("y = " + expressionsList.peek());
+		prevExpr = expressionsList.peek();
+		grph_view.drawGraph(Ys, grph_model.getXScale());
+	}
+
+	private void postFixcheck()
+	{
+		if(prevExpr.equals(expressionsListPost.peek()))
+			return;
+		
+		Ys = grph_model.getValues(expressionsListPost);
+		prevExpr = expressionsListPost.peek();
+		grph_view.drawGraph(Ys, grph_model.getXScale());
+		
+		double value = Double.parseDouble(expressionsListPost.peek());
+		if(ArithmeticOperations.isInt(value, (int) value))
+			grph_view.updateExpr("y = " + (int) value);
+		else
+			grph_view.updateExpr("y = " + value);
+		
+		
+		
+	}
+	
+	private void defaultState() 
+	{
+		Ys = null;
+		grph_view.drawGraph(Ys, grph_model.getXScale());
+		grph_view.updateExpr("");
+		prevExpr = "";
 	}
 	/**
 	 * Instructs the Graph View to open
@@ -75,7 +105,7 @@ public class GraphController
 	public void drawGraph(String expr, double[] values)
 	{
 		grph_view.updateExpr("y = " + expr);
-		grph_view.drawGraph(values, grph_model.xScale());
+		grph_view.drawGraph(values, grph_model.getXScale());
 		grph_view.setVisible(true);
 	}
 	/**

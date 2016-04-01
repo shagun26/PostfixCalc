@@ -16,12 +16,7 @@ public class GraphModel
 	 */
 	public GraphModel()
 	{
-		int j = 0;
-		for(double i = -xScale; j < X.length;)
-		{
-			X[j++] = i;
-			i = i + (xScale) / ((X.length-1)/2);
-		}
+		newGraph(xScale);
 	}
 	/**
 	 * Evaluate an expression for its Y-coordinates, it first checks if Sin or Cos exists within the equation, 
@@ -32,19 +27,7 @@ public class GraphModel
 	public double[] getValues(Stack<String> expressionsPostFix)
 	{
 		System.out.println(expressionsPostFix);
-		
-		for(String next0 : expressionsPostFix)
-		{
-			if(next0.equals("SIN(") || next0.equals("COS("))
-			{
-				xScale = Math.PI*2;
-				newGraph(xScale);
-				break;
-			}
-		}
-		
-		return calculateValues(expressionsPostFix);
-				
+		return calculateValues(expressionsPostFix);		
 	}
 	
 	public double[] calculateValues(Stack<String> expressionsPostFix)
@@ -74,10 +57,17 @@ public class GraphModel
 			{
 				double[] pushed = {Double.parseDouble(next)};
 				valuation.push(pushed);
+				num();
 			}
 				
 		}
 		return y;
+	}
+	
+	public void num()
+	{
+		parser = new EvaluateNum();
+		y = parser.evaluate(valuation);
 	}
 	
 	/**
@@ -146,7 +136,7 @@ public class GraphModel
 		y = parser.evaluate(valuation);
 	}
 	
-	public double xScale()
+	public double getXScale()
 	{
 		return xScale/2;
 	}
