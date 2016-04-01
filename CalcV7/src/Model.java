@@ -729,8 +729,8 @@ public class Model
 		String second;
 		if(exprOp())
 			return printHistory() + " " + EQUALS;
-		else if(!opExpression)
-			updatePreviousHistory();
+		
+		updatePreviousHistory();
 		//If not expression, continue as normal
 		second = button_history.pop();
 		if(!from_memory)
@@ -877,14 +877,15 @@ public class Model
 			expressionsPostFix.push(Controller.PLUSMINUS);
 			return printHistory() + " " + EQUALS;
 		}
-		else if(!opExpression)
+		updatePreviousHistory();
+		
+		if(!opExpression)
 		{
-			updatePreviousHistory();
 			if(!expressionsPostFix.empty())
 				expressionsPostFix.pop();
 			expressionsPostFix.push("" + stored_values.peek());
 		}
-			
+		
 		String first = button_history.pop();
 		if(isOp(first))
 		{	
@@ -973,8 +974,8 @@ public class Model
 			expressionsPostFix.push(funct);
 			return printHistory() + " " + EQUALS;
 		}
-		else if(!opExpression)
-			updatePreviousHistory();
+		
+		updatePreviousHistory();
 			
 		if(!from_memory)
 		{
@@ -1186,18 +1187,13 @@ public class Model
 	
 	private boolean checkOpUndo(String first)
 	{
-		if(running_history_undo.size() < 2)
-			return isOp(first);
-			
+		if(running_history_undo.empty())
+			return false;
 		
 		int prev_size = running_history_undo.peek().size();
 		int current_size = running_history.size();
 		if(prev_size >= current_size)
-		{
-			if(prev_size == current_size)
-				return first.equals(running_history.get(current_size - 1));
 			return true;
-		}
 		return false;
 	}
 	
@@ -1358,15 +1354,15 @@ public class Model
 	}
 	
 	/**
-	 * Changes stored_values to its previous state. Returns
+	 * Changes stored_values to its previous state (Component 2). Returns
 	 * the element that was in the value field during
-	 * the previous state
+	 * the previous state (according to rules set in section 19.3 of Design Document)
 	 * @return - the element that was in the value field during the 
 	 * previous state
 	 */
 	public String undoValue()
 	{
-		//Case 1 : Undoing a character entry OR negate
+		//Case 1 : Undoing a character entry 
 		if(!sb.toString().equals(""))
 		{
 			sb.deleteCharAt(sb.length()-1);
@@ -1377,14 +1373,16 @@ public class Model
 			
 			from_memory = true;
 			
-			if(!isExpression() && !(button_history.empty()))
+			if(isExpression())
+				return button_history.peek();
+			
+			else if(!(button_history.empty()))
 			{
 				double result = stored_values.peek();
 				if(ArithmeticOperations.isInt(result, (int) result))
 					return (int) result + "";
 				return  result + "";
 			}
-			
 		}
 		//Case 2: Reached the default state by undos
 		if(stored_values_undo.empty())
@@ -1393,11 +1391,13 @@ public class Model
 				stored_values.pop();
 			return "" + 0;
 		}
+		
 		Stack<Double> popped = stored_values_undo.pop();
 		stored_values = popped;
 		//Case 3 - Undoing something expression-related
 		if(isExpression())
 			return "" + button_history.peek();
+		
 		//Case 4 - Undoing with no expressions involved
 		double result = stored_values.peek();
 		if(ArithmeticOperations.isInt(result, (int) result))
@@ -1407,8 +1407,8 @@ public class Model
 	
 	/**
 	 * Changes the history stacks, precedence stack and expressions stack
-	 * to their previous state. Returns the history string of the previous
-	 * state 
+	 * to their previous state (Components 1 and 3). Returns the history string of the previous
+	 * state (Outputs the history field according to rule set in section 19.3 of Design Document)
 	 * @return - the history string of the previous state
 	 */
 	public String undoHistory()
@@ -1464,11 +1464,8 @@ public class Model
 		//set boolean variable true to indicate that it will be
 		//after this call
 		if(opExpression)
-		{
 			exprUpdated = true;
-			//Update the previous states of expressions list 
-			updatePreviousHistory();
-		}
+		
 		return false;
 	}
 	
