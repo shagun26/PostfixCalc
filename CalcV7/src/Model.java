@@ -19,7 +19,7 @@ public class Model
 	
 	/**
 	 * Stores a history of entered values and operations.
-	 * (Section 3.3 in Design Document)
+	 * (Section 5.1 in Design Document)
 	 */
 	protected Stack<String> button_history = new Stack<String>();
 	
@@ -33,7 +33,7 @@ public class Model
 	
 	/**
 	 * Stores any entered values or results of operations.
-	 * (Section 3.3 in Design Document)
+	 * (Section 5.1 in Design Document)
 	 */
 	private Stack<Double> stored_values = new Stack<Double>();
 	/**
@@ -44,7 +44,7 @@ public class Model
 	/**
 	 * A like-for-like copy of button_history.
 	 * Used to print the history.
-	 * (Section 3.3 in Design Document)
+	 * (Section 5.1 in Design Document)
 	 */
 	protected ArrayList<String> running_history = new ArrayList<String>();
 	/**
@@ -56,7 +56,7 @@ public class Model
 	/**
 	 * Stores the operators that are responsible for values
 	 * in stored_values (excluding Entered numbers)
-	 * (Section 3.3 in Design Document)
+	 * (Section 5.1 in Design Document)
 	 */
 	
 	private Stack<String> precedence= new Stack<String>();
@@ -96,14 +96,14 @@ public class Model
 	
 	/**
 	 * Used to trace character presses.
-	 * (Section 3.3 in Design Document)
+	 * (Section 5.1 in Design Document)
 	 */
 	protected StringBuilder sb = new StringBuilder();
 	
 	/**
 	 * Same functionality as sb except used for
 	 * updates to history
-	 * (Section 3.3 in Design Document)
+	 * (Section 5.1 in Design Document)
 	 */
 	private StringBuilder sb_input_history = new StringBuilder();
 	
@@ -111,14 +111,14 @@ public class Model
 	/**
 	 * Used to construct next entry into button_history
 	 * and running_history after an operation
-	 * (Section 3.3 in Design Document)
+	 * (Section 5.1 in Design Document)
 	 */
 	private StringBuilder sb_completed_operations = new StringBuilder();
 	
 	/**
 	 * Indicates whether operands from only
 	 * stored_values were used in an operation or otherwise
-	 * (Section 3.3 in Design Document)
+	 * (Section 5.1 in Design Document)
 	 */
 	private boolean from_memory = true;
 	/**
@@ -321,7 +321,7 @@ public class Model
 	
 	/**
 	 * Sets the model to its default state
-	 * (Section 3.4 in Design Document)
+	 * (Section 5.2 in Design Document)
 	 */
 	public void reset()
 	{
@@ -353,7 +353,7 @@ public class Model
 	/**
 	 * Carries out the addition of two operands
 	 * and returns the result
-	 * (Section 3.4 in Design Document)
+	 * (Section 5.2 in Design Document)
 	 * @return The value of the addition as a String
 	 */
 	@SuppressWarnings("unchecked")
@@ -403,7 +403,7 @@ public class Model
 	/**
 	 * Carries out the subtraction of two operands
 	 * and returns the result
-	 * (Section 3.4 in the Design Document)
+	 * (Section 5.2 in the Design Document)
 	 * @return The value of the subtraction as a String
 	 */
 	@SuppressWarnings("unchecked")
@@ -450,7 +450,7 @@ public class Model
 	/**
 	 * Carries out the product of two operands
 	 * and returns the result
-	 * (Section 3.4 in the Design Document)
+	 * (Section 5.2 in the Design Document)
 	 * @return The value of the product as a String
 	 */
 	@SuppressWarnings("unchecked")
@@ -497,7 +497,7 @@ public class Model
 	/**
 	 * Carries out the division of two operands
 	 * and returns the result
-	 * (Section 3.4 in the Design Document)
+	 * (Section 5.2 in the Design Document)
 	 * @return The value of the division as a String
 	 */
 	@SuppressWarnings("unchecked")
@@ -576,7 +576,7 @@ public class Model
 	/**
 	 * Carries out the factorial of one operand
 	 * and returns the result
-	 * (Section 3.4 in the Design Document)
+	 * (Section 5.2 in the Design Document)
 	 * @precondition - The operand must be an integer only and must
 	 * be smaller than 171
 	 * @postcondition - The operation is carried out
@@ -631,7 +631,7 @@ public class Model
 	/**
 	 * Carries out the sin of one operand
 	 * and returns the result
-	 * (Section 3.4 in the Design Document)
+	 * (Section 5.2 in the Design Document)
 	 * @return The value of the sin as a String
 	 */
 	@SuppressWarnings("unchecked")
@@ -673,7 +673,7 @@ public class Model
 	/**
 	 * Carries out the cosine of one operand
 	 * and returns the result
-	 * (Section 3.4 in the Design Document)
+	 * (Section 5.2 in the Design Document)
 	 * @return The value of the cosine as a String
 	 */
 	@SuppressWarnings("unchecked")
@@ -1199,7 +1199,7 @@ public class Model
 	
 	/**
 	 * Checks whether parenthesis are required after an operation
-	 * (Refer to section 6.3 in Design Document for more details)
+	 * (Refer to section 17.4 in Design Document for more details)
 	 * @param last_entry - An operation string or number string
 	 * @param operator - The operator of the recent operation
 	 * @return true if parentheses are required. False otherwise
@@ -1248,7 +1248,7 @@ public class Model
 	}
 	/**
 	 * Constructs sb_completed_operations to the appropriate format
-	 * for Binary Operations (Section 10.7 and 12.4 in Design Document)	
+	 * for Binary Operations (Section 13.10 in Design Document)	
 	 * @param first - the first operand
 	 * @param second - the second operand
 	 * @param operator - the operator
@@ -1275,7 +1275,7 @@ public class Model
 	
 	/**
 	 * Makes updates to running_history and button_history 
-	 * after Case 2 of a Binary Operation (Section 5.1 in Design Document)
+	 * after Case 2 of a Binary Operation (Section 17.2 in Design Document)
 	 */
 	private void updateHistDirect()
 	{
@@ -1301,7 +1301,7 @@ public class Model
 	
 	/**
 	 * Makes updates to running_history and button_history 
-	 * after Case 1 of a Binary Operation(Section 5.1 in Design Document)
+	 * after Case 1 of a Binary Operation(Section 17.2 in Design Document)
 	 */
 	private void updateHistMem()
 	{
@@ -1330,8 +1330,8 @@ public class Model
 		running_history.add(button_history.peek());
 	}
 	/**
-	 * Checks if either of the last two elements in history are
-	 * expressions are not
+	 * Checks if the last element in history are
+	 * expressions are not (Section 18.1 in Design Document)
 	 * @return - true if at least one of the elements is an expression. False otherwise.
 	 */
 	private boolean isExpression()
@@ -1342,7 +1342,11 @@ public class Model
 			return true;
 		return false;
 	}
-	
+	/**
+	 * Checks if either of the last two elements in history are
+	 * expressions are not (Section 18.1 in Design Document)
+	 * @return - true if at least one of the elements is an expression. False otherwise.
+	 */
 	private boolean isExpressionBin()
 	{
 		if(button_history.empty() || expressionsInFix.isEmpty())

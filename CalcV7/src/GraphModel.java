@@ -4,6 +4,9 @@ import java.util.Stack;
 
 public class GraphModel 
 {
+	/**
+	 * X coordinates
+	 */
 	public static double[] X = new double[1001];
 	
 	private double[] y;
@@ -24,12 +27,6 @@ public class GraphModel
 	 * @param expressionsPostFix - the expressions list in Posfix form
 	 * @return - the Y-coordinates
 	 */
-	public double[] getValues(Stack<String> expressionsPostFix)
-	{
-		System.out.println(expressionsPostFix);
-		return calculateValues(expressionsPostFix);		
-	}
-	
 	public double[] calculateValues(Stack<String> expressionsPostFix)
 	{
 		
@@ -63,7 +60,9 @@ public class GraphModel
 		}
 		return y;
 	}
-	
+	/**
+	 * Adds a constant to the valuation stack
+	 */
 	public void num()
 	{
 		parser = new EvaluateNum();
@@ -141,7 +140,7 @@ public class GraphModel
 		return xScale/2;
 	}
 	
-	public void newGraph(double XScale)
+	private void newGraph(double XScale)
 	{
 		int j = 0;
 		for(double i = -XScale; j < X.length;)

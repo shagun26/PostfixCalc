@@ -33,8 +33,12 @@ import javax.swing.ScrollPaneConstants;
 		private JScrollPane Stuff = new JScrollPane();
 		private JLabel Title = new JLabel();
 		private final JPanel Top = new JPanel();
-		private final JPanel Bottom = new JPanel();
+		private final JPanel Entries = new JPanel();
 		
+		/**
+		 * Instantiates a new favorites view
+		 * @param favController - the assigned controller
+		 */
 		public FavView(final FavController favController)
 		{
 			super("Favourite");
@@ -87,18 +91,22 @@ import javax.swing.ScrollPaneConstants;
 			toGraph.setFont(new Font("Dialog", Font.BOLD, 16));
 			toGraph.setForeground(Color.WHITE);
 			toGraph.setBackground(Color.BLACK);
-			Bottom.setPreferredSize(new Dimension(600, 500));
+			Entries.setPreferredSize(new Dimension(600, 500));
 			
-			Bottom.setBackground(Color.DARK_GRAY);
+			Entries.setBackground(Color.DARK_GRAY);
 			
-			Stuff.setViewportView(Bottom);
+			Stuff.setViewportView(Entries);
 			FlowLayout fl_Bottom = new FlowLayout(FlowLayout.LEFT, 0, 5);
-			Bottom.setLayout(fl_Bottom);
+			Entries.setLayout(fl_Bottom);
 			
 			getContentPane().setLayout(groupLayout);
 				
 		}	
-		
+		/**
+		 * Updates the favorites view with a new entry
+		 * (Section 14.3 and 11.2 in Design Document)
+		 * @param expr - the new expression entry
+		 */
 		public void updateFav(final String expr)
 		{
 			
@@ -107,7 +115,7 @@ import javax.swing.ScrollPaneConstants;
 			
 			ButtonAdapter exitButton;
 			
-			Bottom.add(btnNewButton = new ButtonAdapter("y = " + expr)
+			Entries.add(btnNewButton = new ButtonAdapter("y = " + expr)
 			{
 				public void pressed()
 				{
@@ -115,14 +123,14 @@ import javax.swing.ScrollPaneConstants;
 				}
 			});
 			
-			Bottom.add(exitButton = new ButtonAdapter("X")
+			Entries.add(exitButton = new ButtonAdapter("X")
 			{
 				public void pressed()
 				{
 					favcntrl.remove(expr);
-					Bottom.remove(btnNewButton);
-					Bottom.remove(this);
-					Bottom.repaint();
+					Entries.remove(btnNewButton);
+					Entries.remove(this);
+					Entries.repaint();
 				}
 			});
 			
@@ -130,12 +138,12 @@ import javax.swing.ScrollPaneConstants;
 			btnNewButton.setForeground(Color.WHITE);
 			btnNewButton.setBackground(Color.BLACK);
 			btnNewButton.setFont(new Font("Dialog", Font.BOLD, 18));
-			Bottom.add(btnNewButton);
+			Entries.add(btnNewButton);
 			exitButton.setPreferredSize(new Dimension(50, 30));
 			exitButton.setBackground(Color.RED);
 			exitButton.setForeground(Color.WHITE);
 			exitButton.setFont(new Font("Dialog", Font.BOLD, 18));
-			Bottom.add(exitButton);
+			Entries.add(exitButton);
 		}
 	}
 

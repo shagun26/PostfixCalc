@@ -865,7 +865,7 @@ public class ModelTest {
 		{
 			expected[i] = GraphModel.X[i] + 3;
 		}
-		assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
+		assertArrayEquals(expected, g.calculateValues(m.expressionsPostFix),0);
 		m.reset();
 		
 		
@@ -883,7 +883,7 @@ public class ModelTest {
 		{
 			expected[i] = g.X[i] / 3;
 		}
-		assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
+		assertArrayEquals(expected, g.calculateValues(m.expressionsPostFix),0);
 		m.reset();
 		
 		
@@ -903,7 +903,7 @@ public class ModelTest {
 				{
 					expected[i] = g.X[i] * 3;
 				}
-				assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);	
+				assertArrayEquals(expected, g.calculateValues(m.expressionsPostFix),0);	
 	}
 	
 	@Test
@@ -915,7 +915,7 @@ public class ModelTest {
 				m.trigHistory("SIN(");
 				double[] expected = new double[g.X.length];
 				//Have to do this for Sin and COs
-				double[] actual = g.getValues(m.expressionsPostFix);
+				double[] actual = g.calculateValues(m.expressionsPostFix);
 				for(int i = 0; i < expected.length; i++)
 				{
 					expected[i] =  Math.sin(g.X[i]);
@@ -936,7 +936,7 @@ public class ModelTest {
 				m.trigHistory("COS(");
 				double[] expected = new double[g.X.length];
 				//Have to do this for Sin and COs
-				double[] actual = g.getValues(m.expressionsPostFix);
+				double[] actual = g.calculateValues(m.expressionsPostFix);
 				for(int i = 0; i < expected.length; i++)
 				{
 					expected[i] =  Math.cos(GraphModel.X[i]);
@@ -963,7 +963,7 @@ public class ModelTest {
 				}
 				
 				
-				assertArrayEquals(expected,g.getValues(m.expressionsPostFix),0);
+				assertArrayEquals(expected,g.calculateValues(m.expressionsPostFix),0);
 				
 	}
 	
@@ -983,7 +983,7 @@ public class ModelTest {
 				{
 					expected[i] = g.X[i] - 3;
 				}
-				assertArrayEquals(expected, g.getValues(m.expressionsPostFix),0);
+				assertArrayEquals(expected, g.calculateValues(m.expressionsPostFix),0);
 				
 	}
 	

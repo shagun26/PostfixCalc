@@ -57,7 +57,7 @@ public class GraphController
 		if(prevExpr.equals(expressionsList.peek()))
 			return;
 		
-		Ys = grph_model.getValues(expressionsListPost);
+		Ys = grph_model.calculateValues(expressionsListPost);
 		grph_view.updateExpr("y = " + expressionsList.peek());
 		prevExpr = expressionsList.peek();
 		grph_view.drawGraph(Ys, grph_model.getXScale());
@@ -68,7 +68,7 @@ public class GraphController
 		if(prevExpr.equals(expressionsListPost.peek()))
 			return;
 		
-		Ys = grph_model.getValues(expressionsListPost);
+		Ys = grph_model.calculateValues(expressionsListPost);
 		prevExpr = expressionsListPost.peek();
 		grph_view.drawGraph(Ys, grph_model.getXScale());
 		
@@ -77,8 +77,6 @@ public class GraphController
 			grph_view.updateExpr("y = " + (int) value);
 		else
 			grph_view.updateExpr("y = " + value);
-		
-		
 		
 	}
 	
