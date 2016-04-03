@@ -36,9 +36,9 @@ public class DrawPanel extends JPanel
 	 */
 	public void setY(double[] input, double Scale)
 	{
+		y = input;
 		if(input == null)
 			return;
-		y = input;
 		yScale = (y.length - 1)/200/Scale;
 	}
 	/**
@@ -97,7 +97,11 @@ public class DrawPanel extends JPanel
 	   g2d.setColor(Color.RED);
 
 	    if(y == null)
+	    {
+	    	System.out.println("EMpty");
 	    	return;
+	    }
+	    	
 	    
 	    //Evaluate Graph   
 	    for(int i = 0; i < (y.length - 1); i++)

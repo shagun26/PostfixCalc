@@ -4,7 +4,8 @@ import java.util.Stack;
 
 public class Model
 {
-	private int start = 0;
+	private int start = -1;
+	private Stack<Integer> prevStart = new Stack<Integer>();
 	/**
 	 * Used to enter correct routine for binary operations
 	 * (Section 11.2)
@@ -74,6 +75,8 @@ public class Model
 	 * A reference to low precedence operators
 	 */
 	private ArrayList<String> lowest_precedence = new ArrayList<String>();
+	
+	private ArrayList<String> trig = new ArrayList<String>();
 	
 	/**
 	 * Stores a list of expressions in
@@ -154,6 +157,9 @@ public class Model
 		
 		lowest_precedence.add(Controller.PLUS);
 		lowest_precedence.add(Controller.MINUS);
+		
+		trig.add(Controller.SIN);
+		trig.add(Controller.COS);
 		
 	}
 	/**
@@ -251,7 +257,15 @@ public class Model
 		from_memory = true;
 		//Update previous state of stored_values
 		if(!button_history.empty())
+		{
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
+			prevStart.push(Integer.valueOf(start));
+		}
+		if(!exprUpdated || (expressionsInFix.peek().equals(Controller.EXPRESSION)))
+		{
+			start = expressionsPostFix.size();
+		}
+		
 		return Controller.EXPRESSION;
 	}
 	
@@ -279,21 +293,24 @@ public class Model
 		else
 		{
 			int size = expressionsPostFix.size();
+			System.out.println("Start before : " + start);
+			prevStart.push(Integer.valueOf(start));
+			System.out.println("PostFIx before : " + expressionsPostFix);
 			//Copy elements
 			while(start < size)
 				expressionsPostFix.push(expressionsPostFix.get(start++));
-		
+			
 			if(precedence.contains(expressionsPostFix.peek()))
 				precedence.push(precedence.peek());
-			else if(precedence.contains(precedence_undo.peek().peek()))
+			else if(!precedence_undo.peek().empty() && 
+					precedence.contains(precedence_undo.peek().peek()))
 			{
 				precedence.push(precedence_undo.peek().peek());
 			}
-			
-			System.out.println(precedence);
-			
-		}System.out.println(expressionsPostFix);
-		System.out.println(start);
+		}
+		System.out.println("Previous Start : " + prevStart );
+		System.out.println("Start : " + start );
+		System.out.println("PostFIx after : " + expressionsPostFix);
 		return printHistory();
 	}
 	
@@ -347,7 +364,8 @@ public class Model
 		running_history_undo.clear();
 		sb.delete(0, sb.length());
 	
-		start = 0;
+		start = -1;
+		prevStart.clear();
 	}
 	
 	/**
@@ -637,12 +655,11 @@ public class Model
 	@SuppressWarnings("unchecked")
 	public String sin()
 	{
-		//Determine whether an expression is involved
-		opExpression = isExpression();
 		single_code = new SinOperation();
-	
 		if(from_memory)
 		{
+			//Determine whether an expression is involved
+			opExpression = isExpression();
 			if(!button_history.empty())
 				stored_values_undo.push((Stack<Double>) stored_values.clone());
 			//If not expression, continue as normal
@@ -660,7 +677,7 @@ public class Model
 			return button_history.peek();
 		}
 		//Update previous state of stored_values
-		if(!stored_values.empty())
+		if(!button_history.empty())
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		
 		double history = Double.parseDouble(sb.toString());
@@ -679,17 +696,18 @@ public class Model
 	@SuppressWarnings("unchecked")
 	public String cos()
 	{
-		//Determine whether an expression is involved
-		opExpression = isExpression();
 		single_code = new CosOperation();
-				
+		
 		if(from_memory)
 		{
+			//Determine whether an expression is involved
+			opExpression = isExpression();
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				if(!button_history.empty())
 					stored_values_undo.push((Stack<Double>) stored_values.clone());
+				
 				single_code.zeroCheckSingle(stored_values, button_history);
 				String value = single_code.execute(stored_values.pop());
 				stored_values.push(Double.parseDouble(value));
@@ -702,7 +720,7 @@ public class Model
 			return button_history.peek();		
 		}
 		//Update previous state of stored_values
-		if(!stored_values.empty())
+		if(!button_history.empty())
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
 		
 		double history = Double.parseDouble(sb.toString());
@@ -733,6 +751,7 @@ public class Model
 		updatePreviousHistory();
 		//If not expression, continue as normal
 		second = button_history.pop();
+		prevStart.push(Integer.valueOf(start));
 		if(!from_memory)
 		{
 			//Necessary check for parentheses
@@ -764,15 +783,35 @@ public class Model
 		}
 		//Else, use the last two entries in the stack and anything else as necessary
 		first = button_history.pop();
+		
 		if(opExpression)
 		{	//Update the PostFix expressions list
 			if(!stored_values.empty())
 			{	
 				expressionsInFix.push("" + stored_values.pop());
+				start--;
 			}	
-			else if(isOp(first) && isOp(second))
-				start = 0;
+			else if(isOp(first) || isOp(second) || first.equals("-" + Controller.EXPRESSION) ||
+					second.equals("-" + Controller.EXPRESSION))
+			{	
+				
+				//System.out.println(expressionsPostFix.size());
+				System.out.println(expressionsPostFix);
+				//prevSize = (expressionsPostFix.size() - start);
+				start = start - 3;
+				String unary = expressionsPostFix.get(start + 2);
+				if(trig.contains(unary) || unary.equals(Controller.PLUSMINUS))
+					start++;
+			
+				//System.out.println(prevSize);
+				//ystem.out.println("jump is " + jump);
+				//start = jump;
+				
+			}
+			else if(start > 0)
+				start--;
 			expressionsPostFix.push(operator);
+			System.out.println("Start after op " + start);
 		}
 		else
 		{
@@ -783,8 +822,8 @@ public class Model
 				expressionsPostFix.pop();
 			
 			expressionsPostFix.push("" + stored_values.peek());
+			start--;
 		}
-		
 		formNewEntry(first, second, operator);
 		//Update precedence list
 		precedence.push(operator);
@@ -874,11 +913,14 @@ public class Model
 		//variables to false and return without any changes made
 		if(exprOp())
 		{
-			expressionsPostFix.push(Controller.PLUSMINUS);
+			if(expressionsPostFix.peek().equals(Controller.PLUSMINUS))
+				expressionsPostFix.pop();
+			else
+				expressionsPostFix.push(Controller.PLUSMINUS);
 			return printHistory() + " " + EQUALS;
 		}
 		updatePreviousHistory();
-		
+		prevStart.push(Integer.valueOf(start));
 		if(!opExpression)
 		{
 			if(!expressionsPostFix.empty())
@@ -976,9 +1018,10 @@ public class Model
 		}
 		
 		updatePreviousHistory();
-			
+		prevStart.push(Integer.valueOf(start));	
 		if(!from_memory)
 		{
+			start++;
 			//set the string
 			sb_completed_operations.append(funct + sb_input_history.toString() + ")");
 			//Reset button-press string for next use
@@ -1077,11 +1120,17 @@ public class Model
 			return "INVALID";
 		}
 		
+	
 		error = false;
 		//Update tracking of previous stored_value states
 		if(!stored_values.empty() || isExpression())
+		{
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
-		
+			prevStart.push(Integer.valueOf(start));
+		}
+			System.out.println("prevStart is : " + prevStart);	
+			
+		start++;
 		stored_values.push(pushed);
 		if(ArithmeticOperations.isInt(Math.abs(pushed), Math.abs((int) pushed)))
 		{
@@ -1395,14 +1444,15 @@ public class Model
 				stored_values.pop();
 			return "" + 0;
 		}
-		
 		Stack<Double> popped = stored_values_undo.pop();
 		stored_values = popped;
+		start = prevStart.pop();
+		System.out.println("Start is : " + start);
 		//Case 3 - Undoing something expression-related
 		if(isExpression())
-			return "" + button_history.peek();
-		
+			return "" + button_history.peek(); 
 		//Case 4 - Undoing with no expressions involved
+		//start--;
 		double result = stored_values.peek();
 		if(ArithmeticOperations.isInt(result, (int) result))
 			return (int) result + "";
@@ -1448,6 +1498,8 @@ public class Model
 		
 		expressionsInFix = expressionsInFix_undo.pop();
 		expressionsPostFix = expressionsPostFix_undo.pop();
+		//if(!expressionsPostFix_undo.empty())
+			//prevSize = expressionsPostFix_undo.peek().size();
 		//If the last element of previous state
 		//was an op, '=' required
 		if(checkOpUndo(running_history.get(running_history.size() - 1)))
@@ -1491,7 +1543,6 @@ public class Model
 				&& input.charAt(input.length() - 1) == ')';
 	}
 
-	
 }
 
 
