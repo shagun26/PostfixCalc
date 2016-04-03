@@ -223,7 +223,11 @@ public class Model
 		sb_input_history.delete(0, sb_input_history.length());
 		//Update previous state of stored_values
 		if(!button_history.empty())
+		{
+			prevStart.push(Integer.valueOf(start));
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
+		}
+		start++;
 		stored_values.push(Math.PI);
 		return "" + Math.PI;
 	}
@@ -293,9 +297,7 @@ public class Model
 		else
 		{
 			int size = expressionsPostFix.size();
-			System.out.println("Start before : " + start);
 			prevStart.push(Integer.valueOf(start));
-			System.out.println("PostFIx before : " + expressionsPostFix);
 			//Copy elements
 			while(start < size)
 				expressionsPostFix.push(expressionsPostFix.get(start++));
@@ -308,9 +310,6 @@ public class Model
 				precedence.push(precedence_undo.peek().peek());
 			}
 		}
-		System.out.println("Previous Start : " + prevStart );
-		System.out.println("Start : " + start );
-		System.out.println("PostFIx after : " + expressionsPostFix);
 		return printHistory();
 	}
 	
@@ -383,18 +382,14 @@ public class Model
 		//Update previous state of stored_values
 		if(!button_history.empty())
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
-		System.out.println("GG " + stored_values_undo);
 		if(from_memory)
 		{	
-			System.out.println(stored_values_undo);
 			//If not expression, continue as normal
 			if(!opExpression)
 			{
 				bin_code.zeroCheckBinary(stored_values, button_history);
 				String value = bin_code.execute(stored_values.pop(), stored_values.pop());
-				System.out.println(stored_values_undo);
 				stored_values.push(Double.parseDouble(value));
-				System.out.println(stored_values_undo);
 				return value;	
 			}
 			//Otherwise update the history
@@ -762,7 +757,6 @@ public class Model
 			
 			//Update precedence list
 			precedence.push(operator);
-			
 			//Update the PostFix expressions list
 			if(opExpression)
 			{
@@ -776,51 +770,49 @@ public class Model
 				
 				expressionsPostFix.push("" + stored_values.peek());
 			}
-			
 			updateHistDirect();
 			from_memory = !from_memory;
 			return printHistory() + " " + EQUALS;
 		}
 		//Else, use the last two entries in the stack and anything else as necessary
 		first = button_history.pop();
-		
 		if(opExpression)
 		{	//Update the PostFix expressions list
+			//and start position
+			boolean adjust = false;
 			if(!stored_values.empty())
-			{	
+			{	//Expression Involved a number
 				expressionsInFix.push("" + stored_values.pop());
 				start--;
-			}	
-			else if(isOp(first) || isOp(second) || first.equals("-" + Controller.EXPRESSION) ||
-					second.equals("-" + Controller.EXPRESSION))
-			{	
-				
-				//System.out.println(expressionsPostFix.size());
-				System.out.println(expressionsPostFix);
-				//prevSize = (expressionsPostFix.size() - start);
-				start = start - 3;
-				String unary = expressionsPostFix.get(start + 2);
-				if(trig.contains(unary) || unary.equals(Controller.PLUSMINUS))
-					start++;
-			
-				//System.out.println(prevSize);
-				//ystem.out.println("jump is " + jump);
-				//start = jump;
-				
 			}
-			else if(start > 0)
+			//Expression Operations involved
+			else if(isOp(first) && isOp(second) || first.equals("-" + Controller.EXPRESSION) && isOp(second)
+					|| second.equals("-" + Controller.EXPRESSION) && isOp(first))
+			{	
+				String unary = expressionsPostFix.get(start + 1);
+				if(trig.contains(unary) || unary.equals(Controller.PLUSMINUS))
+					adjust = true;
+				
+				if(adjust)
+					start-=2;
+				else
+					start = start - (expressionsPostFix.size() - start);
+			}
+			// 'X' involved
+			else if(adjust)
+				start-=2;
+			else
 				start--;
 			expressionsPostFix.push(operator);
-			System.out.println("Start after op " + start);
 		}
 		else
 		{
-			if(!expressionsPostFix.empty())
+			//Update PostFix list and start position
+			for(int i = 0; i < 2; i++)
+			{
+				if(!expressionsPostFix.empty())
 				expressionsPostFix.pop();
-			
-			if(!expressionsPostFix.empty())
-				expressionsPostFix.pop();
-			
+			}
 			expressionsPostFix.push("" + stored_values.peek());
 			start--;
 		}
@@ -1068,7 +1060,6 @@ public class Model
 			
 		//replace them with updated computation
 		running_history.add(button_history.peek());
-		System.out.println(expressionsInFix.toString());
 		//print updated history
 		return printHistory() + " " + EQUALS;
 	}
@@ -1099,7 +1090,6 @@ public class Model
 				exprUpdated = true;
 				expressionVal();
 				expressionHist();
-				System.out.println("Haha");
 				return button_history.peek();
 			}
 			//Entering from value field
@@ -1114,22 +1104,17 @@ public class Model
 		catch (NumberFormatException e)
 		{	//element not a parsable number
 			error = true;
-			System.out.println(sb.toString() + "Hi");
 			sb.delete(0, sb.length());
 			sb_input_history.delete(0, sb_input_history.length());
 			return "INVALID";
 		}
-		
-	
 		error = false;
 		//Update tracking of previous stored_value states
 		if(!stored_values.empty() || isExpression())
 		{
 			stored_values_undo.push((Stack<Double>) stored_values.clone());
 			prevStart.push(Integer.valueOf(start));
-		}
-			System.out.println("prevStart is : " + prevStart);	
-			
+		}	
 		start++;
 		stored_values.push(pushed);
 		if(ArithmeticOperations.isInt(Math.abs(pushed), Math.abs((int) pushed)))
@@ -1204,9 +1189,6 @@ public class Model
 				from_memory = false;
 				sb_input_history.append(0);
 			}
-				
-			
-			System.out.println("Hi " + button_history.peek());
 		}
 	}
 	/**
@@ -1243,7 +1225,7 @@ public class Model
 		int current_size = running_history.size();
 		if(prev_size >= current_size)
 			return true;
-		return false;
+		return isOp(first);
 	}
 	
 	/**
@@ -1446,13 +1428,12 @@ public class Model
 		}
 		Stack<Double> popped = stored_values_undo.pop();
 		stored_values = popped;
+		//Revert to previous start position
 		start = prevStart.pop();
-		System.out.println("Start is : " + start);
 		//Case 3 - Undoing something expression-related
 		if(isExpression())
 			return "" + button_history.peek(); 
 		//Case 4 - Undoing with no expressions involved
-		//start--;
 		double result = stored_values.peek();
 		if(ArithmeticOperations.isInt(result, (int) result))
 			return (int) result + "";
@@ -1490,16 +1471,14 @@ public class Model
 			reset();
 			return "Start new Calculation";
 		}
-		
+		//Components 1 and 3 changes
 		running_history = running_history_undo.pop();
 		button_history = button_history_undo.pop();	
 		if(button_history.size() > running_history.size())
 			button_history.pop();
-		
 		expressionsInFix = expressionsInFix_undo.pop();
 		expressionsPostFix = expressionsPostFix_undo.pop();
-		//if(!expressionsPostFix_undo.empty())
-			//prevSize = expressionsPostFix_undo.peek().size();
+		
 		//If the last element of previous state
 		//was an op, '=' required
 		if(checkOpUndo(running_history.get(running_history.size() - 1)))
@@ -1508,7 +1487,8 @@ public class Model
 	}
 	
 	private boolean exprOp()
-	{
+	{	
+		//If Expression op
 		//that was already updated, set both boolean
 		//variables to false and return without any changes made
 		if(opExpression && exprUpdated)
@@ -1524,7 +1504,10 @@ public class Model
 		
 		return false;
 	}
-	
+	/**
+	 * Updates previous states of Components 1 and 3
+	 * (Section 20 in design document)
+	 */
 	private void updatePreviousHistory()
 	{
 		if(!button_history.empty())
@@ -1536,7 +1519,12 @@ public class Model
 			expressionsPostFix_undo.push((Stack<String>) expressionsPostFix.clone());
 		}
 	}
-	
+	/**
+	 * Checks is input is a negated operation
+	 * @param input - the string input
+	 * @return - true if it is
+	 * 			 false otherwise
+	 */
 	private boolean isNegateOp(String input)
 	{
 		return input.charAt(0) == '-' && input.charAt(1) == '(' 

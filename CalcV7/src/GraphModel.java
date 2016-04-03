@@ -8,9 +8,15 @@ public class GraphModel
 	 * X coordinates
 	 */
 	public static double[] X = new double[1001];
-	
+	/**
+	 * The y coordinates
+	 */
 	private double[] y;
+	/**
+	 * The running value of the evaluated expression
+	 */
 	private Stack<double[]> valuation = new Stack<double[]>();
+	//Polymorphic variable
 	private ExpressionsParser parser;
 	private double xScale = 10;
 	
@@ -22,41 +28,48 @@ public class GraphModel
 		newGraph(xScale);
 	}
 	/**
-	 * Evaluate an expression for its Y-coordinates, it first checks if Sin or Cos exists within the equation, 
-	 * in which it will calculate for a set of x values from -2pi to +2pi, otherwise it will go from -10 to +10
+	 * Evaluate an expression for its Y-coordinates
+	 * (Section 21 in Design Document)
 	 * @param expressionsPostFix - the expressions list in Posfix form
 	 * @return - the Y-coordinates
 	 */
 	public double[] calculateValues(Stack<String> expressionsPostFix)
 	{
-		
+		//Clear valuation for recomputation
 		valuation.clear();
-		
+		//Evaluate each element
 		for(String next : expressionsPostFix)
-		{
+		{	//Category 2
 			if(next.equals("x"))
 				var();
+			//Category 4
 			else if(next.equals("+"))
 				sum();
+			//Category 4
 			else if(next.equals("-"))
 				sub();
+			//Category 4
 			else if(next.equals("*"))
 				mult();
+			//Category 4
 			else if(next.equals("/"))
 				div();
+			//Category 3
 			else if(next.equals("SIN("))
 				sin();
+			//Category 3
 			else if(next.equals("COS("))
 				cos();
+			//Category 3
 			else if(next.equals(Controller.PLUSMINUS))
 				negate();
+			//Category 1
 			else
 			{
 				double[] pushed = {Double.parseDouble(next)};
 				valuation.push(pushed);
 				num();
-			}
-				
+			}	
 		}
 		return y;
 	}
@@ -134,7 +147,10 @@ public class GraphModel
 		parser = new EvaluateCos();
 		y = parser.evaluate(valuation);
 	}
-	
+	/**
+	 * Returns the X-scaling factor for drawing the graph
+	 * @return - the X-scaling factor
+	 */
 	public double getXScale()
 	{
 		return xScale/2;

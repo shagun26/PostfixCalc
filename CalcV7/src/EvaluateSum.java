@@ -18,7 +18,6 @@ public class EvaluateSum extends ExpressionsParser
 		
 		valuation.push(y);
 		
-		
 		return y;
 		
 	}

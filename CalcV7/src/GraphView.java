@@ -30,7 +30,7 @@ public class GraphView extends JFrame
 	private GridLayout buttons_manager = new GridLayout(0, 3);
 	
 	private JPanel top = new JPanel();
-	private DrawPanel  bottom;
+	private DrawPanel  graph;
 	private JPanel buttons = new JPanel();
 	
 	private JLabel expression = new JLabel();
@@ -60,7 +60,7 @@ public class GraphView extends JFrame
 		buttons_manager.setVgap(5);
 		buttons_manager.setHgap(5);
 		buttons.setLayout(buttons_manager);
-		bottom = new DrawPanel();
+		graph = new DrawPanel();
 		
 	    ButtonAdapter calc;
 		buttons.add(calc = new ButtonAdapter("Calc")
@@ -122,15 +122,15 @@ public class GraphView extends JFrame
 		top.add(buttons);
 		top.setVisible(true);
 	
-		bottom.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
-		bottom.setVisible(true);
+		graph.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
+		graph.setVisible(true);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(top, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE)
-						.addComponent(bottom, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE))
+						.addComponent(graph, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
@@ -138,13 +138,13 @@ public class GraphView extends JFrame
 				.addGroup(groupLayout.createSequentialGroup()
 					.addComponent(top, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addComponent(bottom, GroupLayout.PREFERRED_SIZE, 489, GroupLayout.PREFERRED_SIZE)
+					.addComponent(graph, GroupLayout.PREFERRED_SIZE, 489, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
 		
 		
 		
-		bottom.setLayout(null);
+		graph.setLayout(null);
 		getContentPane().setLayout(groupLayout);
 	}
 	/**
@@ -163,14 +163,9 @@ public class GraphView extends JFrame
 	public void drawGraph(double[] y, double xScale2)
 	{
 		xScale = xScale2;
-		System.out.println(xScale%Math.PI);
-		bottom.setY(y, yScale);
-		bottom.repaint();
+		graph.setY(y, yScale);
+		graph.repaint();
 	}
 	
 	
-	public String getExpr()
-	{
-		return expression.getText();
-	}
 }

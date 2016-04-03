@@ -206,16 +206,6 @@ public class Controller
 	{
 		window.updateHistory(model.undoHistory());
 		window.updateValue(model.undoValue());
-		System.out.println("Component 1------");
-		System.out.println(model.running_history_undo);
-		System.out.println(model.button_history_undo);
-		System.out.println(model.precedence_undo);
-		System.out.println("Component 2------");
-		System.out.println(model.stored_values_undo);
-		System.out.println("Component 3------");
-		System.out.println(model.expressionsInFix_undo);
-		System.out.println(model.expressionsPostFix_undo);
-		System.out.println();
 	}
 	
 
