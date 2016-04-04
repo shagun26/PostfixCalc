@@ -12,8 +12,10 @@ public class ModelTest {
 	private View v;
 	private Controller c;
 	private GraphModel g;
+	private GraphController gc;
 	private GraphView gv;
 	private FavView fv;
+	private FavController fc;
 
 	// Initiating a tester Model object
 	@Before
@@ -987,8 +989,39 @@ public class ModelTest {
 				
 	}
 	
+	// Controller Testing:
+	@Test 
+	public void testController() {
+		c.clear();
+		assertEquals(m.printHistory(),"");
+		c.addToEntry("1");
+		c.enter();
+		c.addToEntry("1");
+		c.enter();
+		c.sum();
+		c.cos();
+		c.sin();
+		c.divide();
+		c.multiply();
+		c.subtract();
+		c.clear();
+		c.undo();
+		c.changeToGraph();
+		c.expression();
+		c.factorial();
+		c.open();
+		c.negate();
+		c.pi();
+		c.factHistoryOperation("!");
+		c.trigHistoryOperation("COS");
+		c.historyOperation("+");
+		
+		
+	}
 	
-	// comment this section if you want to edit and test.
+	
+	
+	
 	@Test
 	public void def() {
 
